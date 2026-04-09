@@ -1,0 +1,1224 @@
+╔════════════════════════════════════════════════════════╗
+║  Phase D.0:  {4,3,5} Honeycomb — 3D Feasibility Probe  ║
+║      5 cubes at every edge • Hyperbolic 3-space        ║
+╚════════════════════════════════════════════════════════╝
+
+  Initializing Coxeter geometry for [4,3,5] ...
+  Gram matrix eigenvalues: -0.0534, 0.4569, 1.5431, 2.0534
+  Signature: (3, 1)  ✓ compact hyperbolic
+  ✓  Reflections: involution, G-preservation, Coxeter relations.
+  Cell center (root basis): [-3.7025, -5.2361, -5.2361, -3.2361]
+  <p,p>_G = -3.236068  (timelike ✓)
+
+  Enumerating cell stabilizer <s0, s1, s2> ...
+  ✓  Cell stabilizer [4,3] has 48 elements.
+  Computing 6 face crossings ...
+  ✓  6 face crossings found.
+  ✓  All face crossings are involutions.
+  Adjacent face pairs: 12  (edges of cube)
+  Opposite face pairs: 3
+
+  Computing edge valence in the full honeycomb ...
+    Valence 5: 12 edge(s)
+  ✓  All 12 edges have valence 5 in the full honeycomb.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ═══  Strategy: BFS  ═══
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  BFS-7: 32 cells, 39 int.faces (density 2.44), 114 bdy.faces
+
+========================================================================
+  PATCH:  BFS-7
+========================================================================
+  Cells (cubes):         32
+  Internal shared faces: 39
+  Boundary faces:        114
+  Euler (V−E+F):         (not tracked — cell complex only)
+
+  ── Edge Valence (central cell's 12 edges) ──
+    Valence 5:  12 edge(s)    κ =   -90.0°  ← {4,3,5} condition! κ = −π/2
+
+  ✓  12 of 12 edges achieve full valence 5!
+
+  ── Edge Valence in Patch (cells actually present) ──
+    4 edge(s) with 4 of 5 cubes present
+    8 edge(s) with 5 of 5 cubes present ← FULL
+
+  ── Flow Graph ──
+  Boundary legs (face pseudo-nodes): 114
+
+  ── Cell-Aligned Boundary Regions (up to 5 cells) ──
+  Distinct regions:  34
+
+  Region                                   | #faces |  S(A)
+  ───────────────────────────────────────────────────────
+  {c6}                                     |      5 |     1
+  {c7}                                     |      4 |     2
+  {c7,c12}                                 |      8 |     2
+  {c8}                                     |      4 |     2
+  {c8,c17}                                 |      8 |     2
+  {c9}                                     |      4 |     2
+  {c9,c22}                                 |      8 |     2
+  {c10}                                    |      4 |     2
+  {c10,c27}                                |      8 |     2
+  {c11}                                    |      5 |     1
+  {c12}                                    |      4 |     2
+  {c13}                                    |      4 |     2
+  {c13,c18}                                |      8 |     2
+  {c14}                                    |      4 |     2
+  {c14,c23}                                |      8 |     2
+  {c15}                                    |      5 |     1
+  {c16}                                    |      5 |     1
+  {c17}                                    |      4 |     2
+  {c18}                                    |      4 |     2
+  {c19}                                    |      5 |     1
+
+  Min-cut range (sample): 1 – 2
+
+  ── Subadditivity Spot Check ──
+  Checked 41 pairs: 41 passed, 0 failed.
+
+  ── Symmetry Analysis ──
+  [Full automorphism skipped for large boundary]
+  Degree-class estimate:    2 classes
+  With octahedral sym (48): ~1 orbit est.
+
+  ── 3D Curvature Summary ──
+  Dihedral angle of cube: π/2 = 90°
+  {4,3,5} honeycomb: 5 cubes at each edge
+  Angular excess at full edge: 5·90° − 360° = 90°
+  Edge deficit: κ = 2π − 5·(π/2) = −π/2 ≈ −90°
+  Fully surrounded edges in patch: 8
+  Total hyperbolic curvature: -720.0°
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Phase D.0)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 114)
+    ✓ PASS  ≥1 edge at full valence 5 (in honeycomb)  (actual: 12)
+    ✓ PASS  ≥1 full-valence edge in patch  (actual: 8)
+    ✓ PASS  Orbit count ≤ 200  (actual: 1)
+
+  ▶  ALL GATES PASS — 3D Agda formalization is FEASIBLE!
+
+  BFS-15: 66 cells, 86 int.faces (density 2.61), 224 bdy.faces
+
+========================================================================
+  PATCH:  BFS-15
+========================================================================
+  Cells (cubes):         66
+  Internal shared faces: 86
+  Boundary faces:        224
+  Euler (V−E+F):         (not tracked — cell complex only)
+
+  ── Edge Valence (central cell's 12 edges) ──
+    Valence 5:  12 edge(s)    κ =   -90.0°  ← {4,3,5} condition! κ = −π/2
+
+  ✓  12 of 12 edges achieve full valence 5!
+
+  ── Edge Valence in Patch (cells actually present) ──
+    12 edge(s) with 5 of 5 cubes present ← FULL
+
+  ── Flow Graph ──
+  Boundary legs (face pseudo-nodes): 224
+
+  ── Cell-Aligned Boundary Regions (up to 5 cells) ──
+  Distinct regions:  68
+
+  Region                                   | #faces |  S(A)
+  ───────────────────────────────────────────────────────
+  {c14}                                    |      4 |     2
+  {c14,c23}                                |      8 |     2
+  {c15}                                    |      5 |     1
+  {c16}                                    |      4 |     2
+  {c16,c33}                                |      8 |     2
+  {c17}                                    |      4 |     2
+  {c18}                                    |      4 |     2
+  {c19}                                    |      5 |     1
+  {c20}                                    |      4 |     2
+  {c20,c29}                                |      8 |     2
+  {c21}                                    |      4 |     2
+  {c21,c34}                                |      8 |     2
+  {c22}                                    |      4 |     2
+  {c23}                                    |      4 |     2
+  {c24}                                    |      5 |     1
+  {c25}                                    |      4 |     2
+  {c25,c30}                                |      8 |     2
+  {c26}                                    |      4 |     2
+  {c26,c35}                                |      8 |     2
+  {c27}                                    |      4 |     2
+
+  Min-cut range (sample): 1 – 2
+
+  ── Subadditivity Spot Check ──
+  Checked 42 pairs: 42 passed, 0 failed.
+
+  ── Symmetry Analysis ──
+  [Full automorphism skipped for large boundary]
+  Degree-class estimate:    3 classes
+  With octahedral sym (48): ~1 orbit est.
+
+  ── 3D Curvature Summary ──
+  Dihedral angle of cube: π/2 = 90°
+  {4,3,5} honeycomb: 5 cubes at each edge
+  Angular excess at full edge: 5·90° − 360° = 90°
+  Edge deficit: κ = 2π − 5·(π/2) = −π/2 ≈ −90°
+  Fully surrounded edges in patch: 12
+  Total hyperbolic curvature: -1080.0°
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Phase D.0)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 224)
+    ✓ PASS  ≥1 edge at full valence 5 (in honeycomb)  (actual: 12)
+    ✓ PASS  ≥1 full-valence edge in patch  (actual: 12)
+    ✓ PASS  Orbit count ≤ 200  (actual: 1)
+
+  ▶  ALL GATES PASS — 3D Agda formalization is FEASIBLE!
+
+  BFS-25: 108 cells, 144 int.faces (density 2.67), 360 bdy.faces
+
+========================================================================
+  PATCH:  BFS-25
+========================================================================
+  Cells (cubes):         108
+  Internal shared faces: 144
+  Boundary faces:        360
+  Euler (V−E+F):         (not tracked — cell complex only)
+
+  ── Edge Valence (central cell's 12 edges) ──
+    Valence 5:  12 edge(s)    κ =   -90.0°  ← {4,3,5} condition! κ = −π/2
+
+  ✓  12 of 12 edges achieve full valence 5!
+
+  ── Edge Valence in Patch (cells actually present) ──
+    12 edge(s) with 5 of 5 cubes present ← FULL
+
+  ── Flow Graph ──
+  Boundary legs (face pseudo-nodes): 360
+
+  ── Cell-Aligned Boundary Regions (up to 5 cells) ──
+  Distinct regions:  112
+
+  Region                                   | #faces |  S(A)
+  ───────────────────────────────────────────────────────
+  {c24}                                    |      5 |     1
+  {c25}                                    |      4 |     2
+  {c25,c30}                                |      8 |     2
+  {c26}                                    |      4 |     2
+  {c26,c35}                                |      8 |     2
+  {c27}                                    |      4 |     2
+  {c28}                                    |      5 |     1
+  {c29}                                    |      4 |     2
+  {c30}                                    |      4 |     2
+  {c31}                                    |      4 |     2
+  {c31,c36}                                |      8 |     2
+  {c32}                                    |      5 |     1
+  {c33}                                    |      4 |     2
+  {c34}                                    |      4 |     2
+  {c35}                                    |      4 |     2
+  {c36}                                    |      4 |     2
+  {c37}                                    |      4 |     2
+  {c37,c41}                                |      8 |     2
+  {c38}                                    |      4 |     2
+  {c38,c45}                                |      8 |     2
+
+  Min-cut range (sample): 1 – 2
+
+  ── Subadditivity Spot Check ──
+  Checked 42 pairs: 42 passed, 0 failed.
+
+  ── Symmetry Analysis ──
+  [Full automorphism skipped for large boundary]
+  Degree-class estimate:    3 classes
+  With octahedral sym (48): ~2 orbit est.
+
+  ── 3D Curvature Summary ──
+  Dihedral angle of cube: π/2 = 90°
+  {4,3,5} honeycomb: 5 cubes at each edge
+  Angular excess at full edge: 5·90° − 360° = 90°
+  Edge deficit: κ = 2π − 5·(π/2) = −π/2 ≈ −90°
+  Fully surrounded edges in patch: 12
+  Total hyperbolic curvature: -1080.0°
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Phase D.0)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 360)
+    ✓ PASS  ≥1 edge at full valence 5 (in honeycomb)  (actual: 12)
+    ✓ PASS  ≥1 full-valence edge in patch  (actual: 12)
+    ✓ PASS  Orbit count ≤ 200  (actual: 2)
+
+  ▶  ALL GATES PASS — 3D Agda formalization is FEASIBLE!
+
+  BFS-35: 151 cells, 203 int.faces (density 2.69), 500 bdy.faces
+
+========================================================================
+  PATCH:  BFS-35
+========================================================================
+  Cells (cubes):         151
+  Internal shared faces: 203
+  Boundary faces:        500
+  Euler (V−E+F):         (not tracked — cell complex only)
+
+  ── Edge Valence (central cell's 12 edges) ──
+    Valence 5:  12 edge(s)    κ =   -90.0°  ← {4,3,5} condition! κ = −π/2
+
+  ✓  12 of 12 edges achieve full valence 5!
+
+  ── Edge Valence in Patch (cells actually present) ──
+    12 edge(s) with 5 of 5 cubes present ← FULL
+
+  ── Flow Graph ──
+  Boundary legs (face pseudo-nodes): 500
+
+  ── Cell-Aligned Boundary Regions (up to 5 cells) ──
+  Distinct regions:  158
+
+  Region                                   | #faces |  S(A)
+  ───────────────────────────────────────────────────────
+  {c34}                                    |      4 |     2
+  {c35}                                    |      4 |     2
+  {c36}                                    |      4 |     2
+  {c37}                                    |      4 |     2
+  {c37,c41}                                |      8 |     2
+  {c38}                                    |      4 |     2
+  {c38,c45}                                |      8 |     2
+  {c39}                                    |      5 |     1
+  {c40}                                    |      4 |     2
+  {c40,c54}                                |      8 |     2
+  {c41}                                    |      4 |     2
+  {c42}                                    |      5 |     1
+  {c43}                                    |      4 |     2
+  {c43,c50}                                |      8 |     2
+  {c44}                                    |      4 |     2
+  {c44,c55}                                |      8 |     2
+  {c45}                                    |      4 |     2
+  {c46}                                    |      5 |     1
+  {c47}                                    |      4 |     2
+  {c47,c51}                                |      8 |     2
+
+  Min-cut range (sample): 1 – 2
+
+  ── Subadditivity Spot Check ──
+  Checked 42 pairs: 42 passed, 0 failed.
+
+  ── Symmetry Analysis ──
+  [Full automorphism skipped for large boundary]
+  Degree-class estimate:    3 classes
+  With octahedral sym (48): ~3 orbit est.
+
+  ── 3D Curvature Summary ──
+  Dihedral angle of cube: π/2 = 90°
+  {4,3,5} honeycomb: 5 cubes at each edge
+  Angular excess at full edge: 5·90° − 360° = 90°
+  Edge deficit: κ = 2π − 5·(π/2) = −π/2 ≈ −90°
+  Fully surrounded edges in patch: 12
+  Total hyperbolic curvature: -1080.0°
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Phase D.0)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 500)
+    ✓ PASS  ≥1 edge at full valence 5 (in honeycomb)  (actual: 12)
+    ✓ PASS  ≥1 full-valence edge in patch  (actual: 12)
+    ✓ PASS  Orbit count ≤ 200  (actual: 3)
+
+  ▶  ALL GATES PASS — 3D Agda formalization is FEASIBLE!
+
+  BFS-50: 214 cells, 297 int.faces (density 2.78), 690 bdy.faces
+    ↳ Skip (boundary 690 > 500)
+
+  BFS-75: 317 cells, 442 int.faces (density 2.79), 1018 bdy.faces
+    ↳ Skip (boundary 1018 > 500)
+
+  BFS-100: 417 cells, 584 int.faces (density 2.80), 1334 bdy.faces
+    ↳ Skip (boundary 1334 > 500)
+
+  BFS-130: 535 cells, 749 int.faces (density 2.80), 1712 bdy.faces
+    ↳ Skip (boundary 1712 > 500)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ═══  Strategy: Dense  ═══
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Dense-7: 7 cells, 6 int.faces (density 1.71), 30 bdy.faces
+    ↳ Skip (boundary 30 < 100)
+
+  Dense-15: 15 cells, 18 int.faces (density 2.40), 54 bdy.faces
+    ↳ Skip (boundary 54 < 100)
+
+  Dense-25: 25 cells, 31 int.faces (density 2.48), 88 bdy.faces
+    ↳ Skip (boundary 88 < 100)
+
+  Dense-35: 35 cells, 45 int.faces (density 2.57), 120 bdy.faces
+
+========================================================================
+  PATCH:  Dense-35
+========================================================================
+  Cells (cubes):         35
+  Internal shared faces: 45
+  Boundary faces:        120
+  Euler (V−E+F):         (not tracked — cell complex only)
+
+  ── Edge Valence (central cell's 12 edges) ──
+    Valence 5:  12 edge(s)    κ =   -90.0°  ← {4,3,5} condition! κ = −π/2
+
+  ✓  12 of 12 edges achieve full valence 5!
+
+  ── Edge Valence in Patch (cells actually present) ──
+    1 edge(s) with 4 of 5 cubes present
+    11 edge(s) with 5 of 5 cubes present ← FULL
+
+  ── Flow Graph ──
+  Boundary legs (face pseudo-nodes): 120
+
+  ── Cell-Aligned Boundary Regions (up to 5 cells) ──
+  Distinct regions:  62
+
+  Region                                   | #faces |  S(A)
+  ───────────────────────────────────────────────────────
+  {c6}                                     |      2 |     2
+  {c6,c32}                                 |      6 |     4
+  {c6,c31,c32}                             |     10 |     4
+  {c6,c27,c31,c32}                         |     14 |     4
+  {c6,c26,c27,c31,c32}                     |     18 |     4
+  {c6,c22,c27,c31,c32}                     |     18 |     4
+  {c6,c22,c31,c32}                         |     14 |     4
+  {c6,c21,c22,c31,c32}                     |     18 |     4
+  {c6,c27,c32}                             |     10 |     4
+  {c6,c26,c27,c32}                         |     14 |     4
+  {c6,c22,c26,c27,c32}                     |     18 |     4
+  {c6,c22,c27,c32}                         |     14 |     4
+  {c6,c21,c22,c27,c32}                     |     18 |     4
+  {c6,c22,c32}                             |     10 |     4
+  {c6,c21,c22,c32}                         |     14 |     4
+  {c6,c27}                                 |      6 |     4
+  {c6,c26,c27}                             |     10 |     4
+  {c6,c22,c26,c27}                         |     14 |     4
+  {c6,c21,c22,c26,c27}                     |     18 |     4
+  {c6,c22,c27}                             |     10 |     4
+
+  Min-cut range (sample): 2 – 4
+
+  ── Subadditivity Spot Check ──
+  (No valid non-overlapping pairs in sample)
+
+  ── Symmetry Analysis ──
+  [Full automorphism skipped for large boundary]
+  Degree-class estimate:    4 classes
+  With octahedral sym (48): ~1 orbit est.
+
+  ── 3D Curvature Summary ──
+  Dihedral angle of cube: π/2 = 90°
+  {4,3,5} honeycomb: 5 cubes at each edge
+  Angular excess at full edge: 5·90° − 360° = 90°
+  Edge deficit: κ = 2π − 5·(π/2) = −π/2 ≈ −90°
+  Fully surrounded edges in patch: 11
+  Total hyperbolic curvature: -990.0°
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Phase D.0)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 120)
+    ✓ PASS  ≥1 edge at full valence 5 (in honeycomb)  (actual: 12)
+    ✓ PASS  ≥1 full-valence edge in patch  (actual: 11)
+    ✓ PASS  Orbit count ≤ 200  (actual: 1)
+
+  ▶  ALL GATES PASS — 3D Agda formalization is FEASIBLE!
+
+  Dense-50: 50 cells, 68 int.faces (density 2.72), 164 bdy.faces
+
+========================================================================
+  PATCH:  Dense-50
+========================================================================
+  Cells (cubes):         50
+  Internal shared faces: 68
+  Boundary faces:        164
+  Euler (V−E+F):         (not tracked — cell complex only)
+
+  ── Edge Valence (central cell's 12 edges) ──
+    Valence 5:  12 edge(s)    κ =   -90.0°  ← {4,3,5} condition! κ = −π/2
+
+  ✓  12 of 12 edges achieve full valence 5!
+
+  ── Edge Valence in Patch (cells actually present) ──
+    12 edge(s) with 5 of 5 cubes present ← FULL
+
+  ── Flow Graph ──
+  Boundary legs (face pseudo-nodes): 164
+
+  ── Cell-Aligned Boundary Regions (up to 5 cells) ──
+  Distinct regions:  139
+
+  Region                                   | #faces |  S(A)
+  ───────────────────────────────────────────────────────
+  {c8}                                     |      2 |     2
+  {c8,c47}                                 |      5 |     5
+  {c8,c47,c49}                             |      9 |     5
+  {c8,c47,c48,c49}                         |     13 |     5
+  {c8,c44,c47,c48,c49}                     |     16 |     6
+  {c8,c39,c47,c48,c49}                     |     16 |     6
+  {c8,c18,c47,c48,c49}                     |     16 |     6
+  {c8,c44,c47,c49}                         |     12 |     6
+  {c8,c44,c46,c47,c49}                     |     16 |     6
+  {c8,c44,c45,c47,c49}                     |     16 |     6
+  {c8,c39,c44,c47,c49}                     |     15 |     7
+  {c8,c39,c47,c49}                         |     12 |     6
+  {c8,c39,c40,c47,c49}                     |     16 |     6
+  {c8,c47,c48}                             |      9 |     5
+  {c8,c44,c47,c48}                         |     12 |     6
+  {c8,c44,c46,c47,c48}                     |     16 |     6
+  {c8,c44,c45,c47,c48}                     |     16 |     6
+  {c8,c18,c44,c47,c48}                     |     15 |     7
+  {c8,c18,c47,c48}                         |     12 |     6
+  {c8,c18,c19,c47,c48}                     |     16 |     6
+
+  Min-cut range (sample): 2 – 7
+
+  ── Subadditivity Spot Check ──
+  (No valid non-overlapping pairs in sample)
+
+  ── Symmetry Analysis ──
+  [Full automorphism skipped for large boundary]
+  Degree-class estimate:    7 classes
+  With octahedral sym (48): ~2 orbit est.
+
+  ── 3D Curvature Summary ──
+  Dihedral angle of cube: π/2 = 90°
+  {4,3,5} honeycomb: 5 cubes at each edge
+  Angular excess at full edge: 5·90° − 360° = 90°
+  Edge deficit: κ = 2π − 5·(π/2) = −π/2 ≈ −90°
+  Fully surrounded edges in patch: 12
+  Total hyperbolic curvature: -1080.0°
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Phase D.0)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 164)
+    ✓ PASS  ≥1 edge at full valence 5 (in honeycomb)  (actual: 12)
+    ✓ PASS  ≥1 full-valence edge in patch  (actual: 12)
+    ✓ PASS  Orbit count ≤ 200  (actual: 2)
+
+  ▶  ALL GATES PASS — 3D Agda formalization is FEASIBLE!
+
+  Dense-75: 75 cells, 107 int.faces (density 2.85), 236 bdy.faces
+
+========================================================================
+  PATCH:  Dense-75
+========================================================================
+  Cells (cubes):         75
+  Internal shared faces: 107
+  Boundary faces:        236
+  Euler (V−E+F):         (not tracked — cell complex only)
+
+  ── Edge Valence (central cell's 12 edges) ──
+    Valence 5:  12 edge(s)    κ =   -90.0°  ← {4,3,5} condition! κ = −π/2
+
+  ✓  12 of 12 edges achieve full valence 5!
+
+  ── Edge Valence in Patch (cells actually present) ──
+    12 edge(s) with 5 of 5 cubes present ← FULL
+
+  ── Flow Graph ──
+  Boundary legs (face pseudo-nodes): 236
+
+  ── Cell-Aligned Boundary Regions (up to 5 cells) ──
+  Distinct regions:  302
+
+  Region                                   | #faces |  S(A)
+  ───────────────────────────────────────────────────────
+  {c12}                                    |      4 |     2
+  {c13}                                    |      2 |     2
+  {c13,c73}                                |      6 |     4
+  {c13,c72,c73}                            |     10 |     4
+  {c13,c56,c72,c73}                        |     14 |     4
+  {c13,c55,c56,c72,c73}                    |     17 |     5
+  {c13,c14,c56,c72,c73}                    |     18 |     4
+  {c13,c14,c72,c73}                        |     14 |     4
+  {c13,c56,c73}                            |     10 |     4
+  {c13,c55,c56,c73}                        |     13 |     5
+  {c13,c55,c56,c68,c73}                    |     17 |     5
+  {c13,c14,c55,c56,c73}                    |     17 |     5
+  {c13,c14,c56,c73}                        |     14 |     4
+  {c13,c14,c73}                            |     10 |     4
+  {c13,c56}                                |      6 |     4
+  {c13,c55,c56}                            |      9 |     5
+  {c13,c55,c56,c68}                        |     13 |     5
+  {c13,c55,c56,c66,c68}                    |     16 |     6
+  {c13,c14,c55,c56,c68}                    |     17 |     5
+  {c13,c14,c55,c56}                        |     13 |     5
+
+  Min-cut range (sample): 2 – 6
+
+  ── Subadditivity Spot Check ──
+  Checked 9 pairs: 9 passed, 0 failed.
+
+  ── Symmetry Analysis ──
+  [Full automorphism skipped for large boundary]
+  Degree-class estimate:    10 classes
+  With octahedral sym (48): ~6 orbit est.
+
+  ── 3D Curvature Summary ──
+  Dihedral angle of cube: π/2 = 90°
+  {4,3,5} honeycomb: 5 cubes at each edge
+  Angular excess at full edge: 5·90° − 360° = 90°
+  Edge deficit: κ = 2π − 5·(π/2) = −π/2 ≈ −90°
+  Fully surrounded edges in patch: 12
+  Total hyperbolic curvature: -1080.0°
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Phase D.0)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 236)
+    ✓ PASS  ≥1 edge at full valence 5 (in honeycomb)  (actual: 12)
+    ✓ PASS  ≥1 full-valence edge in patch  (actual: 12)
+    ✓ PASS  Orbit count ≤ 200  (actual: 6)
+
+  ▶  ALL GATES PASS — 3D Agda formalization is FEASIBLE!
+
+  Dense-100: 100 cells, 150 int.faces (density 3.00), 300 bdy.faces
+
+========================================================================
+  PATCH:  Dense-100
+========================================================================
+  Cells (cubes):         100
+  Internal shared faces: 150
+  Boundary faces:        300
+  Euler (V−E+F):         (not tracked — cell complex only)
+
+  ── Edge Valence (central cell's 12 edges) ──
+    Valence 5:  12 edge(s)    κ =   -90.0°  ← {4,3,5} condition! κ = −π/2
+
+  ✓  12 of 12 edges achieve full valence 5!
+
+  ── Edge Valence in Patch (cells actually present) ──
+    12 edge(s) with 5 of 5 cubes present ← FULL
+
+  ── Flow Graph ──
+  Boundary legs (face pseudo-nodes): 300
+
+  ── Cell-Aligned Boundary Regions (up to 5 cells) ──
+  Distinct regions:  717
+
+  Region                                   | #faces |  S(A)
+  ───────────────────────────────────────────────────────
+  {c14}                                    |      1 |     1
+  {c14,c98}                                |      5 |     3
+  {c14,c98,c99}                            |      9 |     3
+  {c14,c93,c98,c99}                        |     12 |     6
+  {c14,c93,c95,c98,c99}                    |     15 |     7
+  {c14,c93,c94,c98,c99}                    |     15 |     7
+  {c14,c91,c93,c98,c99}                    |     16 |     6
+  {c14,c30,c93,c98,c99}                    |     15 |     7
+  {c14,c91,c98,c99}                        |     13 |     5
+  {c14,c91,c92,c98,c99}                    |     17 |     5
+  {c14,c30,c91,c98,c99}                    |     16 |     6
+  {c14,c30,c98,c99}                        |     12 |     4
+  {c14,c29,c30,c98,c99}                    |     15 |     5
+  {c14,c93,c98}                            |      8 |     6
+  {c14,c93,c95,c98}                        |     11 |     7
+  {c14,c93,c95,c97,c98}                    |     14 |     8
+  {c14,c93,c94,c95,c98}                    |     14 |     8
+  {c14,c91,c93,c95,c98}                    |     15 |     7
+  {c14,c56,c93,c95,c98}                    |     14 |     8
+  {c14,c93,c94,c98}                        |     11 |     7
+
+  Min-cut range (sample): 1 – 8
+
+  ── Subadditivity Spot Check ──
+  (No valid non-overlapping pairs in sample)
+
+  ── Symmetry Analysis ──
+  [Full automorphism skipped for large boundary]
+  Degree-class estimate:    8 classes
+  With octahedral sym (48): ~14 orbit est.
+
+  ── 3D Curvature Summary ──
+  Dihedral angle of cube: π/2 = 90°
+  {4,3,5} honeycomb: 5 cubes at each edge
+  Angular excess at full edge: 5·90° − 360° = 90°
+  Edge deficit: κ = 2π − 5·(π/2) = −π/2 ≈ −90°
+  Fully surrounded edges in patch: 12
+  Total hyperbolic curvature: -1080.0°
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Phase D.0)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 300)
+    ✓ PASS  ≥1 edge at full valence 5 (in honeycomb)  (actual: 12)
+    ✓ PASS  ≥1 full-valence edge in patch  (actual: 12)
+    ✓ PASS  Orbit count ≤ 200  (actual: 14)
+
+  ▶  ALL GATES PASS — 3D Agda formalization is FEASIBLE!
+
+  Dense-130: 130 cells, 197 int.faces (density 3.03), 386 bdy.faces
+
+========================================================================
+  PATCH:  Dense-130
+========================================================================
+  Cells (cubes):         130
+  Internal shared faces: 197
+  Boundary faces:        386
+  Euler (V−E+F):         (not tracked — cell complex only)
+
+  ── Edge Valence (central cell's 12 edges) ──
+    Valence 5:  12 edge(s)    κ =   -90.0°  ← {4,3,5} condition! κ = −π/2
+
+  ✓  12 of 12 edges achieve full valence 5!
+
+  ── Edge Valence in Patch (cells actually present) ──
+    12 edge(s) with 5 of 5 cubes present ← FULL
+
+  ── Flow Graph ──
+  Boundary legs (face pseudo-nodes): 386
+
+  ── Cell-Aligned Boundary Regions (up to 5 cells) ──
+  Distinct regions:  763
+
+  Region                                   | #faces |  S(A)
+  ───────────────────────────────────────────────────────
+  {c20}                                    |      2 |     2
+  {c20,c120}                               |      6 |     4
+  {c20,c119,c120}                          |     10 |     4
+  {c20,c108,c119,c120}                     |     14 |     4
+  {c20,c107,c108,c119,c120}                |     18 |     4
+  {c20,c51,c108,c119,c120}                 |     18 |     4
+  {c20,c51,c119,c120}                      |     14 |     4
+  {c20,c50,c51,c119,c120}                  |     18 |     4
+  {c20,c108,c120}                          |     10 |     4
+  {c20,c107,c108,c120}                     |     14 |     4
+  {c20,c51,c107,c108,c120}                 |     18 |     4
+  {c20,c51,c108,c120}                      |     14 |     4
+  {c20,c50,c51,c108,c120}                  |     18 |     4
+  {c20,c51,c120}                           |     10 |     4
+  {c20,c50,c51,c120}                       |     14 |     4
+  {c20,c108}                               |      6 |     4
+  {c20,c107,c108}                          |     10 |     4
+  {c20,c51,c107,c108}                      |     14 |     4
+  {c20,c50,c51,c107,c108}                  |     18 |     4
+  {c20,c51,c108}                           |     10 |     4
+
+  Min-cut range (sample): 2 – 4
+
+  ── Subadditivity Spot Check ──
+  (No valid non-overlapping pairs in sample)
+
+  ── Symmetry Analysis ──
+  [Full automorphism skipped for large boundary]
+  Degree-class estimate:    9 classes
+  With octahedral sym (48): ~15 orbit est.
+
+  ── 3D Curvature Summary ──
+  Dihedral angle of cube: π/2 = 90°
+  {4,3,5} honeycomb: 5 cubes at each edge
+  Angular excess at full edge: 5·90° − 360° = 90°
+  Edge deficit: κ = 2π − 5·(π/2) = −π/2 ≈ −90°
+  Fully surrounded edges in patch: 12
+  Total hyperbolic curvature: -1080.0°
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Phase D.0)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 386)
+    ✓ PASS  ≥1 edge at full valence 5 (in honeycomb)  (actual: 12)
+    ✓ PASS  ≥1 full-valence edge in patch  (actual: 12)
+    ✓ PASS  Orbit count ≤ 200  (actual: 15)
+
+  ▶  ALL GATES PASS — 3D Agda formalization is FEASIBLE!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ═══  Strategy: Geodesic  ═══
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Geodesic-7: 7 cells, 6 int.faces (density 1.71), 30 bdy.faces
+    ↳ Skip (boundary 30 < 100)
+
+  Geodesic-15: 15 cells, 14 int.faces (density 1.87), 62 bdy.faces
+    ↳ Skip (boundary 62 < 100)
+
+  Geodesic-25: 25 cells, 24 int.faces (density 1.92), 102 bdy.faces
+
+========================================================================
+  PATCH:  Geodesic-25
+========================================================================
+  Cells (cubes):         25
+  Internal shared faces: 24
+  Boundary faces:        102
+  Euler (V−E+F):         (not tracked — cell complex only)
+
+  ── Edge Valence (central cell's 12 edges) ──
+    Valence 5:  12 edge(s)    κ =   -90.0°  ← {4,3,5} condition! κ = −π/2
+
+  ✓  12 of 12 edges achieve full valence 5!
+
+  ── Edge Valence in Patch (cells actually present) ──
+    8 edge(s) with 3 of 5 cubes present
+    4 edge(s) with 4 of 5 cubes present
+
+  ── Flow Graph ──
+  Boundary legs (face pseudo-nodes): 102
+
+  ── Cell-Aligned Boundary Regions (up to 5 cells) ──
+  Distinct regions:  27
+
+  Region                                   | #faces |  S(A)
+  ───────────────────────────────────────────────────────
+  {c4}                                     |      4 |     2
+  {c4,c5}                                  |      8 |     2
+  {c4,c5,c6}                               |     12 |     2
+  {c4,c5,c6,c7}                            |     17 |     1
+  {c5}                                     |      4 |     2
+  {c5,c6}                                  |      8 |     2
+  {c5,c6,c7}                               |     13 |     1
+  {c6}                                     |      4 |     2
+  {c6,c7}                                  |      9 |     1
+  {c7}                                     |      5 |     1
+  {c8}                                     |      5 |     1
+  {c9}                                     |      5 |     1
+  {c10}                                    |      5 |     1
+  {c11}                                    |      5 |     1
+  {c12}                                    |      5 |     1
+  {c13}                                    |      5 |     1
+  {c14}                                    |      5 |     1
+  {c15}                                    |      5 |     1
+  {c16}                                    |      5 |     1
+  {c17}                                    |      5 |     1
+
+  Min-cut range (sample): 1 – 2
+
+  ── Subadditivity Spot Check ──
+  Checked 15 pairs: 15 passed, 0 failed.
+
+  ── Symmetry Analysis ──
+  [Full automorphism skipped for large boundary]
+  Degree-class estimate:    5 classes
+  With octahedral sym (48): ~1 orbit est.
+
+  ── 3D Curvature Summary ──
+  Dihedral angle of cube: π/2 = 90°
+  {4,3,5} honeycomb: 5 cubes at each edge
+  Angular excess at full edge: 5·90° − 360° = 90°
+  Edge deficit: κ = 2π − 5·(π/2) = −π/2 ≈ −90°
+  Fully surrounded edges in patch: 0
+  Total hyperbolic curvature: -0.0°
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Phase D.0)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 102)
+    ✓ PASS  ≥1 edge at full valence 5 (in honeycomb)  (actual: 12)
+    ✗ FAIL  ≥1 full-valence edge in patch  (actual: 0)
+    ✓ PASS  Orbit count ≤ 200  (actual: 1)
+
+  ▶  GATE(S) BLOCKED — adjust patch size or selection.
+     → Need more edge-gap-fillers to fill valence 5.
+
+  Geodesic-35: 35 cells, 34 int.faces (density 1.94), 142 bdy.faces
+
+========================================================================
+  PATCH:  Geodesic-35
+========================================================================
+  Cells (cubes):         35
+  Internal shared faces: 34
+  Boundary faces:        142
+  Euler (V−E+F):         (not tracked — cell complex only)
+
+  ── Edge Valence (central cell's 12 edges) ──
+    Valence 5:  12 edge(s)    κ =   -90.0°  ← {4,3,5} condition! κ = −π/2
+
+  ✓  12 of 12 edges achieve full valence 5!
+
+  ── Edge Valence in Patch (cells actually present) ──
+    8 edge(s) with 3 of 5 cubes present
+    4 edge(s) with 4 of 5 cubes present
+
+  ── Flow Graph ──
+  Boundary legs (face pseudo-nodes): 142
+
+  ── Cell-Aligned Boundary Regions (up to 5 cells) ──
+  Distinct regions:  59
+
+  Region                                   | #faces |  S(A)
+  ───────────────────────────────────────────────────────
+  {c5}                                     |      2 |     2
+  {c5,c34}                                 |      7 |     3
+  {c5,c33,c34}                             |     12 |     2
+  {c5,c6,c33,c34}                          |     16 |     2
+  {c5,c6,c7,c33,c34}                       |     20 |     2
+  {c5,c6,c34}                              |     11 |     3
+  {c5,c6,c7,c34}                           |     15 |     3
+  {c5,c6,c7,c8,c34}                        |     19 |     3
+  {c5,c33}                                 |      7 |     3
+  {c5,c6,c33}                              |     11 |     3
+  {c5,c6,c7,c33}                           |     15 |     3
+  {c5,c6,c7,c8,c33}                        |     19 |     3
+  {c5,c6}                                  |      6 |     4
+  {c5,c6,c7}                               |     10 |     4
+  {c5,c6,c7,c8}                            |     14 |     4
+  {c5,c6,c7,c8,c9}                         |     18 |     4
+  {c6}                                     |      4 |     2
+  {c6,c7}                                  |      8 |     2
+  {c6,c7,c8}                               |     12 |     2
+  {c6,c7,c8,c9}                            |     16 |     2
+
+  Min-cut range (sample): 2 – 4
+
+  ── Subadditivity Spot Check ──
+  (No valid non-overlapping pairs in sample)
+
+  ── Symmetry Analysis ──
+  [Full automorphism skipped for large boundary]
+  Degree-class estimate:    7 classes
+  With octahedral sym (48): ~1 orbit est.
+
+  ── 3D Curvature Summary ──
+  Dihedral angle of cube: π/2 = 90°
+  {4,3,5} honeycomb: 5 cubes at each edge
+  Angular excess at full edge: 5·90° − 360° = 90°
+  Edge deficit: κ = 2π − 5·(π/2) = −π/2 ≈ −90°
+  Fully surrounded edges in patch: 0
+  Total hyperbolic curvature: -0.0°
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Phase D.0)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 142)
+    ✓ PASS  ≥1 edge at full valence 5 (in honeycomb)  (actual: 12)
+    ✗ FAIL  ≥1 full-valence edge in patch  (actual: 0)
+    ✓ PASS  Orbit count ≤ 200  (actual: 1)
+
+  ▶  GATE(S) BLOCKED — adjust patch size or selection.
+     → Need more edge-gap-fillers to fill valence 5.
+
+  Geodesic-50: 50 cells, 49 int.faces (density 1.96), 202 bdy.faces
+
+========================================================================
+  PATCH:  Geodesic-50
+========================================================================
+  Cells (cubes):         50
+  Internal shared faces: 49
+  Boundary faces:        202
+  Euler (V−E+F):         (not tracked — cell complex only)
+
+  ── Edge Valence (central cell's 12 edges) ──
+    Valence 5:  12 edge(s)    κ =   -90.0°  ← {4,3,5} condition! κ = −π/2
+
+  ✓  12 of 12 edges achieve full valence 5!
+
+  ── Edge Valence in Patch (cells actually present) ──
+    8 edge(s) with 3 of 5 cubes present
+    4 edge(s) with 4 of 5 cubes present
+
+  ── Flow Graph ──
+  Boundary legs (face pseudo-nodes): 202
+
+  ── Cell-Aligned Boundary Regions (up to 5 cells) ──
+  Distinct regions:  68
+
+  Region                                   | #faces |  S(A)
+  ───────────────────────────────────────────────────────
+  {c8}                                     |      4 |     2
+  {c8,c9}                                  |      8 |     2
+  {c8,c9,c10}                              |     12 |     2
+  {c8,c9,c10,c11}                          |     16 |     2
+  {c8,c9,c10,c11,c12}                      |     20 |     2
+  {c9}                                     |      4 |     2
+  {c9,c10}                                 |      8 |     2
+  {c9,c10,c11}                             |     12 |     2
+  {c9,c10,c11,c12}                         |     16 |     2
+  {c9,c10,c11,c12,c13}                     |     20 |     2
+  {c10}                                    |      4 |     2
+  {c10,c11}                                |      8 |     2
+  {c10,c11,c12}                            |     12 |     2
+  {c10,c11,c12,c13}                        |     16 |     2
+  {c10,c11,c12,c13,c14}                    |     20 |     2
+  {c11}                                    |      4 |     2
+  {c11,c12}                                |      8 |     2
+  {c11,c12,c13}                            |     12 |     2
+  {c11,c12,c13,c14}                        |     16 |     2
+  {c11,c12,c13,c14,c15}                    |     20 |     2
+
+  Min-cut range (sample): 2 – 2
+
+  ── Subadditivity Spot Check ──
+  Checked 5 pairs: 5 passed, 0 failed.
+
+  ── Symmetry Analysis ──
+  [Full automorphism skipped for large boundary]
+  Degree-class estimate:    5 classes
+  With octahedral sym (48): ~1 orbit est.
+
+  ── 3D Curvature Summary ──
+  Dihedral angle of cube: π/2 = 90°
+  {4,3,5} honeycomb: 5 cubes at each edge
+  Angular excess at full edge: 5·90° − 360° = 90°
+  Edge deficit: κ = 2π − 5·(π/2) = −π/2 ≈ −90°
+  Fully surrounded edges in patch: 0
+  Total hyperbolic curvature: -0.0°
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Phase D.0)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 202)
+    ✓ PASS  ≥1 edge at full valence 5 (in honeycomb)  (actual: 12)
+    ✗ FAIL  ≥1 full-valence edge in patch  (actual: 0)
+    ✓ PASS  Orbit count ≤ 200  (actual: 1)
+
+  ▶  GATE(S) BLOCKED — adjust patch size or selection.
+     → Need more edge-gap-fillers to fill valence 5.
+
+  Geodesic-75: 75 cells, 74 int.faces (density 1.97), 302 bdy.faces
+
+========================================================================
+  PATCH:  Geodesic-75
+========================================================================
+  Cells (cubes):         75
+  Internal shared faces: 74
+  Boundary faces:        302
+  Euler (V−E+F):         (not tracked — cell complex only)
+
+  ── Edge Valence (central cell's 12 edges) ──
+    Valence 5:  12 edge(s)    κ =   -90.0°  ← {4,3,5} condition! κ = −π/2
+
+  ✓  12 of 12 edges achieve full valence 5!
+
+  ── Edge Valence in Patch (cells actually present) ──
+    8 edge(s) with 3 of 5 cubes present
+    4 edge(s) with 4 of 5 cubes present
+
+  ── Flow Graph ──
+  Boundary legs (face pseudo-nodes): 302
+
+  ── Cell-Aligned Boundary Regions (up to 5 cells) ──
+  Distinct regions:  109
+
+  Region                                   | #faces |  S(A)
+  ───────────────────────────────────────────────────────
+  {c12}                                    |      4 |     2
+  {c12,c13}                                |      8 |     2
+  {c12,c13,c14}                            |     12 |     2
+  {c12,c13,c14,c15}                        |     16 |     2
+  {c12,c13,c14,c15,c16}                    |     20 |     2
+  {c13}                                    |      4 |     2
+  {c13,c14}                                |      8 |     2
+  {c13,c14,c15}                            |     12 |     2
+  {c13,c14,c15,c16}                        |     16 |     2
+  {c13,c14,c15,c16,c17}                    |     20 |     2
+  {c14}                                    |      4 |     2
+  {c14,c15}                                |      8 |     2
+  {c14,c15,c16}                            |     12 |     2
+  {c14,c15,c16,c17}                        |     16 |     2
+  {c14,c15,c16,c17,c18}                    |     20 |     2
+  {c15}                                    |      4 |     2
+  {c15,c16}                                |      8 |     2
+  {c15,c16,c17}                            |     12 |     2
+  {c15,c16,c17,c18}                        |     16 |     2
+  {c15,c16,c17,c18,c19}                    |     20 |     2
+
+  Min-cut range (sample): 2 – 2
+
+  ── Subadditivity Spot Check ──
+  Checked 5 pairs: 5 passed, 0 failed.
+
+  ── Symmetry Analysis ──
+  [Full automorphism skipped for large boundary]
+  Degree-class estimate:    5 classes
+  With octahedral sym (48): ~2 orbit est.
+
+  ── 3D Curvature Summary ──
+  Dihedral angle of cube: π/2 = 90°
+  {4,3,5} honeycomb: 5 cubes at each edge
+  Angular excess at full edge: 5·90° − 360° = 90°
+  Edge deficit: κ = 2π − 5·(π/2) = −π/2 ≈ −90°
+  Fully surrounded edges in patch: 0
+  Total hyperbolic curvature: -0.0°
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Phase D.0)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 302)
+    ✓ PASS  ≥1 edge at full valence 5 (in honeycomb)  (actual: 12)
+    ✗ FAIL  ≥1 full-valence edge in patch  (actual: 0)
+    ✓ PASS  Orbit count ≤ 200  (actual: 2)
+
+  ▶  GATE(S) BLOCKED — adjust patch size or selection.
+     → Need more edge-gap-fillers to fill valence 5.
+
+  Geodesic-100: 100 cells, 99 int.faces (density 1.98), 402 bdy.faces
+
+========================================================================
+  PATCH:  Geodesic-100
+========================================================================
+  Cells (cubes):         100
+  Internal shared faces: 99
+  Boundary faces:        402
+  Euler (V−E+F):         (not tracked — cell complex only)
+
+  ── Edge Valence (central cell's 12 edges) ──
+    Valence 5:  12 edge(s)    κ =   -90.0°  ← {4,3,5} condition! κ = −π/2
+
+  ✓  12 of 12 edges achieve full valence 5!
+
+  ── Edge Valence in Patch (cells actually present) ──
+    8 edge(s) with 3 of 5 cubes present
+    4 edge(s) with 4 of 5 cubes present
+
+  ── Flow Graph ──
+  Boundary legs (face pseudo-nodes): 402
+
+  ── Cell-Aligned Boundary Regions (up to 5 cells) ──
+  Distinct regions:  150
+
+  Region                                   | #faces |  S(A)
+  ───────────────────────────────────────────────────────
+  {c16}                                    |      4 |     2
+  {c16,c17}                                |      8 |     2
+  {c16,c17,c18}                            |     12 |     2
+  {c16,c17,c18,c19}                        |     16 |     2
+  {c16,c17,c18,c19,c20}                    |     20 |     2
+  {c17}                                    |      4 |     2
+  {c17,c18}                                |      8 |     2
+  {c17,c18,c19}                            |     12 |     2
+  {c17,c18,c19,c20}                        |     16 |     2
+  {c17,c18,c19,c20,c21}                    |     20 |     2
+  {c18}                                    |      4 |     2
+  {c18,c19}                                |      8 |     2
+  {c18,c19,c20}                            |     12 |     2
+  {c18,c19,c20,c21}                        |     16 |     2
+  {c18,c19,c20,c21,c22}                    |     20 |     2
+  {c19}                                    |      4 |     2
+  {c19,c20}                                |      8 |     2
+  {c19,c20,c21}                            |     12 |     2
+  {c19,c20,c21,c22}                        |     16 |     2
+  {c19,c20,c21,c22,c23}                    |     20 |     2
+
+  Min-cut range (sample): 2 – 2
+
+  ── Subadditivity Spot Check ──
+  Checked 5 pairs: 5 passed, 0 failed.
+
+  ── Symmetry Analysis ──
+  [Full automorphism skipped for large boundary]
+  Degree-class estimate:    5 classes
+  With octahedral sym (48): ~3 orbit est.
+
+  ── 3D Curvature Summary ──
+  Dihedral angle of cube: π/2 = 90°
+  {4,3,5} honeycomb: 5 cubes at each edge
+  Angular excess at full edge: 5·90° − 360° = 90°
+  Edge deficit: κ = 2π − 5·(π/2) = −π/2 ≈ −90°
+  Fully surrounded edges in patch: 0
+  Total hyperbolic curvature: -0.0°
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Phase D.0)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 402)
+    ✓ PASS  ≥1 edge at full valence 5 (in honeycomb)  (actual: 12)
+    ✗ FAIL  ≥1 full-valence edge in patch  (actual: 0)
+    ✓ PASS  Orbit count ≤ 200  (actual: 3)
+
+  ▶  GATE(S) BLOCKED — adjust patch size or selection.
+     → Need more edge-gap-fillers to fill valence 5.
+
+  Geodesic-130: 130 cells, 129 int.faces (density 1.98), 522 bdy.faces
+    ↳ Skip (boundary 522 > 500)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ═══  Strategy: Hemisphere  ═══
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Hemisphere-7: 12 cells, 15 int.faces (density 2.50), 42 bdy.faces
+    ↳ Skip (boundary 42 < 100)
+
+  Hemisphere-15: 19 cells, 27 int.faces (density 2.84), 60 bdy.faces
+    ↳ Skip (boundary 60 < 100)
+
+  Hemisphere-25: 20 cells, 30 int.faces (density 3.00), 60 bdy.faces
+    ↳ Skip (boundary 60 < 100)
+
+  Hemisphere-35: 20 cells, 30 int.faces (density 3.00), 60 bdy.faces
+    ↳ Skip (boundary 60 < 100)
+
+  Hemisphere-50: 20 cells, 30 int.faces (density 3.00), 60 bdy.faces
+    ↳ Skip (boundary 60 < 100)
+
+  Hemisphere-75: 20 cells, 30 int.faces (density 3.00), 60 bdy.faces
+    ↳ Skip (boundary 60 < 100)
+
+  Hemisphere-100: 20 cells, 30 int.faces (density 3.00), 60 bdy.faces
+    ↳ Skip (boundary 60 < 100)
+
+  Hemisphere-130: 20 cells, 30 int.faces (density 3.00), 60 bdy.faces
+    ↳ Skip (boundary 60 < 100)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  CROSS-STRATEGY COMPARISON
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Patch                     | Cells |  IntF |  Dens |  Bdy | Full |  MinCut | Gate
+  ──────────────────────────────────────────────────────────────────────────────
+  BFS-7                     |    32 |    39 |  2.44 |  114 |    8 |     1–2 |    ✓
+  BFS-15                    |    66 |    86 |  2.61 |  224 |   12 |     1–2 |    ✓
+  BFS-25                    |   108 |   144 |  2.67 |  360 |   12 |     1–2 |    ✓
+  BFS-35                    |   151 |   203 |  2.69 |  500 |   12 |     1–2 |    ✓
+  Dense-35                  |    35 |    45 |  2.57 |  120 |   11 |     2–4 |    ✓
+  Dense-50                  |    50 |    68 |  2.72 |  164 |   12 |     2–7 |    ✓
+  Dense-75                  |    75 |   107 |  2.85 |  236 |   12 |     2–6 |    ✓
+  Dense-100                 |   100 |   150 |  3.00 |  300 |   12 |     1–8 |    ✓
+  Dense-130                 |   130 |   197 |  3.03 |  386 |   12 |     2–4 |    ✓
+  Geodesic-25               |    25 |    24 |  1.92 |  102 |    0 |     1–2 |    ✗
+  Geodesic-35               |    35 |    34 |  1.94 |  142 |    0 |     2–4 |    ✗
+  Geodesic-50               |    50 |    49 |  1.96 |  202 |    0 |       2 |    ✗
+  Geodesic-75               |    75 |    74 |  1.97 |  302 |    0 |       2 |    ✗
+  Geodesic-100              |   100 |    99 |  1.98 |  402 |    0 |       2 |    ✗
+
+  ── Best-in-Class ──
+  Highest density:      Dense-130  (density 3.03)
+  Highest max min-cut:  Dense-100  (min-cut up to 8)
+  Most compact (pass):  BFS-7  (114 bdy faces)
+
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  KEY INSIGHTS (derived from this run)
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  BFS:  ALL 4 tested patches PASS gates.
+
+  Dense:  ALL 5 tested patches PASS gates.
+
+  Geodesic:  ALL 5 tested patches FAIL gates.
+    Failure mode(s): no full-valence edge in patch
+
+  Hemisphere:  no patches reached analysis window.
+
+  Topology comparison (BFS vs Dense):
+    Max min-cut:   BFS=2   Dense=8   (×4 deeper RT surfaces)
+    Max density:   BFS=2.69   Dense=3.03   (13% more internal faces/cell)
+    BFS patches are concentric shells: every boundary cell
+    connects to the interior through ~1 face, so min-cut ≈ 1.
+    Dense patches have multiply-connected bulk: boundary
+    regions require cutting through genuine multi-face
+    surfaces, giving non-trivial RT surface geometry.
+
+  Geodesic tubes are structurally distinct but too anisotropic:
+    Cross-sectional min-cut is typically 2, up to 4 (tube topology),
+    but lateral gaps leave 0 fully-surrounded edges.
+    Fix: fatten by 2+ shells (converges toward Dense).
+
+  Hemisphere saturates at a finite cell cluster (≤20 cells,
+    60 boundary faces) — the half-direction subgroup has a
+    finite orbit on cells in hyperbolic 3-space.
+
+  ── Formalization Tiers (Dense strategy) ──
+    Minimal viable: Dense-35  (35 cells, 120 bdy, min-cut 2–4, ~1 orbits)
+    Sweet spot: Dense-50  (50 cells, 164 bdy, min-cut 2–7, ~2 orbits)
+    Ambitious: Dense-75  (75 cells, 236 bdy, min-cut 2–6, ~6 orbits)
+
+  ▶  RECOMMENDATION: Dense-100 is the strongest candidate.
+     Min-cut up to 8 confirms genuine
+     multi-face RT surfaces in the discrete bulk.
+     Dense growth is the 3D analog of 'packing pentagons'
+     in the 2D {5,4} tiling — local density drives
+     holographic depth.

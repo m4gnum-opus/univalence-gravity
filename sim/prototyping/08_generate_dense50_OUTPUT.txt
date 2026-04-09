@@ -1,0 +1,78 @@
+╔═══════════════════════════════════════════════════════════╗
+║  Phase D.1b: Dense-50 {4,3,5} — Agda Code Generator     ║
+║  Greedy max-connectivity • Genuine holographic depth     ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Building Dense-50 patch via greedy max-connectivity ...
+  ✓  Reflections: involution, G-preservation, Coxeter relations.
+  ✓  50 cells, 68 internal faces, 164 boundary faces.
+
+  Enumerating cell-aligned boundary regions (max 5 cells) ...
+  ✓  139 regions computed.
+  Min-cut range: 1 – 7
+  Computing edge curvature classes ...
+  ✓  1 edge class(es).
+
+  ── Patch Topology ──
+  Cells:            50
+  Internal faces:   68
+  Boundary faces:   164
+  Density (2·IntF/Cells): 2.72
+
+  ── Region Statistics (139 total) ──
+  By size:
+    1-cell regions:  42
+    2-cell regions:  27
+    3-cell regions:  20
+    4-cell regions:  22
+    5-cell regions:  28
+  By min-cut value:
+    S = 1:  6 regions
+    S = 2:  38 regions
+    S = 3:  32 regions
+    S = 4:  24 regions
+    S = 5:  12 regions
+    S = 6:  23 regions
+    S = 7:  4 regions
+  Min-cut range:  1 – 7
+
+  ── Edge Curvature (12 central-cube edges) ──
+    Valence 5 (×12): κ₂₀ = -5 ← hyperbolic
+  Total:  Σ κ₂₀ = -60
+  Full-valence (≥5) edges: 12 of 12
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Dense-50 Feasibility)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 164)
+    ✓ PASS  Region count ≤ 500 (manageable for Agda)  (actual: 139)
+    ✓ PASS  ≥1 full-valence edge in patch  (actual: 12)
+    ✓ PASS  Max min-cut > 1 (genuine holographic depth)  (actual: 7)
+
+  ▶  ALL GATES PASS — Dense-50 Agda formalization FEASIBLE
+
+  Output directory: /home/zimablue/univalence-gravity/src
+
+  ✓  /home/zimablue/univalence-gravity/src/Common/Dense50Spec.agda  (48 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Dense50Cut.agda  (172 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Dense50Chain.agda  (171 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Dense50Curvature.agda  (81 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bridge/Dense50Obs.agda  (229 lines)
+
+  ── Summary: generated 5 files, ~701 lines total ──
+
+  Module contents:
+    D50Region constructors:     139
+    S-cut clauses:              139
+    L-min clauses:              139
+    Edge curvature classes:     1
+    Pointwise refl proofs:      139
+    totalD50Curvature-check:    refl  (= negsuc 59)
+
+  Next steps:
+    1. Load each generated file in Agda to verify it type-checks.
+    2. Implement  src/Bridge/Dense50Equiv.agda  (hand-written) to
+       assemble the enriched Iso / Equiv / ua / transport pipeline,
+       mirroring Bridge/Honeycomb3DEquiv.agda.
+    3. Scale to Dense-100 (300 bdy faces, 717 regions) using the
+       orbit reduction strategy per §6.5 of docs/10-frontier.md.

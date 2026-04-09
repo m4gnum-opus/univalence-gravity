@@ -1,0 +1,585 @@
+{-# OPTIONS --cubical --safe --guardedness #-}
+
+module Bridge.SchematicTower where
+
+open import Cubical.Foundations.Prelude
+open import Cubical.Foundations.Equiv
+open import Cubical.Data.Nat using (ℕ ; zero ; suc)
+
+open import Util.Scalars
+
+open import Bridge.GenericBridge
+  using ( PatchData ; OrbitReducedPatch
+        ; orbit-to-patch ; orbit-bridge-witness )
+
+open import Bridge.EnrichedStarEquiv
+  using (BridgeWitness)
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §1.  TowerLevel — A single verified holographic slice
+-- ════════════════════════════════════════════════════════════════════
+--
+--  A TowerLevel bundles an oracle-generated OrbitReducedPatch with
+--  the fully proof-carrying BridgeWitness extracted from the generic
+--  bridge theorem.  The  maxCut  field records the maximum min-cut
+--  value among the orbit representatives — the "holographic depth"
+--  of this resolution level.
+--
+--  Reference:
+--    docs/10-frontier.md §5.6  (The Inductive Tower)
+-- ════════════════════════════════════════════════════════════════════
+
+record TowerLevel : Type₁ where
+  field
+    patch  : OrbitReducedPatch
+    maxCut : ℚ≥0
+    bridge : BridgeWitness
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §2.  mkTowerLevel — Smart constructor (forces generic bridge)
+-- ════════════════════════════════════════════════════════════════════
+--
+--  Derives the bridge witness from  orbit-bridge-witness , ensuring
+--  topological consistency: every level uses the same generic proof
+--  schema, parameterized only by the oracle-generated data.
+-- ════════════════════════════════════════════════════════════════════
+
+mkTowerLevel : OrbitReducedPatch → ℚ≥0 → TowerLevel
+mkTowerLevel orp mc = record
+  { patch  = orp
+  ; maxCut = mc
+  ; bridge = orbit-bridge-witness orp
+  }
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §3.  LayerStep — Monotonicity between consecutive tower levels
+-- ════════════════════════════════════════════════════════════════════
+
+record LayerStep (lo hi : TowerLevel) : Type₀ where
+  field
+    monotone : TowerLevel.maxCut lo ≤ℚ TowerLevel.maxCut hi
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §4.  AreaLawForPatch — Discrete isoperimetric inequality
+--       tied to a specific PatchData
+-- ════════════════════════════════════════════════════════════════════
+
+record AreaLawForPatch (pd : PatchData) : Type₀ where
+  field
+    area       : PatchData.RegionTy pd → ℚ≥0
+    area-bound : (r : PatchData.RegionTy pd) → PatchData.S∂ pd r ≤ℚ area r
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §5.  RichLayerStep — Monotonicity + area law at the higher level
+-- ════════════════════════════════════════════════════════════════════
+
+record RichLayerStep (lo hi : TowerLevel) : Type₁ where
+  field
+    monotone : TowerLevel.maxCut lo ≤ℚ TowerLevel.maxCut hi
+    area-law : AreaLawForPatch (orbit-to-patch (TowerLevel.patch hi))
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §6.  Dense-100 and Dense-200 — Existing orbit-reduced patches
+-- ════════════════════════════════════════════════════════════════════
+--
+--  These are imported from Bridge/GenericValidation.agda, which
+--  already constructs OrbitReducedPatch instances from the existing
+--  Dense-100 (8 orbits, max S=8) and Dense-200 (9 orbits, max S=9)
+--  infrastructure.
+-- ════════════════════════════════════════════════════════════════════
+
+open import Bridge.GenericValidation
+  using (d100OrbitPatch ; d200OrbitPatch)
+
+d100-tower-level : TowerLevel
+d100-tower-level = mkTowerLevel d100OrbitPatch 8
+
+d200-tower-level : TowerLevel
+d200-tower-level = mkTowerLevel d200OrbitPatch 9
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §7.  Dense-100 → Dense-200 Layer Step
+-- ════════════════════════════════════════════════════════════════════
+--
+--  The max min-cut grew from 8 to 9.
+--  1 + 8 = 9 judgmentally.
+-- ════════════════════════════════════════════════════════════════════
+
+d100→d200 : LayerStep d100-tower-level d200-tower-level
+d100→d200 .LayerStep.monotone = 1 , refl
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §8.  Dense-100 → Dense-200 Rich Layer Step  (with area law)
+-- ════════════════════════════════════════════════════════════════════
+
+import Boundary.Dense200AreaLaw as D200AL
+
+d100→d200-rich : RichLayerStep d100-tower-level d200-tower-level
+d100→d200-rich .RichLayerStep.monotone = 1 , refl
+d100→d200-rich .RichLayerStep.area-law = record
+  { area       = D200AL.regionArea
+  ; area-bound = D200AL.area-law
+  }
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §9.  {5,4} Layer Imports  (Depth 2 through Depth 7)
+-- ════════════════════════════════════════════════════════════════════
+--
+--  Each depth-N patch of the {5,4} hyperbolic pentagonal tiling
+--  is generated by sim/prototyping/13_generate_layerN.py and
+--  produces 4 Agda modules: Spec, Cut, Chain, Obs.
+--
+--  Qualified imports prevent name clashes on  S-cut-rep  and
+--  L-min-rep  (each depth defines its own versions).
+--
+--  From 13_generate_layerN_OUTPUT.txt:
+--
+--    Depth | Tiles | Regions | Orbits | Max S
+--    ──────┼───────┼─────────┼────────┼──────
+--      2   |   21  |    15   |    2   |   2
+--      3   |   61  |    40   |    2   |   2
+--      4   |  166  |   105   |    2   |   2
+--      5   |  441  |   275   |    2   |   2
+--      6   | 1161  |   720   |    2   |   2
+--      7   | 3046  |  1885   |    2   |   2
+--
+--  The exponential boundary growth is the hallmark of hyperbolic
+--  geometry: each layer ring adds ~2.6× more tiles than the
+--  previous one.  The orbit count stays at 2 (min-cut values
+--  are always 1 or 2 for BFS-grown {5,4} patches).
+-- ════════════════════════════════════════════════════════════════════
+
+-- ── Depth 2 ────────────────────────────────────────────────────────
+import Common.Layer54d2Spec    as L2S
+import Boundary.Layer54d2Cut   as L2Cut
+import Bulk.Layer54d2Chain     as L2Chain
+import Bridge.Layer54d2Obs     as L2Obs
+
+-- ── Depth 3 ────────────────────────────────────────────────────────
+import Common.Layer54d3Spec    as L3S
+import Boundary.Layer54d3Cut   as L3Cut
+import Bulk.Layer54d3Chain     as L3Chain
+import Bridge.Layer54d3Obs     as L3Obs
+
+-- ── Depth 4 ────────────────────────────────────────────────────────
+import Common.Layer54d4Spec    as L4S
+import Boundary.Layer54d4Cut   as L4Cut
+import Bulk.Layer54d4Chain     as L4Chain
+import Bridge.Layer54d4Obs     as L4Obs
+
+-- ── Depth 5 ────────────────────────────────────────────────────────
+import Common.Layer54d5Spec    as L5S
+import Boundary.Layer54d5Cut   as L5Cut
+import Bulk.Layer54d5Chain     as L5Chain
+import Bridge.Layer54d5Obs     as L5Obs
+
+-- ── Depth 6 ────────────────────────────────────────────────────────
+import Common.Layer54d6Spec    as L6S
+import Boundary.Layer54d6Cut   as L6Cut
+import Bulk.Layer54d6Chain     as L6Chain
+import Bridge.Layer54d6Obs     as L6Obs
+
+-- ── Depth 7 ────────────────────────────────────────────────────────
+import Common.Layer54d7Spec    as L7S
+import Boundary.Layer54d7Cut   as L7Cut
+import Bulk.Layer54d7Chain     as L7Chain
+import Bridge.Layer54d7Obs     as L7Obs
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §10.  OrbitReducedPatch instances for each {5,4} layer
+-- ════════════════════════════════════════════════════════════════════
+--
+--  Each instance captures the minimal interface contract:
+--    RegionTy  — the (potentially large) region type
+--    OrbitTy   — the (small) orbit representative type
+--    classify  — surjection from regions to orbit reps
+--    S-rep     — boundary observable on orbit reps
+--    L-rep     — bulk observable on orbit reps
+--    rep-agree — pointwise agreement on orbit reps (all refl)
+--
+--  The generic bridge theorem (orbit-bridge-witness) then
+--  automatically produces the full enriched equivalence,
+--  Univalence path, and verified transport for each layer.
+-- ════════════════════════════════════════════════════════════════════
+
+-- ── Depth 2:  21 tiles, 15 regions → 2 orbits ─────────────────────
+
+layer54d2-orbit : OrbitReducedPatch
+layer54d2-orbit .OrbitReducedPatch.RegionTy  = L2S.Layer54d2Region
+layer54d2-orbit .OrbitReducedPatch.OrbitTy   = L2S.Layer54d2OrbitRep
+layer54d2-orbit .OrbitReducedPatch.classify  = L2S.classifyLayer54d2
+layer54d2-orbit .OrbitReducedPatch.S-rep     = L2Cut.S-cut-rep
+layer54d2-orbit .OrbitReducedPatch.L-rep     = L2Chain.L-min-rep
+layer54d2-orbit .OrbitReducedPatch.rep-agree = L2Obs.layer54d2-pointwise-rep
+
+-- ── Depth 3:  61 tiles, 40 regions → 2 orbits ─────────────────────
+
+layer54d3-orbit : OrbitReducedPatch
+layer54d3-orbit .OrbitReducedPatch.RegionTy  = L3S.Layer54d3Region
+layer54d3-orbit .OrbitReducedPatch.OrbitTy   = L3S.Layer54d3OrbitRep
+layer54d3-orbit .OrbitReducedPatch.classify  = L3S.classifyLayer54d3
+layer54d3-orbit .OrbitReducedPatch.S-rep     = L3Cut.S-cut-rep
+layer54d3-orbit .OrbitReducedPatch.L-rep     = L3Chain.L-min-rep
+layer54d3-orbit .OrbitReducedPatch.rep-agree = L3Obs.layer54d3-pointwise-rep
+
+-- ── Depth 4:  166 tiles, 105 regions → 2 orbits ───────────────────
+
+layer54d4-orbit : OrbitReducedPatch
+layer54d4-orbit .OrbitReducedPatch.RegionTy  = L4S.Layer54d4Region
+layer54d4-orbit .OrbitReducedPatch.OrbitTy   = L4S.Layer54d4OrbitRep
+layer54d4-orbit .OrbitReducedPatch.classify  = L4S.classifyLayer54d4
+layer54d4-orbit .OrbitReducedPatch.S-rep     = L4Cut.S-cut-rep
+layer54d4-orbit .OrbitReducedPatch.L-rep     = L4Chain.L-min-rep
+layer54d4-orbit .OrbitReducedPatch.rep-agree = L4Obs.layer54d4-pointwise-rep
+
+-- ── Depth 5:  441 tiles, 275 regions → 2 orbits ───────────────────
+
+layer54d5-orbit : OrbitReducedPatch
+layer54d5-orbit .OrbitReducedPatch.RegionTy  = L5S.Layer54d5Region
+layer54d5-orbit .OrbitReducedPatch.OrbitTy   = L5S.Layer54d5OrbitRep
+layer54d5-orbit .OrbitReducedPatch.classify  = L5S.classifyLayer54d5
+layer54d5-orbit .OrbitReducedPatch.S-rep     = L5Cut.S-cut-rep
+layer54d5-orbit .OrbitReducedPatch.L-rep     = L5Chain.L-min-rep
+layer54d5-orbit .OrbitReducedPatch.rep-agree = L5Obs.layer54d5-pointwise-rep
+
+-- ── Depth 6:  1161 tiles, 720 regions → 2 orbits ──────────────────
+
+layer54d6-orbit : OrbitReducedPatch
+layer54d6-orbit .OrbitReducedPatch.RegionTy  = L6S.Layer54d6Region
+layer54d6-orbit .OrbitReducedPatch.OrbitTy   = L6S.Layer54d6OrbitRep
+layer54d6-orbit .OrbitReducedPatch.classify  = L6S.classifyLayer54d6
+layer54d6-orbit .OrbitReducedPatch.S-rep     = L6Cut.S-cut-rep
+layer54d6-orbit .OrbitReducedPatch.L-rep     = L6Chain.L-min-rep
+layer54d6-orbit .OrbitReducedPatch.rep-agree = L6Obs.layer54d6-pointwise-rep
+
+-- ── Depth 7:  3046 tiles, 1885 regions → 2 orbits ─────────────────
+
+layer54d7-orbit : OrbitReducedPatch
+layer54d7-orbit .OrbitReducedPatch.RegionTy  = L7S.Layer54d7Region
+layer54d7-orbit .OrbitReducedPatch.OrbitTy   = L7S.Layer54d7OrbitRep
+layer54d7-orbit .OrbitReducedPatch.classify  = L7S.classifyLayer54d7
+layer54d7-orbit .OrbitReducedPatch.S-rep     = L7Cut.S-cut-rep
+layer54d7-orbit .OrbitReducedPatch.L-rep     = L7Chain.L-min-rep
+layer54d7-orbit .OrbitReducedPatch.rep-agree = L7Obs.layer54d7-pointwise-rep
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §11.  TowerLevel instances for each {5,4} layer
+-- ════════════════════════════════════════════════════════════════════
+--
+--  Each call to  mkTowerLevel  invokes  orbit-bridge-witness ,
+--  which composes  orbit-to-patch  with  GenericEnriched  to
+--  produce the full enriched equivalence + Univalence path +
+--  verified transport.  No per-layer proof engineering is needed.
+--
+--  All {5,4} BFS-grown layers have max min-cut = 2.
+-- ════════════════════════════════════════════════════════════════════
+
+layer54d2-level : TowerLevel
+layer54d2-level = mkTowerLevel layer54d2-orbit 2
+
+layer54d3-level : TowerLevel
+layer54d3-level = mkTowerLevel layer54d3-orbit 2
+
+layer54d4-level : TowerLevel
+layer54d4-level = mkTowerLevel layer54d4-orbit 2
+
+layer54d5-level : TowerLevel
+layer54d5-level = mkTowerLevel layer54d5-orbit 2
+
+layer54d6-level : TowerLevel
+layer54d6-level = mkTowerLevel layer54d6-orbit 2
+
+layer54d7-level : TowerLevel
+layer54d7-level = mkTowerLevel layer54d7-orbit 2
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §12.  BridgeWitness extraction — the immutable registry
+-- ════════════════════════════════════════════════════════════════════
+--
+--  Each BridgeWitness is a fully proof-carrying object containing:
+--    • EnrichedBdy ≃ EnrichedBulk  (the exact type equivalence)
+--    • transport (ua bridge) bdy-instance ≡ bulk-instance
+--      (verified computable transport via uaβ)
+--
+--  These are PERMANENT and IMMUTABLE: the generic bridge theorem
+--  guarantees their correctness for any valid OrbitReducedPatch
+--  instance, regardless of the region count, orbit count, or
+--  geometric origin of the underlying patch.
+--
+--  The "induction" in the N-layer generalization is in the Python
+--  oracle's growth function (13_generate_layerN.py), not in the
+--  proof structure (Agda).  Adding depth 8, 9, 10, ... requires
+--  only running the oracle and adding one  mkTowerLevel  line.
+-- ════════════════════════════════════════════════════════════════════
+
+-- ── Dense patches (3D {4,3,5} honeycomb) ───────────────────────────
+
+dense100-bridge : BridgeWitness
+dense100-bridge = TowerLevel.bridge d100-tower-level
+
+dense200-bridge : BridgeWitness
+dense200-bridge = TowerLevel.bridge d200-tower-level
+
+-- ── {5,4} tiling layers (2D hyperbolic pentagonal tiling) ──────────
+
+layer54d2-bridge : BridgeWitness
+layer54d2-bridge = TowerLevel.bridge layer54d2-level
+
+layer54d3-bridge : BridgeWitness
+layer54d3-bridge = TowerLevel.bridge layer54d3-level
+
+layer54d4-bridge : BridgeWitness
+layer54d4-bridge = TowerLevel.bridge layer54d4-level
+
+layer54d5-bridge : BridgeWitness
+layer54d5-bridge = TowerLevel.bridge layer54d5-level
+
+layer54d6-bridge : BridgeWitness
+layer54d6-bridge = TowerLevel.bridge layer54d6-level
+
+layer54d7-bridge : BridgeWitness
+layer54d7-bridge = TowerLevel.bridge layer54d7-level
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §13.  LayerStep instances for the {5,4} tower
+-- ════════════════════════════════════════════════════════════════════
+--
+--  All {5,4} BFS layers have max min-cut = 2, so monotonicity
+--  between consecutive layer depths is flat:  2 ≤ 2  via (0 , refl).
+--
+--  This is non-strict monotonicity: the holographic depth does NOT
+--  increase with layer depth in the BFS-grown {5,4} patches
+--  (because BFS growth produces shell-like boundary where every
+--  boundary tile connects to the interior through at most 2 bonds).
+--
+--  In contrast, the Dense {4,3,5} patches achieve genuine spectrum
+--  growth (7 → 8 → 9) because the greedy max-connectivity strategy
+--  produces multiply-connected bulk geometry.
+-- ════════════════════════════════════════════════════════════════════
+
+step-d2→d3 : LayerStep layer54d2-level layer54d3-level
+step-d2→d3 .LayerStep.monotone = 0 , refl
+
+step-d3→d4 : LayerStep layer54d3-level layer54d4-level
+step-d3→d4 .LayerStep.monotone = 0 , refl
+
+step-d4→d5 : LayerStep layer54d4-level layer54d5-level
+step-d4→d5 .LayerStep.monotone = 0 , refl
+
+step-d5→d6 : LayerStep layer54d5-level layer54d6-level
+step-d5→d6 .LayerStep.monotone = 0 , refl
+
+step-d6→d7 : LayerStep layer54d6-level layer54d7-level
+step-d6→d7 .LayerStep.monotone = 0 , refl
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §14.  Tower packaging records
+-- ════════════════════════════════════════════════════════════════════
+
+-- ── Two-level Dense tower (Dense-100 → Dense-200) ──────────────────
+
+record TwoLevelTower : Type₁ where
+  field
+    lo-level  : TowerLevel
+    hi-level  : TowerLevel
+    step      : LayerStep lo-level hi-level
+
+dense-two-level-tower : TwoLevelTower
+dense-two-level-tower .TwoLevelTower.lo-level = d100-tower-level
+dense-two-level-tower .TwoLevelTower.hi-level = d200-tower-level
+dense-two-level-tower .TwoLevelTower.step     = d100→d200
+
+-- ── Full {5,4} layer tower (depth 2 through 7) ────────────────────
+--
+--  This record captures the complete sequence of 6 verified
+--  holographic slices for the {5,4} hyperbolic tiling, with
+--  monotonicity witnesses between each consecutive pair.
+--
+--  Each level stores an OrbitReducedPatch + maxCut + BridgeWitness,
+--  all automatically derived from the Python oracle output.
+--
+--  The tower demonstrates that the discrete Ryu–Takayanagi
+--  correspondence holds at every layer depth, from the 21-tile
+--  depth-2 patch to the 3046-tile depth-7 patch — an exponential
+--  range of geometric scales, all verified by the same generic
+--  proof applied to oracle-generated data.
+
+record Layer54Tower : Type₁ where
+  field
+    level-d2   : TowerLevel
+    level-d3   : TowerLevel
+    level-d4   : TowerLevel
+    level-d5   : TowerLevel
+    level-d6   : TowerLevel
+    level-d7   : TowerLevel
+    step-2→3   : LayerStep level-d2 level-d3
+    step-3→4   : LayerStep level-d3 level-d4
+    step-4→5   : LayerStep level-d4 level-d5
+    step-5→6   : LayerStep level-d5 level-d6
+    step-6→7   : LayerStep level-d6 level-d7
+
+layer54-tower : Layer54Tower
+layer54-tower .Layer54Tower.level-d2 = layer54d2-level
+layer54-tower .Layer54Tower.level-d3 = layer54d3-level
+layer54-tower .Layer54Tower.level-d4 = layer54d4-level
+layer54-tower .Layer54Tower.level-d5 = layer54d5-level
+layer54-tower .Layer54Tower.level-d6 = layer54d6-level
+layer54-tower .Layer54Tower.level-d7 = layer54d7-level
+layer54-tower .Layer54Tower.step-2→3 = step-d2→d3
+layer54-tower .Layer54Tower.step-3→4 = step-d3→d4
+layer54-tower .Layer54Tower.step-4→5 = step-d4→d5
+layer54-tower .Layer54Tower.step-5→6 = step-d5→d6
+layer54-tower .Layer54Tower.step-6→7 = step-d6→d7
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §15.  Regression tests
+-- ════════════════════════════════════════════════════════════════════
+
+private
+  -- ── Dense maxCut values ──────────────────────────────────────
+  check-d100-maxCut : TowerLevel.maxCut d100-tower-level ≡ 8
+  check-d100-maxCut = refl
+
+  check-d200-maxCut : TowerLevel.maxCut d200-tower-level ≡ 9
+  check-d200-maxCut = refl
+
+  -- ── {5,4} layer maxCut values (all = 2) ──────────────────────
+  check-d2-maxCut : TowerLevel.maxCut layer54d2-level ≡ 2
+  check-d2-maxCut = refl
+
+  check-d3-maxCut : TowerLevel.maxCut layer54d3-level ≡ 2
+  check-d3-maxCut = refl
+
+  check-d7-maxCut : TowerLevel.maxCut layer54d7-level ≡ 2
+  check-d7-maxCut = refl
+
+  -- ── Dense monotonicity witness ───────────────────────────────
+  check-dense-monotone : LayerStep.monotone d100→d200 ≡ (1 , refl)
+  check-dense-monotone = refl
+
+  -- ── {5,4} flat monotonicity witness ──────────────────────────
+  check-54-monotone : LayerStep.monotone step-d2→d3 ≡ (0 , refl)
+  check-54-monotone = refl
+
+  -- ── Bridge witnesses are well-formed ─────────────────────────
+  --  (Type-checking IS the verification: if orbit-bridge-witness
+  --   produced ill-typed terms, these would fail at load time.)
+
+  check-d2-bridge : BridgeWitness
+  check-d2-bridge = layer54d2-bridge
+
+  check-d7-bridge : BridgeWitness
+  check-d7-bridge = layer54d7-bridge
+
+  check-dense-bridge : BridgeWitness
+  check-dense-bridge = dense200-bridge
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §16.  Summary and design notes
+-- ════════════════════════════════════════════════════════════════════
+--
+--  Exports:
+--
+--    TowerLevel            — record: OrbitReducedPatch + maxCut + BridgeWitness
+--    mkTowerLevel          : OrbitReducedPatch → ℚ≥0 → TowerLevel
+--    LayerStep             — record: monotonicity witness between levels
+--    AreaLawForPatch       — record: area-law bound linked to PatchData
+--    RichLayerStep         — record: LayerStep + AreaLawForPatch at hi level
+--
+--    -- Dense {4,3,5} honeycomb patches
+--    d100-tower-level      : TowerLevel  (Dense-100, maxCut = 8)
+--    d200-tower-level      : TowerLevel  (Dense-200, maxCut = 9)
+--    d100→d200             : LayerStep
+--    d100→d200-rich        : RichLayerStep  (with Dense-200 area law)
+--    dense100-bridge       : BridgeWitness
+--    dense200-bridge       : BridgeWitness
+--
+--    -- {5,4} tiling layers (depth 2 through 7)
+--    layer54d2-orbit .. layer54d7-orbit   : OrbitReducedPatch
+--    layer54d2-level .. layer54d7-level   : TowerLevel  (all maxCut = 2)
+--    layer54d2-bridge .. layer54d7-bridge : BridgeWitness
+--    step-d2→d3 .. step-d6→d7            : LayerStep  (all flat: 2 ≤ 2)
+--
+--    -- Packaging records
+--    dense-two-level-tower : TwoLevelTower
+--    layer54-tower         : Layer54Tower
+--
+--  Architecture:
+--
+--    The schematic tower makes the N-layer generalization strategy
+--    from §5.4 of docs/10-frontier.md concrete.  For each scale:
+--
+--      1. The Python oracle (13_generate_layerN.py) generates an
+--         OrbitReducedPatch: region type, orbit type, classify
+--         function, and observable lookups.
+--
+--      2. mkTowerLevel applies orbit-bridge-witness to produce
+--         the full enriched equivalence + Univalence path +
+--         verified transport — automatically, with zero per-level
+--         proof engineering.
+--
+--      3. LayerStep records the monotonicity witness between
+--         consecutive levels (a single  (k , refl)  inequality).
+--
+--    Adding a new layer depth requires ONLY:
+--      (a) Running the Python oracle at the new depth.
+--      (b) Adding 4 qualified imports.
+--      (c) Writing 1 OrbitReducedPatch instance (6 lines).
+--      (d) Writing 1 mkTowerLevel call (1 line).
+--      (e) Writing 1 LayerStep (1 line).
+--
+--    No new Agda proofs are needed.
+--
+--  Immutable bridge witnesses:
+--
+--    The 8 BridgeWitness values exported by this module are
+--    permanent, immutable records.  Each one contains:
+--
+--      • BdyTy  = Σ[ f ∈ (RegionTy → ℚ≥0) ] (f ≡ S∂)
+--      • BulkTy = Σ[ f ∈ (RegionTy → ℚ≥0) ] (f ≡ LB)
+--      • bridge : BdyTy ≃ BulkTy
+--      • transport (ua bridge) bdy-instance ≡ bulk-instance
+--
+--    for the specific RegionTy, S∂, LB of each oracle-generated
+--    patch.  The correctness of each witness is guaranteed by the
+--    generic bridge theorem (GenericEnriched in GenericBridge.agda),
+--    which was proven once and instantiated at every scale.
+--
+--  Relationship to existing modules:
+--
+--    This module imports from (but does NOT modify):
+--      • Bridge/GenericBridge.agda       — OrbitReducedPatch, orbit-bridge-witness
+--      • Bridge/GenericValidation.agda   — d100OrbitPatch, d200OrbitPatch
+--      • Bridge/EnrichedStarEquiv.agda   — BridgeWitness record
+--      • Boundary/Dense200AreaLaw.agda   — regionArea, area-law
+--      • Common/Layer54d{2..7}Spec.agda  — region + orbit types, classify
+--      • Boundary/Layer54d{2..7}Cut.agda — S-cut-rep
+--      • Bulk/Layer54d{2..7}Chain.agda   — L-min-rep
+--      • Bridge/Layer54d{2..7}Obs.agda   — pointwise-rep
+--      • Util/Scalars.agda              — ℚ≥0, _≤ℚ_
+--
+--  Conditions for advancement (§5.12 of docs/10-frontier.md):
+--
+--    "Implement Bridge/SchematicTower.agda containing TowerLevel,
+--     LayerStep, and a generic tower construction."
+--
+--  This module satisfies that condition, instantiating the tower
+--  for all oracle-generated patches (Dense-100, Dense-200, and
+--  {5,4} layers at depths 2 through 7).
+-- ════════════════════════════════════════════════════════════════════

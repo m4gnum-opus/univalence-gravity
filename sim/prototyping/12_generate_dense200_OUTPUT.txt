@@ -1,0 +1,160 @@
+╔═══════════════════════════════════════════════════════════╗
+║  Phase G.1: Dense-200 {4,3,5} — Resolution Tower Level 3 ║
+║  Orbit reduction + area law • Convergence certificate     ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Building Dense-200 patch via greedy max-connectivity ...
+  ✓  Reflections: involution, G-preservation, Coxeter relations.
+  ✓  200 cells, 308 internal faces, 584 boundary faces.
+
+  Enumerating cell-aligned boundary regions (max 5 cells) ...
+  Computing min-cut values and boundary surface areas ...
+  ✓  1246 regions computed.
+  Min-cut range: 1 – 9
+  ✓  Area law verified for all 1246 regions.
+  Computing orbit reduction by min-cut value ...
+  ✓  9 orbit representatives (from 1246 regions, 138× reduction)
+  Computing edge curvature classes ...
+  ✓  1 edge class(es).
+
+  ── Patch Topology ──
+  Cells:            200
+  Internal faces:   308
+  Boundary faces:   584
+  Density (2·IntF/Cells): 3.08
+
+  ── Region Statistics (1246 total) ──
+  By size:
+    1-cell:    166 regions, area 6–6, min-cut 1–3
+    2-cell:    148 regions, area 10–10, min-cut 2–5
+    3-cell:    175 regions, area 14–14, min-cut 2–7
+    4-cell:    293 regions, area 18–18, min-cut 4–8
+    5-cell:    464 regions, area 20–22, min-cut 4–9
+  By min-cut value:
+    S =  1:      6 regions
+    S =  2:    135 regions
+    S =  3:     80 regions
+    S =  4:    119 regions
+    S =  5:    172 regions
+    S =  6:    258 regions
+    S =  7:    366 regions
+    S =  8:     74 regions
+    S =  9:     36 regions
+  Min-cut range:  1 – 9
+
+  ── Orbit Reduction ──
+  Distinct min-cut values:  9
+  Orbit decomposition:
+    mc1  (S = 1):  6 regions
+    mc2  (S = 2):  135 regions
+    mc3  (S = 3):  80 regions
+    mc4  (S = 4):  119 regions
+    mc5  (S = 5):  172 regions
+    mc6  (S = 6):  258 regions
+    mc7  (S = 7):  366 regions
+    mc8  (S = 8):  74 regions
+    mc9  (S = 9):  36 regions
+  Reduction factor:  1246 → 9  (138× fewer proof cases)
+
+  ── Area-Law Statistics ──
+  Slack range:    3 – 18  (mean 10.8)
+  Tight (S=area): 0 / 1246
+  Violations:     0
+  Slack distribution:
+    k =  3:     80 regions
+    k =  4:     80 regions
+    k =  5:     10 regions
+    k =  6:    100 regions
+    k =  7:      4 regions
+    k =  8:     54 regions
+    k =  9:    144 regions
+    k = 10:     20 regions
+    k = 11:     24 regions
+    k = 12:    259 regions
+    k = 13:     38 regions
+    k = 14:     67 regions
+    k = 15:    360 regions
+    k = 18:      6 regions
+
+  ── Resolution Tower Comparison ──
+    Dense-50:   139 regions,  max S = 7
+    Dense-100:  717 regions,  max S = 8
+    Dense-200:  1246 regions,  max S = 9
+
+  ── Edge Curvature (12 central-cube edges) ──
+    Valence 5 (×12): κ₂₀ = -5 ← hyperbolic
+  Total:  Σ κ₂₀ = -60
+
+  ════════════════════════════════════════════════════════
+  MONOTONICITY WITNESS (Dense-100 → Dense-200)
+  ════════════════════════════════════════════════════════
+  Dense-100 max min-cut:  8
+  Dense-200 max min-cut:  9
+
+  ✓  Spectrum GROWS:  8 < 9
+     Agda witness:  spectrum-grows-200 : 8 ≤ℚ 9
+     spectrum-grows-200 = 1 , refl
+     (because 1 + 8 = 9 judgmentally)
+
+  Resolution tower monotonicity table:
+    | Transition             | Max_lo | Max_hi | Witness      |
+    |──────────────────────--|────────|────────|──────────────|
+    | Dense-50 → Dense-100   |      7 |      8 | (1 , refl)  |
+    | Dense-100 → Dense-200  |      8 |      9 | (1 , refl)  |
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Dense-200 — Phase G.1)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Region count (orbit ≤ 200)  (actual: 1246 raw / 9 orbits)
+    ✓ PASS  ≥1 full-valence edge in patch  (actual: 12)
+    ✓ PASS  Max min-cut ≥ 8 (at least matches Dense-100)  (actual: 9)
+    ✓ PASS  Area law holds (S ≤ area for all regions)  (actual: ✓)
+    ✓ PASS  Orbit reduction effective (ratio > 5×)  (actual: 138×)
+
+  ▶  ALL GATES PASS — Dense-200 extends the convergence certificate!
+
+  Output directory: /home/zimablue/univalence-gravity/src
+
+  ✓  /home/zimablue/univalence-gravity/src/Common/Dense200Spec.agda  (1446 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Dense200Cut.agda  (44 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Dense200Chain.agda  (44 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Dense200Curvature.agda  (49 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bridge/Dense200Obs.agda  (74 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Dense200AreaLaw.agda  (3556 lines)
+
+  ── Summary: generated 6 files, ~5213 lines total ──
+
+  Module contents:
+    D200Region constructors:        1246
+    D200OrbitRep constructors:       9
+    classify200 clauses:             1246
+    S-cut-rep / L-min-rep clauses:   9 each
+    Pointwise-rep refl proofs:       9
+    Pointwise lifting:               1 line
+    Edge curvature classes:          1
+    regionArea clauses:              1246
+    area-law abstract proofs:        1246
+    totalD200Curvature-check:        refl  (= negsuc 59)
+
+  ── KEY RESULT: Monotonicity ──
+    Dense-100 max min-cut:  8
+    Dense-200 max min-cut:  9
+    ★  Spectrum GROWS!
+       Agda: spectrum-grows-200 = 1 , refl
+
+  The Dense-200 instance adds a third level to the convergence
+  certificate (§10.9 of docs/10-frontier.md):
+
+    Level 1:  Dense-50   (139 regions, max S = 7)
+    Level 2:  Dense-100  (717 regions, max S = 8, 8 orbits)
+    Level 3:  Dense-200  (1246 regions, max S = 9, 9 orbits)
+
+  To integrate into the resolution tower:
+    1. Load all 6 generated files in Agda.
+    2. Write  Bridge/Dense200Equiv.agda  (hand-written enriched equiv).
+    3. Extend  Bridge/ResolutionTower.agda  to a 2-step tower
+       (Phase G.2) with 2 monotonicity witnesses.
+
+  Exit criterion (§10.13.3 — stretch):
+    "A Dense-200 instance extends the certificate to 3 levels,
+     with the new max min-cut ≥ 8 witnessed by (k , refl)."

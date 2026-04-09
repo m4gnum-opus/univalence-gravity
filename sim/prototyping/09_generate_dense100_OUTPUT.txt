@@ -1,0 +1,113 @@
+╔═══════════════════════════════════════════════════════════╗
+║  Phase D.1c: Dense-100 {4,3,5} — Orbit-Reduced Agda Gen ║
+║  Greedy max-connectivity • Orbit reduction strategy      ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Building Dense-100 patch via greedy max-connectivity ...
+  ✓  Reflections: involution, G-preservation, Coxeter relations.
+  ✓  100 cells, 150 internal faces, 300 boundary faces.
+
+  Enumerating cell-aligned boundary regions (max 5 cells) ...
+  ✓  717 regions computed.
+  Min-cut range: 1 – 8
+  Computing orbit reduction by min-cut value ...
+  ✓  8 orbit representatives (from 717 regions, 90× reduction)
+  Computing edge curvature classes ...
+  ✓  1 edge class(es).
+
+  ── Patch Topology ──
+  Cells:            100
+  Internal faces:   150
+  Boundary faces:   300
+  Density (2·IntF/Cells): 3.00
+
+  ── Region Statistics (717 total) ──
+  By size:
+    1-cell regions:  86
+    2-cell regions:  82
+    3-cell regions:  103
+    4-cell regions:  170
+    5-cell regions:  276
+  By min-cut value:
+    S = 1:  4 regions
+    S = 2:  72 regions
+    S = 3:  62 regions
+    S = 4:  59 regions
+    S = 5:  137 regions
+    S = 6:  146 regions
+    S = 7:  227 regions
+    S = 8:  10 regions
+  Min-cut range:  1 – 8
+
+  ── Orbit Reduction ──
+  Distinct min-cut values:  8
+  Orbit decomposition:
+    mc1  (S = 1):  4 regions
+    mc2  (S = 2):  72 regions
+    mc3  (S = 3):  62 regions
+    mc4  (S = 4):  59 regions
+    mc5  (S = 5):  137 regions
+    mc6  (S = 6):  146 regions
+    mc7  (S = 7):  227 regions
+    mc8  (S = 8):  10 regions
+  Reduction factor:  717 → 8  (90× fewer proof cases)
+
+  ── Comparison with Dense-50 ──
+    Dense-50:   139 regions, 139 flat refl proofs
+    Dense-100:  717 regions, 8 orbit refl proofs + 1-line lifting
+    Architecture: flat enumeration → orbit reduction
+
+  ── Edge Curvature (12 central-cube edges) ──
+    Valence 5 (×12): κ₂₀ = -5 ← hyperbolic
+  Total:  Σ κ₂₀ = -60
+  Full-valence (≥5) edges: 12 of 12
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Dense-100 Feasibility)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 300)
+    ✓ PASS  Region count (raw ≤ 1000, orbit ≤ 200)  (actual: 717 raw / 8 orbits)
+    ✓ PASS  ≥1 full-valence edge in patch  (actual: 12)
+    ✓ PASS  Max min-cut > 1 (genuine holographic depth)  (actual: 8)
+    ✓ PASS  Orbit reduction effective (ratio > 5×)  (actual: 90×)
+
+  ▶  ALL GATES PASS — Dense-100 with orbit reduction FEASIBLE
+
+  Output directory: /home/zimablue/univalence-gravity/src
+
+  ✓  /home/zimablue/univalence-gravity/src/Common/Dense100Spec.agda  (866 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Dense100Cut.agda  (58 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Dense100Chain.agda  (55 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Dense100Curvature.agda  (71 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bridge/Dense100Obs.agda  (116 lines)
+
+  ── Summary: generated 5 files, ~1166 lines total ──
+
+  Module contents:
+    D100Region constructors:        717
+    D100OrbitRep constructors:       8
+    classify100 clauses:             717
+    S-cut-rep / L-min-rep clauses:   8 each
+    Pointwise-rep refl proofs:       8
+    Pointwise lifting:               1 line (!)
+    Edge curvature classes:          1
+    totalD100Curvature-check:        refl  (= negsuc 59)
+
+  Key architectural innovation:
+    Dense-50 (08):   139 flat refl proofs  (one per region)
+    Dense-100 (09):  8 orbit refl proofs + 1-line lifting
+                     (717 regions → 8 orbits)
+
+  The orbit reduction strategy from §6.5 of docs/10-frontier.md is
+  now validated: the classification function absorbs the large case
+  analysis, while proofs operate on the compact orbit type.  This
+  pattern scales to arbitrary patch sizes — adding more cells only
+  grows the classify function, not the proof obligations.
+
+  Next steps:
+    1. Load generated files in Agda to verify they type-check.
+    2. Write  Bridge/Dense100Equiv.agda  (hand-written) to assemble
+       the enriched Iso / Equiv / ua / transport pipeline.
+    3. Retroactively apply orbit reduction to the 2D 11-tile patch
+       (5-fold symmetry → 72 orbit representatives instead of 360
+       subadditivity cases, per §6.11 of docs/10-frontier.md).

@@ -1,0 +1,53 @@
+(venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python3 sim/prototyping/06_generate_honeycomb_3d.py
+╔══════════════════════════════════════════════════════════╗
+║  Phase D.1: {4,3,5} Honeycomb — 3D Agda Code Generator ║
+║  Specification-Agreement Equivalence (like FilledEquiv) ║
+╚══════════════════════════════════════════════════════════╝
+
+  Building {4,3,5} 3D star patch ...
+  ✓  Reflections: involution, G-preservation, Coxeter relations.
+  ✓  32 cells, 130 boundary faces.
+
+  Enumerating cell-aligned regions (max 4 cells) ...
+  ✓  26 regions computed.
+  Computing edge curvature classes ...
+  ✓  2 edge classes.
+
+  ── Patch Topology ──
+  Cells:            32
+  Internal faces:   31
+  Boundary faces:   130
+
+  ── Region Statistics (26 total) ──
+  By size:
+    1-cell regions:  26
+  By min-cut value:
+    S = 1:  26 regions
+
+  ── Edge Curvature (12 central-cube edges) ──
+    Valence 8 (×4): κ = -4·(π/2) ← hyperbolic
+    Valence 10 (×8): κ = -6·(π/2) ← hyperbolic
+  Total:  Σ κ = -64·(π/2)
+
+  Output directory: /home/zimablue/univalence-gravity/src
+
+  ✓  /home/zimablue/univalence-gravity/src/Common/Honeycomb3DSpec.agda  (27 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Honeycomb3DCut.agda  (56 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Honeycomb3DChain.agda  (57 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Honeycomb3DCurvature.agda  (66 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bridge/Honeycomb3DObs.agda  (98 lines)
+
+  ── Summary: generated 5 files, ~304 lines total ──
+
+  ── Gate Check ──
+    Boundary faces:   130  ✓  (target 100–500)
+    Region count:     26  ✓  (target ≤200)
+    Full-valence edges: 24  ✓  (need ≥1)
+
+  Next steps:
+    1. Load generated files in Agda to verify they type-check.
+    2. Write  Bridge/Honeycomb3DEquiv.agda  (hand-written) to
+       assemble the enriched Iso / Equiv / ua / transport,
+       mirroring Bridge/FilledEquiv.agda.
+    3. If orbit count or region count is too large, trigger
+       Phase D.2 (boolean reflection) per §6.9.

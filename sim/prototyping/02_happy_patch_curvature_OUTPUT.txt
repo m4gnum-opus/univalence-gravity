@@ -1,0 +1,96 @@
+```bash
+(venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python3 sim/prototyping/02_happy_patch_curvature.py
+╔══════════════════════════════════════════════════════════════╗
+║  Phase 1.2(b):  Discrete Curvature & Gauss–Bonnet          ║
+║  {5,4} Tiling — 11-Tile Filled Patch                       ║
+╚══════════════════════════════════════════════════════════════╝
+
+  Polygon complex:  V=30  E=40  F=11
+  Euler characteristic:  χ = 30 − 40 + 11 = 1
+  Interior vertices: 5   Boundary vertices: 25
+
+────────────────────────────────────────────────────────────────────────
+  A.  Combinatorial Curvature
+────────────────────────────────────────────────────────────────────────
+  κ(v) = 1 − deg(v)/2  +  Σ_{f ∋ v} 1/sides(f)
+  Gauss–Bonnet:  Σ_v κ(v) = χ(K)
+
+    v (tiling vertex)     × 5    κ =   -1/5  (int)  →  subtotal =     -1
+    a (N/G shared)        × 5    κ =  -1/10  (bdy)  →  subtotal =   -1/2
+    b (N outer)           × 5    κ =    1/5  (bdy)  →  subtotal =      1
+    c (N/G shared)        × 5    κ =  -1/10  (bdy)  →  subtotal =   -1/2
+    g (G outer)           ×10    κ =    1/5  (bdy)  →  subtotal =      2
+
+    Total:  Σ κ(v) = 1  ✓  (expected χ = 1)
+
+────────────────────────────────────────────────────────────────────────
+  B.  Angular Curvature  (Euclidean Pentagon Angles)
+────────────────────────────────────────────────────────────────────────
+  Regular pentagon interior angle:  (5−2)·π/5 = 3π/5 = 108°
+  Interior:  κ(v) = 2π − Σ angles
+  Boundary:  τ(v) = π  − Σ angles
+  Gauss–Bonnet:  Σ_int κ + Σ_∂ τ = 2π·χ
+
+    v (tiling vertex)     × 5    κ_int =  -1.2566 rad ( -72.00°)  →  subtotal =  -6.2832
+    a (N/G shared)        × 5    τ_bdy =  -0.6283 rad ( -36.00°)  →  subtotal =  -3.1416
+    b (N outer)           × 5    τ_bdy =   1.2566 rad (  72.00°)  →  subtotal =   6.2832
+    c (N/G shared)        × 5    τ_bdy =  -0.6283 rad ( -36.00°)  →  subtotal =  -3.1416
+    g (G outer)           ×10    τ_bdy =   1.2566 rad (  72.00°)  →  subtotal =  12.5664
+
+    Σ_int κ  =  -6.283185  ( -360.00°)
+    Σ_∂   τ  =  12.566371  (  720.00°)
+    Total    =   6.283185  (  360.00°)
+    Expected =   6.283185  (  360.00°)
+    ✓  Gauss–Bonnet verified  (error = 0.00e+00)
+
+────────────────────────────────────────────────────────────────────────
+  C.  Regge Angle-Deficit Curvature  (Fan Triangulation)
+────────────────────────────────────────────────────────────────────────
+
+  Triangulated complex:  V=41  E=95  F=55
+  Euler characteristic:  χ = 1  (should equal 1)
+  Pentagon side = 1.0,  circumradius R = 0.850651
+  Fan triangle angles:  apex = 72.0°,  base = 54.0°
+
+  Interior vertices:
+    Tiling vertices (v0..v4)  × 5    κ =  -1.2566 rad ( -72.00°)
+    Center vertices (O_*)     ×11    κ =  -0.0000 rad (  -0.00°)
+  Boundary vertices:
+    a (N/G shared)        × 5    τ =  -0.6283 rad ( -36.00°)
+    b (N outer)           × 5    τ =   1.2566 rad (  72.00°)
+    c (N/G shared)        × 5    τ =  -0.6283 rad ( -36.00°)
+    g (G outer)           ×10    τ =   1.2566 rad (  72.00°)
+
+    Σ_int κ  =  -6.283185  ( -360.00°)
+    Σ_∂   τ  =  12.566371  (  720.00°)
+    Total    =   6.283185  (  360.00°)
+    Expected =   6.283185  (  360.00°)
+    ✓  Gauss–Bonnet verified  (error = 9.77e-15)
+
+────────────────────────────────────────────────────────────────────────
+  D.  Summary:  Key Curvature Values
+────────────────────────────────────────────────────────────────────────
+
+    ┌──────────────────────────┬────────────┬─────────────┬─────────────┐
+    │  Vertex type             │ Combinat.  │  Angular    │  Regge      │
+    │                          │  κ (exact) │  (radians)  │  (radians)  │
+    ├──────────────────────────┼────────────┼─────────────┼─────────────┤
+    │  Interior tiling  (v_i)  │   −1/5     │  −2π/5      │  −2π/5      │
+    │  Center (O_*)  [tri only]│     —      │     —       │    0        │
+    │  Bdy: a_i, c_i  (shared) │  −1/10     │   −π/5      │   −π/5      │
+    │  Bdy: b_i       (N only) │   1/5      │   2π/5      │   2π/5      │
+    │  Bdy: g_i^1,2   (G only) │   1/5      │   2π/5      │   2π/5      │
+    └──────────────────────────┴────────────┴─────────────┴─────────────┘
+
+    The {5,4} tiling is hyperbolic: interior vertices have κ < 0.
+    At each interior vertex, 4 regular pentagons meet; the Euclidean
+    angle sum is 4 × 108° = 432° > 360°, giving a negative deficit
+    of −72° = −2π/5 rad.
+
+    All three formulations (combinatorial, angular, Regge) verify
+    Gauss–Bonnet for the 11-tile disk patch  (χ = 1).
+
+    These values provide the numerical evidence for Phase 2B: Agda
+    formalization of discrete Gauss–Bonnet on the HaPPY-code bulk
+    triangulation.
+```

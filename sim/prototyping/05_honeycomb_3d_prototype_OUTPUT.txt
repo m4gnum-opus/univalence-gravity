@@ -1,0 +1,121 @@
+(venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python3 sim/prototyping/05_honeycomb_3d_prototype.py
+╔══════════════════════════════════════════════════════════╗
+║  Phase D.0:  {4,3,5} Honeycomb — 3D Feasibility Probe  ║
+║  5 cubes at every edge • Hyperbolic 3-space             ║
+╚══════════════════════════════════════════════════════════╝
+
+  Initializing Coxeter geometry for [4,3,5] ...
+  Gram matrix eigenvalues: -0.0534, 0.4569, 1.5431, 2.0534
+  Signature: (3, 1)  ✓ compact hyperbolic
+  ✓  Reflections: involution, G-preservation, Coxeter relations.
+  Cell center (root basis): [-3.7025, -5.2361, -5.2361, -3.2361]
+  <p,p>_G = -3.236068  (timelike ✓)
+
+  Enumerating cell stabilizer <s0, s1, s2> ...
+  ✓  Cell stabilizer [4,3] has 48 elements.
+  Computing 6 face crossings ...
+  ✓  6 face crossings found.
+  ✓  All face crossings are involutions.
+  Adjacent face pairs: 12  (edges of cube)
+  Opposite face pairs: 3
+
+  Computing edge valence in the full honeycomb ...
+    Valence 5: 12 edge(s)
+  ✓  All 12 edges have valence 5 in the full honeycomb.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Building: 3D Star (C + 6 face-nbrs) ...
+
+========================================================================
+  PATCH:  3D Star (C + 6 face-nbrs)
+========================================================================
+  Cells (cubes):         32
+  Internal shared faces: 31
+  Boundary faces:        130
+  Euler (V−E+F):         (not tracked — cell complex only)
+
+  ── Edge Valence (central cell's 12 edges) ──
+    Valence 5:  12 edge(s)    κ =   -90.0°  ← {4,3,5} condition! κ = −π/2
+
+  ✓  12 of 12 edges achieve full valence 5!
+
+  ── Edge Valence in Patch (cells actually present) ──
+    4 edge(s) with 8 of 5 cubes present
+    8 edge(s) with 10 of 5 cubes present
+
+  ── Flow Graph ──
+  Boundary legs (face pseudo-nodes): 130
+
+  ── Cell-Aligned Boundary Regions (up to 5 cells) ──
+  Distinct regions:  26
+
+  Region                                   | #faces |  S(A)
+  ───────────────────────────────────────────────────────
+  {c6}                                     |      5 |     1
+  {c7}                                     |      5 |     1
+  {c8}                                     |      5 |     1
+  {c9}                                     |      5 |     1
+  {c10}                                    |      5 |     1
+  {c11}                                    |      5 |     1
+  {c12}                                    |      5 |     1
+  {c13}                                    |      5 |     1
+  {c14}                                    |      5 |     1
+  {c15}                                    |      5 |     1
+  {c16}                                    |      5 |     1
+  {c17}                                    |      5 |     1
+  {c18}                                    |      5 |     1
+  {c19}                                    |      5 |     1
+  {c20}                                    |      5 |     1
+  {c21}                                    |      5 |     1
+  {c22}                                    |      5 |     1
+  {c23}                                    |      5 |     1
+  {c24}                                    |      5 |     1
+  {c25}                                    |      5 |     1
+
+  Min-cut range (sample): 1 – 1
+
+  ── Subadditivity Spot Check ──
+  Checked 45 pairs: 45 passed, 0 failed.
+
+  ── Symmetry Analysis ──
+  [Full automorphism skipped for large boundary]
+  Degree-class estimate:    1 classes
+  With octahedral sym (48): ~1 orbit est.
+
+  ── 3D Curvature Summary ──
+  Dihedral angle of cube: π/2 = 90°
+  {4,3,5} honeycomb: 5 cubes at each edge
+  Angular excess at full edge: 5·90° − 360° = 90°
+  Edge deficit: κ = 2π − 5·(π/2) = −π/2 ≈ −90°
+  Fully surrounded edges in patch: 12
+  Total hyperbolic curvature: -1080.0°
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK (Phase D.0)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Boundary faces 100–500  (actual: 130)
+    ✓ PASS  ≥1 edge at full valence 5 (in honeycomb)  (actual: 12)
+    ✓ PASS  ≥1 full-valence edge in patch  (actual: 12)
+    ✓ PASS  Orbit count ≤ 200  (actual: 1)
+
+  ▶  ALL GATES PASS — 3D Agda formalization is FEASIBLE!
+
+  ★  Sweet spot found at 3D Star (C + 6 face-nbrs)!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Patch                               | Cells |  Bdy | Full | Gate
+  ────────────────────────────────────────────────────────────
+  3D Star (C + 6 face-nbrs)           |    32 |  130 |   12 |    ✓
+
+  The {4,3,5} honeycomb is the natural 3D successor to the
+  {5,4} tiling.  The mathematical mechanism is identical:
+    • Min-cut = minimal separating SURFACE (2D faces, not 1D edges)
+    • Curvature lives on EDGES (not vertices)
+    • κ(e) = 2π − 5·(π/2) = −π/2  at fully-surrounded edges
+
+  The same Python-oracle + abstract-barrier strategy from the
+  11-tile bridge (Phase 3.5) applies to 3D.  The symmetry group
+  provides dramatic orbit reduction for large patches.

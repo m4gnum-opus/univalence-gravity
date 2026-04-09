@@ -1,0 +1,5 @@
+{
+    "agdaMode.connection.paths": [
+        "/home/zimablue/.cabal/bin/agda"
+    ]
+}

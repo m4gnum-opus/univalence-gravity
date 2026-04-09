@@ -1,0 +1,165 @@
+╔══════════════════════════════════════════════════════════╗
+║  Phase E.0:  de Sitter / Anti-de Sitter Translator      ║
+║  {5,3} Dodecahedron Star Patch — Feasibility Prototype  ║
+╚══════════════════════════════════════════════════════════╝
+
+  ── §1.  Building {5,3} Star Patch Polygon Complex ──
+  Faces:    6  (1 central + 5 neighbours)
+  Vertices: 15
+  Edges:    20
+  Euler:    χ = 15 − 20 + 6 = 1
+  ✓  Euler characteristic = 1 (disk topology)
+
+  Interior vertices: 5   Boundary vertices: 10
+
+  Vertex classification:
+    boundary-outer (b_i)            × 5  ['b0', 'b1', 'b2', 'b3', 'b4']
+    boundary-shared (w_i)           × 5  ['w0', 'w1', 'w2', 'w3', 'w4']
+    interior (v_i)                  × 5  ['v0', 'v1', 'v2', 'v3', 'v4']
+
+  ── §2.  Bond Graph Comparison: {5,3} vs {5,4} ──
+
+  (a) Restricted star topology (C–N bonds only):
+      Bonds: 5  (C–N0, C–N1, C–N2, C–N3, C–N4)
+      Boundary legs: 20 total  (N0(4), N1(4), N2(4), N3(4), N4(4))
+      This is IDENTICAL to the {5,4} star bond graph.
+
+  (b) Full bond graph (all shared edges):
+      C–N bonds: 5
+      N–N bonds: 5  (N0–N1, N1–N2, N2–N3, N3–N4, N4–N0)
+      Total internal bonds: 10
+      Boundary legs: 10 total  (N0(2), N1(2), N2(2), N3(2), N4(2))
+      NOTE: The N–N bonds are ABSENT in {5,4} (angular gaps).
+
+  ── §3.  Min-Cut Analysis (Restricted Star Topology) ──
+
+  Region                    | S({5,3}) | S({5,4}) | Match
+  ───────────────────────────────────────────────────────
+  {N0}                     |        1 |        1 |     ✓
+  {N1}                     |        1 |        1 |     ✓
+  {N2}                     |        1 |        1 |     ✓
+  {N3}                     |        1 |        1 |     ✓
+  {N4}                     |        1 |        1 |     ✓
+  {N0, N1}                 |        2 |        2 |     ✓
+  {N1, N2}                 |        2 |        2 |     ✓
+  {N2, N3}                 |        2 |        2 |     ✓
+  {N3, N4}                 |        2 |        2 |     ✓
+  {N4, N0}                 |        2 |        2 |     ✓
+
+  ✓  ALL 10 min-cut values match the {5,4} star EXACTLY!
+     The existing Bridge modules can be reused without modification.
+
+  ── §4.  Min-Cut Analysis (Full Bond Graph) ──
+  (Including N–N bonds — for comparison only)
+
+  Region                    |  S(full) |  S(star)
+  ─────────────────────────────────────────────
+  {N0}                     |        2 |        1
+  {N1}                     |        2 |        1
+  {N2}                     |        2 |        1
+  {N3}                     |        2 |        1
+  {N4}                     |        2 |        1
+  {N0, N1}                 |        4 |        2
+  {N1, N2}                 |        4 |        2
+  {N2, N3}                 |        4 |        2
+  {N3, N4}                 |        4 |        2
+  {N4, N0}                 |        4 |        2
+
+  NOTE: Full-graph min-cuts differ from the star topology
+  because N–N bonds add lateral connections.  The restricted
+  star topology is the correct model for the holographic
+  correspondence (matching Common/StarSpec.agda).
+
+  ── §5.  Combinatorial Curvature ──
+  κ(v) = 1 − deg_E(v)/2 + Σ_{f ∋ v} 1/sides(f)
+  Gauss–Bonnet:  Σ_v κ(v) = χ(K) = 1
+
+  Vertex class                   | Count |        κ | κ (tenths) |   Subtotal
+  ───────────────────────────────────────────────────────────────────────────
+  boundary-outer (b_i)           |     5 |      1/5 |          2 |          1  (bdy)
+  boundary-shared (w_i)          |     5 |    -1/10 |         -1 |       -1/2  (bdy)
+  interior (v_i)                 |     5 |     1/10 |          1 |        1/2  (int)
+
+  Total:  Σ κ(v) = 1  ✓  (expected χ = 1)
+
+  ── §6.  Curvature Comparison: {5,3} vs {5,4} ──
+
+  Interior vertex curvature:
+    {5,3} (dS):   κ = 1/10 = 1/10  (POSITIVE — spherical)
+    {5,4} (AdS):  κ = -1/5 = -2/10  (negative — hyperbolic)
+    Sign flip:  -1/5 → 1/10
+
+  Curvature formula comparison:
+    {5,4}: κ = 1 − 4/2 + 4·(1/5) = 1 − 2 + 4/5 = −1/5
+    {5,3}: κ = 1 − 3/2 + 3·(1/5) = 1 − 3/2 + 3/5 = +1/10
+    The only difference: vertex valence q (4 vs 3).
+
+  ── §7.  ℚ₁₀ Encoding for Agda ──
+  (Curvature values in tenths, as ℤ integers)
+  (These are the constants for Bulk/DeSitterCurvature.agda)
+
+  Vertex class                   | κ (rational) |  κ₁₀ (ℤ) |   Agda constant
+  ───────────────────────────────────────────────────────────────────────────
+  boundary-outer (b_i)           |          1/5 |        2 |           pos 2
+  boundary-shared (w_i)          |        -1/10 |       -1 |        negsuc 0
+  interior (v_i)                 |         1/10 |        1 |           pos 1
+
+  ── §8.  Gauss–Bonnet Sum in ℚ₁₀ ──
+  (This is the arithmetic core of DeSitterGaussBonnet.agda)
+    5 ×    1/5  =  5 · (  2/10)  =    10/10
+    5 ×  -1/10  =  5 · ( -1/10)  =    -5/10
+    5 ×   1/10  =  5 · (  1/10)  =     5/10
+
+    Total:  5 · (2) + 5 · (-1) + 5 · (1)  =  10/10
+    Expected:  10/10  (= χ = 1)
+    ✓  Gauss–Bonnet verified!
+
+    Agda proof:  totalDSCurvature ≡ one₁₀
+    where  totalDSCurvature = pos 10 = pos 10 = one₁₀
+    Proof:  refl
+
+  ════════════════════════════════════════════════════════════
+  SUMMARY — Phase E.0 Exit Criterion Check
+  ════════════════════════════════════════════════════════════
+    ✓ PASS  Bond graph isomorphic to {5,4} star (restricted)
+    ✓ PASS  All 10 min-cut values match {5,4} star
+    ✓ PASS  Euler characteristic χ = 1 (disk)
+    ✓ PASS  Interior curvature is POSITIVE (κ = +1/10)
+    ✓ PASS  Gauss–Bonnet: Σ κ(v) = χ(K) = 1
+    ✓ PASS  ℚ₁₀ encoding: all values have denominator dividing 10
+
+  ▶  ALL CHECKS PASS!
+     The {5,3} star patch produces identical min-cut
+     profiles to the {5,4} star on the restricted star
+     topology.  The existing Bridge modules can be reused
+     without modification.  The only new Agda content is:
+       • Bulk/DeSitterPatchComplex.agda  (vertex classification)
+       • Bulk/DeSitterCurvature.agda     (κ = +1/10 interior)
+       • Bulk/DeSitterGaussBonnet.agda   (Σκ = 1 by refl)
+       • Bridge/WickRotation.agda        (coherence record)
+
+  ── §9.  The Discrete Wick Rotation ──
+
+  The "discrete Wick rotation" is NOT a complex-number multiplication.
+  It is a PARAMETER CHANGE in the tiling type:
+
+    {5,4} (AdS, hyperbolic, κ < 0)  ←→  {5,3} (dS, spherical, κ > 0)
+
+  What changes:
+    • Vertex valence:  q = 4  →  q = 3
+    • Interior curvature:  κ = −1/5  →  κ = +1/10
+    • Gap-filler tiles:  needed  →  not needed
+    • N–N adjacency:  absent  →  present (but irrelevant for bridge)
+
+  What does NOT change:
+    • Tile type:  pentagons (p = 5)
+    • Bond graph (restricted star topology):  5 C–N bonds
+    • Min-cut values:  S(k) = min(k, 5−k)
+    • Observable packages:  identical types and values
+    • Bridge equivalence:  literally the same Agda term
+    • Euler characteristic:  χ = 1 (disk)
+    • Gauss–Bonnet:  Σ κ(v) = 1
+
+  The holographic correspondence is CURVATURE-AGNOSTIC.
+  The curvature sign flip is a separate, compatible structure.
+  No complex numbers, no analytic continuation, no Lorentzian geometry.

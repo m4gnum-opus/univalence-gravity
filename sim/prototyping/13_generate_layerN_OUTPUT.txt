@@ -1,0 +1,623 @@
+```bash
+(venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python sim/prototyping/13_generate_layerN.py --depth 2
+╔═══════════════════════════════════════════════════════════╗
+║  Phase C.1: {5,4} Layer Generator — BFS depth 2            ║
+║  Coxeter [5,4] • pentagonal tiling • orbit reduction      ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Initializing Coxeter geometry for [5,4] ...
+  Gram matrix eigenvalues: -0.0745, 1.0000, 2.0745
+  Signature: (2, 1)  ✓ hyperbolic
+  ✓  Reflections: involution, G-preservation, Coxeter.
+  Tile center norm²: -2.236068  (timelike ✓)
+
+  Enumerating tile stabilizer <s₀, s₁> ...
+  ✓  Tile stabilizer D₅ has 10 elements.
+  Computing 5 edge crossings ...
+  ✓  5 edge crossings found.
+  ✓  All edge crossings are involutions.
+
+  Building {5,4} BFS depth 2 ...
+  ✓  21 tiles, 25 bonds, 55 boundary legs.
+
+  Enumerating boundary regions (max 4 tiles) ...
+  ✓  15 regions computed.
+  Computing orbit reduction by min-cut value ...
+  ✓  2 orbits (15 → 2, 8×)
+
+  ── {5,4} Tiling Patch at BFS Depth 2 ──
+  Tiles (pentagons):    21
+  Internal bonds:       25
+  Boundary legs:        55
+  Density (2·bonds/tiles): 2.38
+
+  ── Region Statistics (15 total) ──
+  By size:
+    1-tile regions:  15
+  By min-cut value:
+    S = 1:  10 regions
+    S = 2:  5 regions
+  Min-cut range:  1 – 2
+
+  ── Orbit Reduction ──
+  Distinct min-cut values:  2
+    mc1  (S = 1):  10 regions
+    mc2  (S = 2):  5 regions
+  Reduction factor:  15 → 2  (8× fewer proof cases)
+
+  ── SchematicTower Integration ──
+  To add this level to the schematic tower:
+    1. Load the 4 generated modules in Agda.
+    2. In Bridge/GenericValidation.agda, construct:
+         layer54d2OrbitPatch : OrbitReducedPatch
+    3. In Bridge/SchematicTower.agda:
+         layer54d2-tower-level = mkTowerLevel layer54d2OrbitPatch 2
+    The generic bridge (orbit-bridge-witness) will
+    automatically produce the full BridgeWitness.
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK ({5,4} Layer at depth 2)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Region count (raw ≤ 5000)  (actual: 15)
+    ✓ PASS  Orbit count ≤ 200  (actual: 2)
+    ✓ PASS  Max min-cut > 0 (nontrivial)  (actual: 2)
+    ✓ PASS  Orbit reduction effective (ratio > 2×)  (actual: 8×)
+
+  ▶  GATES PASS — Agda formalization FEASIBLE
+
+  Output directory: /home/zimablue/univalence-gravity/src
+
+  ✓  /home/zimablue/univalence-gravity/src/Common/Layer54d2Spec.agda  (52 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Layer54d2Cut.agda  (25 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Layer54d2Chain.agda  (25 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bridge/Layer54d2Obs.agda  (57 lines)
+
+  ── Summary: generated 4 files, ~159 lines total ──
+
+  Module contents:
+    Layer54d2Region constructors:       15
+    Layer54d2OrbitRep constructors:      2
+    classifyLayer54d2 clauses:           15
+    S-cut-rep / L-min-rep clauses: 2 each
+    Pointwise-rep refl proofs:     2
+    Pointwise lifting:             1 line
+    Max min-cut:                   2
+
+  To integrate with Bridge/GenericBridge.agda:
+
+    -- In a validation module:
+    layer54d2OrbitPatch : OrbitReducedPatch
+    layer54d2OrbitPatch .OrbitReducedPatch.RegionTy  = Layer54d2Region
+    layer54d2OrbitPatch .OrbitReducedPatch.OrbitTy   = Layer54d2OrbitRep
+    layer54d2OrbitPatch .OrbitReducedPatch.classify  = classifyLayer54d2
+    layer54d2OrbitPatch .OrbitReducedPatch.S-rep     = S-cut-rep
+    layer54d2OrbitPatch .OrbitReducedPatch.L-rep     = L-min-rep
+    layer54d2OrbitPatch .OrbitReducedPatch.rep-agree = layer54d2-pointwise-rep
+
+    -- The generic bridge automatically produces BridgeWitness:
+    layer54d2-witness : BridgeWitness
+    layer54d2-witness = orbit-bridge-witness layer54d2OrbitPatch
+
+    -- For the schematic tower:
+    layer54d2-tower-level = mkTowerLevel layer54d2OrbitPatch 2
+```
+
+```bash
+(venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python sim/prototyping/13_generate_layerN.py --depth 3
+╔═══════════════════════════════════════════════════════════╗
+║  Phase C.1: {5,4} Layer Generator — BFS depth 3            ║
+║  Coxeter [5,4] • pentagonal tiling • orbit reduction      ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Initializing Coxeter geometry for [5,4] ...
+  Gram matrix eigenvalues: -0.0745, 1.0000, 2.0745
+  Signature: (2, 1)  ✓ hyperbolic
+  ✓  Reflections: involution, G-preservation, Coxeter.
+  Tile center norm²: -2.236068  (timelike ✓)
+
+  Enumerating tile stabilizer <s₀, s₁> ...
+  ✓  Tile stabilizer D₅ has 10 elements.
+  Computing 5 edge crossings ...
+  ✓  5 edge crossings found.
+  ✓  All edge crossings are involutions.
+
+  Building {5,4} BFS depth 3 ...
+  ✓  61 tiles, 80 bonds, 145 boundary legs.
+
+  Enumerating boundary regions (max 4 tiles) ...
+  ✓  40 regions computed.
+  Computing orbit reduction by min-cut value ...
+  ✓  2 orbits (40 → 2, 20×)
+
+  ── {5,4} Tiling Patch at BFS Depth 3 ──
+  Tiles (pentagons):    61
+  Internal bonds:       80
+  Boundary legs:        145
+  Density (2·bonds/tiles): 2.62
+
+  ── Region Statistics (40 total) ──
+  By size:
+    1-tile regions:  40
+  By min-cut value:
+    S = 1:  25 regions
+    S = 2:  15 regions
+  Min-cut range:  1 – 2
+
+  ── Orbit Reduction ──
+  Distinct min-cut values:  2
+    mc1  (S = 1):  25 regions
+    mc2  (S = 2):  15 regions
+  Reduction factor:  40 → 2  (20× fewer proof cases)
+
+  ── SchematicTower Integration ──
+  To add this level to the schematic tower:
+    1. Load the 4 generated modules in Agda.
+    2. In Bridge/GenericValidation.agda, construct:
+         layer54d3OrbitPatch : OrbitReducedPatch
+    3. In Bridge/SchematicTower.agda:
+         layer54d3-tower-level = mkTowerLevel layer54d3OrbitPatch 2
+    The generic bridge (orbit-bridge-witness) will
+    automatically produce the full BridgeWitness.
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK ({5,4} Layer at depth 3)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Region count (raw ≤ 5000)  (actual: 40)
+    ✓ PASS  Orbit count ≤ 200  (actual: 2)
+    ✓ PASS  Max min-cut > 0 (nontrivial)  (actual: 2)
+    ✓ PASS  Orbit reduction effective (ratio > 2×)  (actual: 20×)
+
+  ▶  GATES PASS — Agda formalization FEASIBLE
+
+  Output directory: /home/zimablue/univalence-gravity/src
+
+  ✓  /home/zimablue/univalence-gravity/src/Common/Layer54d3Spec.agda  (79 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Layer54d3Cut.agda  (25 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Layer54d3Chain.agda  (25 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bridge/Layer54d3Obs.agda  (57 lines)
+
+  ── Summary: generated 4 files, ~186 lines total ──
+
+  Module contents:
+    Layer54d3Region constructors:       40
+    Layer54d3OrbitRep constructors:      2
+    classifyLayer54d3 clauses:           40
+    S-cut-rep / L-min-rep clauses: 2 each
+    Pointwise-rep refl proofs:     2
+    Pointwise lifting:             1 line
+    Max min-cut:                   2
+
+  To integrate with Bridge/GenericBridge.agda:
+
+    -- In a validation module:
+    layer54d3OrbitPatch : OrbitReducedPatch
+    layer54d3OrbitPatch .OrbitReducedPatch.RegionTy  = Layer54d3Region
+    layer54d3OrbitPatch .OrbitReducedPatch.OrbitTy   = Layer54d3OrbitRep
+    layer54d3OrbitPatch .OrbitReducedPatch.classify  = classifyLayer54d3
+    layer54d3OrbitPatch .OrbitReducedPatch.S-rep     = S-cut-rep
+    layer54d3OrbitPatch .OrbitReducedPatch.L-rep     = L-min-rep
+    layer54d3OrbitPatch .OrbitReducedPatch.rep-agree = layer54d3-pointwise-rep
+
+    -- The generic bridge automatically produces BridgeWitness:
+    layer54d3-witness : BridgeWitness
+    layer54d3-witness = orbit-bridge-witness layer54d3OrbitPatch
+
+    -- For the schematic tower:
+    layer54d3-tower-level = mkTowerLevel layer54d3OrbitPatch 2
+```
+
+```bash
+(venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python sim/prototyping/13_generate_layerN.py --depth 4
+╔═══════════════════════════════════════════════════════════╗
+║  Phase C.1: {5,4} Layer Generator — BFS depth 4            ║
+║  Coxeter [5,4] • pentagonal tiling • orbit reduction      ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Initializing Coxeter geometry for [5,4] ...
+  Gram matrix eigenvalues: -0.0745, 1.0000, 2.0745
+  Signature: (2, 1)  ✓ hyperbolic
+  ✓  Reflections: involution, G-preservation, Coxeter.
+  Tile center norm²: -2.236068  (timelike ✓)
+
+  Enumerating tile stabilizer <s₀, s₁> ...
+  ✓  Tile stabilizer D₅ has 10 elements.
+  Computing 5 edge crossings ...
+  ✓  5 edge crossings found.
+  ✓  All edge crossings are involutions.
+
+  Building {5,4} BFS depth 4 ...
+  ✓  166 tiles, 225 bonds, 380 boundary legs.
+
+  Enumerating boundary regions (max 4 tiles) ...
+  ✓  105 regions computed.
+  Computing orbit reduction by min-cut value ...
+  ✓  2 orbits (105 → 2, 52×)
+
+  ── {5,4} Tiling Patch at BFS Depth 4 ──
+  Tiles (pentagons):    166
+  Internal bonds:       225
+  Boundary legs:        380
+  Density (2·bonds/tiles): 2.71
+
+  ── Region Statistics (105 total) ──
+  By size:
+    1-tile regions:  105
+  By min-cut value:
+    S = 1:  65 regions
+    S = 2:  40 regions
+  Min-cut range:  1 – 2
+
+  ── Orbit Reduction ──
+  Distinct min-cut values:  2
+    mc1  (S = 1):  65 regions
+    mc2  (S = 2):  40 regions
+  Reduction factor:  105 → 2  (52× fewer proof cases)
+
+  ── SchematicTower Integration ──
+  To add this level to the schematic tower:
+    1. Load the 4 generated modules in Agda.
+    2. In Bridge/GenericValidation.agda, construct:
+         layer54d4OrbitPatch : OrbitReducedPatch
+    3. In Bridge/SchematicTower.agda:
+         layer54d4-tower-level = mkTowerLevel layer54d4OrbitPatch 2
+    The generic bridge (orbit-bridge-witness) will
+    automatically produce the full BridgeWitness.
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK ({5,4} Layer at depth 4)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Region count (raw ≤ 5000)  (actual: 105)
+    ✓ PASS  Orbit count ≤ 200  (actual: 2)
+    ✓ PASS  Max min-cut > 0 (nontrivial)  (actual: 2)
+    ✓ PASS  Orbit reduction effective (ratio > 2×)  (actual: 52×)
+
+  ▶  GATES PASS — Agda formalization FEASIBLE
+
+  Output directory: /home/zimablue/univalence-gravity/src
+
+  ✓  /home/zimablue/univalence-gravity/src/Common/Layer54d4Spec.agda  (151 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Layer54d4Cut.agda  (25 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Layer54d4Chain.agda  (25 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bridge/Layer54d4Obs.agda  (57 lines)
+
+  ── Summary: generated 4 files, ~258 lines total ──
+
+  Module contents:
+    Layer54d4Region constructors:       105
+    Layer54d4OrbitRep constructors:      2
+    classifyLayer54d4 clauses:           105
+    S-cut-rep / L-min-rep clauses: 2 each
+    Pointwise-rep refl proofs:     2
+    Pointwise lifting:             1 line
+    Max min-cut:                   2
+
+  To integrate with Bridge/GenericBridge.agda:
+
+    -- In a validation module:
+    layer54d4OrbitPatch : OrbitReducedPatch
+    layer54d4OrbitPatch .OrbitReducedPatch.RegionTy  = Layer54d4Region
+    layer54d4OrbitPatch .OrbitReducedPatch.OrbitTy   = Layer54d4OrbitRep
+    layer54d4OrbitPatch .OrbitReducedPatch.classify  = classifyLayer54d4
+    layer54d4OrbitPatch .OrbitReducedPatch.S-rep     = S-cut-rep
+    layer54d4OrbitPatch .OrbitReducedPatch.L-rep     = L-min-rep
+    layer54d4OrbitPatch .OrbitReducedPatch.rep-agree = layer54d4-pointwise-rep
+
+    -- The generic bridge automatically produces BridgeWitness:
+    layer54d4-witness : BridgeWitness
+    layer54d4-witness = orbit-bridge-witness layer54d4OrbitPatch
+
+    -- For the schematic tower:
+    layer54d4-tower-level = mkTowerLevel layer54d4OrbitPatch 2
+```
+
+```bash
+(venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python sim/prototyping/13_generate_layerN.py --depth 5
+╔═══════════════════════════════════════════════════════════╗
+║  Phase C.1: {5,4} Layer Generator — BFS depth 5            ║
+║  Coxeter [5,4] • pentagonal tiling • orbit reduction      ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Initializing Coxeter geometry for [5,4] ...
+  Gram matrix eigenvalues: -0.0745, 1.0000, 2.0745
+  Signature: (2, 1)  ✓ hyperbolic
+  ✓  Reflections: involution, G-preservation, Coxeter.
+  Tile center norm²: -2.236068  (timelike ✓)
+
+  Enumerating tile stabilizer <s₀, s₁> ...
+  ✓  Tile stabilizer D₅ has 10 elements.
+  Computing 5 edge crossings ...
+  ✓  5 edge crossings found.
+  ✓  All edge crossings are involutions.
+
+  Building {5,4} BFS depth 5 ...
+  ✓  441 tiles, 605 bonds, 995 boundary legs.
+
+  Enumerating boundary regions (max 4 tiles) ...
+  ✓  275 regions computed.
+  Computing orbit reduction by min-cut value ...
+  ✓  2 orbits (275 → 2, 138×)
+
+  ── {5,4} Tiling Patch at BFS Depth 5 ──
+  Tiles (pentagons):    441
+  Internal bonds:       605
+  Boundary legs:        995
+  Density (2·bonds/tiles): 2.74
+
+  ── Region Statistics (275 total) ──
+  By size:
+    1-tile regions:  275
+  By min-cut value:
+    S = 1:  170 regions
+    S = 2:  105 regions
+  Min-cut range:  1 – 2
+
+  ── Orbit Reduction ──
+  Distinct min-cut values:  2
+    mc1  (S = 1):  170 regions
+    mc2  (S = 2):  105 regions
+  Reduction factor:  275 → 2  (138× fewer proof cases)
+
+  ── SchematicTower Integration ──
+  To add this level to the schematic tower:
+    1. Load the 4 generated modules in Agda.
+    2. In Bridge/GenericValidation.agda, construct:
+         layer54d5OrbitPatch : OrbitReducedPatch
+    3. In Bridge/SchematicTower.agda:
+         layer54d5-tower-level = mkTowerLevel layer54d5OrbitPatch 2
+    The generic bridge (orbit-bridge-witness) will
+    automatically produce the full BridgeWitness.
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK ({5,4} Layer at depth 5)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Region count (raw ≤ 5000)  (actual: 275)
+    ✓ PASS  Orbit count ≤ 200  (actual: 2)
+    ✓ PASS  Max min-cut > 0 (nontrivial)  (actual: 2)
+    ✓ PASS  Orbit reduction effective (ratio > 2×)  (actual: 138×)
+
+  ▶  GATES PASS — Agda formalization FEASIBLE
+
+  Output directory: /home/zimablue/univalence-gravity/src
+
+  ✓  /home/zimablue/univalence-gravity/src/Common/Layer54d5Spec.agda  (338 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Layer54d5Cut.agda  (25 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Layer54d5Chain.agda  (25 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bridge/Layer54d5Obs.agda  (57 lines)
+
+  ── Summary: generated 4 files, ~445 lines total ──
+
+  Module contents:
+    Layer54d5Region constructors:       275
+    Layer54d5OrbitRep constructors:      2
+    classifyLayer54d5 clauses:           275
+    S-cut-rep / L-min-rep clauses: 2 each
+    Pointwise-rep refl proofs:     2
+    Pointwise lifting:             1 line
+    Max min-cut:                   2
+
+  To integrate with Bridge/GenericBridge.agda:
+
+    -- In a validation module:
+    layer54d5OrbitPatch : OrbitReducedPatch
+    layer54d5OrbitPatch .OrbitReducedPatch.RegionTy  = Layer54d5Region
+    layer54d5OrbitPatch .OrbitReducedPatch.OrbitTy   = Layer54d5OrbitRep
+    layer54d5OrbitPatch .OrbitReducedPatch.classify  = classifyLayer54d5
+    layer54d5OrbitPatch .OrbitReducedPatch.S-rep     = S-cut-rep
+    layer54d5OrbitPatch .OrbitReducedPatch.L-rep     = L-min-rep
+    layer54d5OrbitPatch .OrbitReducedPatch.rep-agree = layer54d5-pointwise-rep
+
+    -- The generic bridge automatically produces BridgeWitness:
+    layer54d5-witness : BridgeWitness
+    layer54d5-witness = orbit-bridge-witness layer54d5OrbitPatch
+
+    -- For the schematic tower:
+    layer54d5-tower-level = mkTowerLevel layer54d5OrbitPatch 2
+```
+
+```bash
+(venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python sim/prototyping/13_generate_layerN.py --depth 6
+╔═══════════════════════════════════════════════════════════╗
+║  Phase C.1: {5,4} Layer Generator — BFS depth 6            ║
+║  Coxeter [5,4] • pentagonal tiling • orbit reduction      ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Initializing Coxeter geometry for [5,4] ...
+  Gram matrix eigenvalues: -0.0745, 1.0000, 2.0745
+  Signature: (2, 1)  ✓ hyperbolic
+  ✓  Reflections: involution, G-preservation, Coxeter.
+  Tile center norm²: -2.236068  (timelike ✓)
+
+  Enumerating tile stabilizer <s₀, s₁> ...
+  ✓  Tile stabilizer D₅ has 10 elements.
+  Computing 5 edge crossings ...
+  ✓  5 edge crossings found.
+  ✓  All edge crossings are involutions.
+
+  Building {5,4} BFS depth 6 ...
+  ✓  1161 tiles, 1600 bonds, 2605 boundary legs.
+
+  Enumerating boundary regions (max 4 tiles) ...
+  ✓  720 regions computed.
+  Computing orbit reduction by min-cut value ...
+  ✓  2 orbits (720 → 2, 360×)
+
+  ── {5,4} Tiling Patch at BFS Depth 6 ──
+  Tiles (pentagons):    1161
+  Internal bonds:       1600
+  Boundary legs:        2605
+  Density (2·bonds/tiles): 2.76
+
+  ── Region Statistics (720 total) ──
+  By size:
+    1-tile regions:  720
+  By min-cut value:
+    S = 1:  445 regions
+    S = 2:  275 regions
+  Min-cut range:  1 – 2
+
+  ── Orbit Reduction ──
+  Distinct min-cut values:  2
+    mc1  (S = 1):  445 regions
+    mc2  (S = 2):  275 regions
+  Reduction factor:  720 → 2  (360× fewer proof cases)
+
+  ── SchematicTower Integration ──
+  To add this level to the schematic tower:
+    1. Load the 4 generated modules in Agda.
+    2. In Bridge/GenericValidation.agda, construct:
+         layer54d6OrbitPatch : OrbitReducedPatch
+    3. In Bridge/SchematicTower.agda:
+         layer54d6-tower-level = mkTowerLevel layer54d6OrbitPatch 2
+    The generic bridge (orbit-bridge-witness) will
+    automatically produce the full BridgeWitness.
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK ({5,4} Layer at depth 6)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Region count (raw ≤ 5000)  (actual: 720)
+    ✓ PASS  Orbit count ≤ 200  (actual: 2)
+    ✓ PASS  Max min-cut > 0 (nontrivial)  (actual: 2)
+    ✓ PASS  Orbit reduction effective (ratio > 2×)  (actual: 360×)
+
+  ▶  GATES PASS — Agda formalization FEASIBLE
+
+  Output directory: /home/zimablue/univalence-gravity/src
+
+  ✓  /home/zimablue/univalence-gravity/src/Common/Layer54d6Spec.agda  (827 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Layer54d6Cut.agda  (25 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Layer54d6Chain.agda  (25 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bridge/Layer54d6Obs.agda  (57 lines)
+
+  ── Summary: generated 4 files, ~934 lines total ──
+
+  Module contents:
+    Layer54d6Region constructors:       720
+    Layer54d6OrbitRep constructors:      2
+    classifyLayer54d6 clauses:           720
+    S-cut-rep / L-min-rep clauses: 2 each
+    Pointwise-rep refl proofs:     2
+    Pointwise lifting:             1 line
+    Max min-cut:                   2
+
+  To integrate with Bridge/GenericBridge.agda:
+
+    -- In a validation module:
+    layer54d6OrbitPatch : OrbitReducedPatch
+    layer54d6OrbitPatch .OrbitReducedPatch.RegionTy  = Layer54d6Region
+    layer54d6OrbitPatch .OrbitReducedPatch.OrbitTy   = Layer54d6OrbitRep
+    layer54d6OrbitPatch .OrbitReducedPatch.classify  = classifyLayer54d6
+    layer54d6OrbitPatch .OrbitReducedPatch.S-rep     = S-cut-rep
+    layer54d6OrbitPatch .OrbitReducedPatch.L-rep     = L-min-rep
+    layer54d6OrbitPatch .OrbitReducedPatch.rep-agree = layer54d6-pointwise-rep
+
+    -- The generic bridge automatically produces BridgeWitness:
+    layer54d6-witness : BridgeWitness
+    layer54d6-witness = orbit-bridge-witness layer54d6OrbitPatch
+
+    -- For the schematic tower:
+    layer54d6-tower-level = mkTowerLevel layer54d6OrbitPatch 2
+```
+
+```bash
+(venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python sim/prototyping/13_generate_layerN.py --depth 7
+╔═══════════════════════════════════════════════════════════╗
+║  Phase C.1: {5,4} Layer Generator — BFS depth 7            ║
+║  Coxeter [5,4] • pentagonal tiling • orbit reduction      ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Initializing Coxeter geometry for [5,4] ...
+  Gram matrix eigenvalues: -0.0745, 1.0000, 2.0745
+  Signature: (2, 1)  ✓ hyperbolic
+  ✓  Reflections: involution, G-preservation, Coxeter.
+  Tile center norm²: -2.236068  (timelike ✓)
+
+  Enumerating tile stabilizer <s₀, s₁> ...
+  ✓  Tile stabilizer D₅ has 10 elements.
+  Computing 5 edge crossings ...
+  ✓  5 edge crossings found.
+  ✓  All edge crossings are involutions.
+
+  Building {5,4} BFS depth 7 ...
+  ✓  3046 tiles, 4205 bonds, 6820 boundary legs.
+
+  Enumerating boundary regions (max 4 tiles) ...
+  ✓  1885 regions computed.
+  Computing orbit reduction by min-cut value ...
+  ✓  2 orbits (1885 → 2, 942×)
+
+  ── {5,4} Tiling Patch at BFS Depth 7 ──
+  Tiles (pentagons):    3046
+  Internal bonds:       4205
+  Boundary legs:        6820
+  Density (2·bonds/tiles): 2.76
+
+  ── Region Statistics (1885 total) ──
+  By size:
+    1-tile regions:  1885
+  By min-cut value:
+    S = 1:  1165 regions
+    S = 2:  720 regions
+  Min-cut range:  1 – 2
+
+  ── Orbit Reduction ──
+  Distinct min-cut values:  2
+    mc1  (S = 1):  1165 regions
+    mc2  (S = 2):  720 regions
+  Reduction factor:  1885 → 2  (942× fewer proof cases)
+
+  ── SchematicTower Integration ──
+  To add this level to the schematic tower:
+    1. Load the 4 generated modules in Agda.
+    2. In Bridge/GenericValidation.agda, construct:
+         layer54d7OrbitPatch : OrbitReducedPatch
+    3. In Bridge/SchematicTower.agda:
+         layer54d7-tower-level = mkTowerLevel layer54d7OrbitPatch 2
+    The generic bridge (orbit-bridge-witness) will
+    automatically produce the full BridgeWitness.
+
+  ═══════════════════════════════════════════════════════
+  GATE CHECK ({5,4} Layer at depth 7)
+  ═══════════════════════════════════════════════════════
+    ✓ PASS  Region count (raw ≤ 5000)  (actual: 1885)
+    ✓ PASS  Orbit count ≤ 200  (actual: 2)
+    ✓ PASS  Max min-cut > 0 (nontrivial)  (actual: 2)
+    ✓ PASS  Orbit reduction effective (ratio > 2×)  (actual: 942×)
+
+  ▶  GATES PASS — Agda formalization FEASIBLE
+
+  Output directory: /home/zimablue/univalence-gravity/src
+
+  ✓  /home/zimablue/univalence-gravity/src/Common/Layer54d7Spec.agda  (2109 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Layer54d7Cut.agda  (25 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Layer54d7Chain.agda  (25 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bridge/Layer54d7Obs.agda  (57 lines)
+
+  ── Summary: generated 4 files, ~2216 lines total ──
+
+  Module contents:
+    Layer54d7Region constructors:       1885
+    Layer54d7OrbitRep constructors:      2
+    classifyLayer54d7 clauses:           1885
+    S-cut-rep / L-min-rep clauses: 2 each
+    Pointwise-rep refl proofs:     2
+    Pointwise lifting:             1 line
+    Max min-cut:                   2
+
+  To integrate with Bridge/GenericBridge.agda:
+
+    -- In a validation module:
+    layer54d7OrbitPatch : OrbitReducedPatch
+    layer54d7OrbitPatch .OrbitReducedPatch.RegionTy  = Layer54d7Region
+    layer54d7OrbitPatch .OrbitReducedPatch.OrbitTy   = Layer54d7OrbitRep
+    layer54d7OrbitPatch .OrbitReducedPatch.classify  = classifyLayer54d7
+    layer54d7OrbitPatch .OrbitReducedPatch.S-rep     = S-cut-rep
+    layer54d7OrbitPatch .OrbitReducedPatch.L-rep     = L-min-rep
+    layer54d7OrbitPatch .OrbitReducedPatch.rep-agree = layer54d7-pointwise-rep
+
+    -- The generic bridge automatically produces BridgeWitness:
+    layer54d7-witness : BridgeWitness
+    layer54d7-witness = orbit-bridge-witness layer54d7OrbitPatch
+
+    -- For the schematic tower:
+    layer54d7-tower-level = mkTowerLevel layer54d7OrbitPatch 2
+```

@@ -1,0 +1,139 @@
+╔═══════════════════════════════════════════════════════════╗
+║  11: Discrete Area Law — Dense-100 {4,3,5} Honeycomb    ║
+║  S_cut(A) ≤ area(A)  for all 717 boundary regions       ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Building Dense-100 patch via greedy max-connectivity ...
+  ✓  Reflections: involution, G-preservation, Coxeter relations.
+  ✓  100 cells, 150 internal faces, 300 boundary faces.
+
+  Enumerating cell-aligned boundary regions (max 5 cells) ...
+  Computing min-cut values and boundary surface areas ...
+  ✓  717 regions computed.
+  Min-cut range:       1 – 8
+  Boundary area range: 6 – 22
+
+  Verifying discrete area law: S(A) ≤ area(A) ...
+  ✓  Area law verified for all 717 regions!
+
+  ── Region Statistics (717 regions) ──
+
+  By region size (number of cells):
+    1-cell:    86 regions, area 6–6, min-cut 1–3
+    2-cell:    82 regions, area 10–10, min-cut 2–4
+    3-cell:   103 regions, area 14–14, min-cut 2–6
+    4-cell:   170 regions, area 18–18, min-cut 3–7
+    5-cell:   276 regions, area 20–22, min-cut 4–8
+
+  Min-cut value distribution:
+    S = 1:     4 regions
+    S = 2:    72 regions
+    S = 3:    62 regions
+    S = 4:    59 regions
+    S = 5:   137 regions
+    S = 6:   146 regions
+    S = 7:   227 regions
+    S = 8:    10 regions
+
+  Boundary area distribution:
+    area =  6:    86 regions
+    area = 10:    82 regions
+    area = 14:   103 regions
+    area = 18:   170 regions
+    area = 20:    12 regions
+    area = 22:   264 regions
+
+  Slack distribution (area − min-cut):
+    k =  3:    40 regions
+    k =  4:    42 regions
+    k =  5:     4 regions
+    k =  6:    47 regions
+    k =  7:    12 regions
+    k =  8:    25 regions
+    k =  9:    81 regions
+    k = 10:     4 regions
+    k = 11:    13 regions
+    k = 12:   147 regions
+    k = 13:    19 regions
+    k = 14:    16 regions
+    k = 15:   236 regions
+    k = 16:     4 regions
+    k = 17:    25 regions
+    k = 18:     2 regions
+
+  Slack range:  3 – 18  (mean 11.3)
+
+  Tight cases (S = area):  0 / 717  (0.0%)
+
+  ── Sample Regions ──
+  Region       | Cells |   S | Area | Slack |      Witness
+  ───────────────────────────────────────────────────────
+  d100r0       |     1 |   1 |    6 |     5 | (5 , refl)
+  d100r215     |     1 |   2 |    6 |     4 | (4 , refl)
+  d100r113     |     1 |   3 |    6 |     3 | (3 , refl)
+  d100r216     |     2 |   2 |   10 |     8 | (8 , refl)
+  d100r1       |     2 |   3 |   10 |     7 | (7 , refl)
+  d100r28      |     2 |   4 |   10 |     6 | (6 , refl)
+  d100r217     |     3 |   2 |   14 |    12 | (12 , refl)
+  d100r2       |     3 |   3 |   14 |    11 | (11 , refl)
+  d100r283     |     3 |   4 |   14 |    10 | (10 , refl)
+  d100r25      |     3 |   5 |   14 |     9 | (9 , refl)
+  d100r13      |     3 |   6 |   14 |     8 | (8 , refl)
+  d100r62      |     4 |   3 |   18 |    15 | (15 , refl)
+  d100r11      |     4 |   4 |   18 |    14 | (14 , refl)
+  d100r8       |     4 |   5 |   18 |    13 | (13 , refl)
+  d100r3       |     4 |   6 |   18 |    12 | (12 , refl)
+  ... (702 more)
+
+  Output: /home/zimablue/univalence-gravity/src/Boundary/Dense100AreaLaw.agda
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Dense100AreaLaw.agda  (2099 lines)
+
+  ── Summary: generated 1 file, ~2099 lines ──
+
+  Module contents:
+    regionArea clauses:        717
+    area-law abstract proofs:  717
+    Distinct slack values:     16
+    Slack witnesses used:
+      (3 , refl):  40 cases
+      (4 , refl):  42 cases
+      (5 , refl):  4 cases
+      (6 , refl):  47 cases
+      (7 , refl):  12 cases
+      (8 , refl):  25 cases
+      (9 , refl):  81 cases
+      (10 , refl):  4 cases
+      (11 , refl):  13 cases
+      (12 , refl):  147 cases
+      (13 , refl):  19 cases
+      (14 , refl):  16 cases
+      (15 , refl):  236 cases
+      (16 , refl):  4 cases
+      (17 , refl):  25 cases
+      (18 , refl):  2 cases
+    Tight cases (slack = 0):   0
+
+  This module provides the area-law upper bound for the Dense-100
+  patch, satisfying Tier 2 of the §8.7 implementation plan and
+  contributing to the CoarseGrainedRT type from Bridge/CoarseGrain.agda.
+
+  Together with  dense100-coarse-witness  (from Bridge/CoarseGrain.agda),
+  the triple  (dense100-coarse-witness , regionArea , area-law)
+  instantiates  CoarseGrainedRT , packaging:
+
+    1. The exact discrete RT correspondence (S = L) on all 717 regions
+    2. The orbit reduction (717 → 8 representative classes)
+    3. The area-law upper bound (S ≤ area) on all 717 regions
+    4. The factorization: all three cohere through classify100
+
+  Exit criterion (§8.11 of docs/10-frontier.md):
+    "A Python-generated Boundary/Dense100AreaLaw.agda contains
+     717 abstract cases of (k , refl) proving the discrete area
+     law, and type-checks."
+
+  Next steps:
+    1. Load  Boundary/Dense100AreaLaw.agda  in Agda to verify
+       it type-checks.
+    2. Instantiate  CoarseGrainedRT  in a downstream module by
+       combining  dense100-coarse-witness  with  regionArea  and
+       area-law  from this module.

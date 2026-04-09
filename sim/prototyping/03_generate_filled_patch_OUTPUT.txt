@@ -1,0 +1,43 @@
+(venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python3 sim/prototyping/03_generate_filled_patch.py
+╔══════════════════════════════════════════════════════════╗
+║  Phase 3.5:  11-Tile Filled Patch — Agda Code Generator  ║
+║  Strategy: Approach A (abstract) + C (external oracle)   ║
+╚══════════════════════════════════════════════════════════╝
+
+  Computing min-cut values for 90 regions ...
+  ✓  90 regions computed.
+  Computing 360 subadditivity witnesses ...
+  ✓  360 triples computed, all subadditive.
+
+  ── Min-cut value distribution (90 regions) ──
+    S = 2  :  20 regions
+    S = 3  :  30 regions
+    S = 4  :  40 regions
+
+  Complement symmetry:  90/90 verified
+
+  ── Subadditivity witness distribution (360 triples) ──
+    k = 1  :  30 cases
+    k = 2  :  100 cases
+    k = 3  :  100 cases
+    k = 4  :  50 cases
+    k = 5  :  50 cases
+    k = 6  :  30 cases
+
+  Output directory: /home/zimablue/univalence-gravity/src
+
+  ✓  /home/zimablue/univalence-gravity/src/Common/FilledSpec.agda  (507 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/FilledCut.agda  (124 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/FilledChain.agda  (120 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/FilledSubadditivity.agda  (862 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bridge/FilledObs.agda  (152 lines)
+
+  ── Summary: generated 5 files, ~1765 lines total ──
+
+  Next steps:
+    1. Load each generated file in Agda to verify it
+       type-checks (expect ~10-30 min total).
+    2. Implement  Bridge/FilledEquiv.agda  manually to
+       assemble the type equivalence and verify transport.
+    3. Commit the generator to sim/prototyping/ with a
+       Dockerfile or nix shell pinning the Python environment.
