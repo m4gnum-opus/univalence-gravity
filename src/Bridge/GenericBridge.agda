@@ -9,7 +9,7 @@ open import Cubical.Foundations.Isomorphism
 open import Cubical.Foundations.HLevels
 
 open import Util.Scalars
-open import Bridge.EnrichedStarEquiv
+open import Bridge.BridgeWitness
   using (BridgeWitness)
 
 
@@ -265,7 +265,7 @@ module GenericEnriched (pd : PatchData) where
   -- ── The Magnum Opus: fully proof-carrying bridge witness ─────────
   --
   --  Packages the entire construction into a single BridgeWitness
-  --  record (defined in Bridge/EnrichedStarEquiv.agda).  This is
+  --  record (defined in Bridge/BridgeWitness.agda).  This is
   --  the "Milestone 3–4 deliverable" — a machine-checked proof that
   --  the boundary and bulk observable packages are exactly
   --  equivalent types, with verified computable transport.
@@ -444,9 +444,9 @@ orbit-bridge-witness orp =
 --
 --    This module imports from (but does NOT modify):
 --      • Util/Scalars.agda              — ℚ≥0, isSetℚ≥0
---      • Bridge/EnrichedStarEquiv.agda  — BridgeWitness record
+--      • Bridge/BridgeWitness.agda      — BridgeWitness record
 --
---    New modules that would consume this:
+--    New modules that consume this:
 --      • Bridge/SchematicTower.agda     — TowerLevel, LayerStep
 --      • Bridge/GenericValidation.agda  — regression tests
 --

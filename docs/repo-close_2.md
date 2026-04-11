@@ -1,0 +1,3 @@
+All the relevant proofs for the mathematical foundation are there. The second part of this repository is the missing translation to our own universe. Before tackling the translation problem, the documentation will be significantly overhauled. This includes the documentation and their respective references. The repository's current state is preserved as a historical artefact. This could be useful for potential reverse prompt-engineering ideas.
+Sven Bichtemann
+04/10/2026

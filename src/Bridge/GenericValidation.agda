@@ -60,7 +60,7 @@ open import Bridge.GenericBridge
         ; orbit-to-patch ; orbit-bridge-witness
         ; module GenericEnriched )
 
-open import Bridge.EnrichedStarEquiv
+open import Bridge.BridgeWitness
   using (BridgeWitness)
 
 
@@ -397,7 +397,7 @@ d200-LB-pointwise _ = refl
 --      • Bridge/GenericBridge.agda       — PatchData, OrbitReducedPatch,
 --                                          GenericEnriched, orbit-to-patch,
 --                                          orbit-bridge-witness
---      • Bridge/EnrichedStarEquiv.agda   — BridgeWitness record
+--      • Bridge/BridgeWitness.agda       — BridgeWitness record
 --      • Bridge/EnrichedStarObs.agda     — star S∂, LB
 --      • Bridge/StarEquiv.agda           — star-obs-path
 --      • Bridge/FilledEquiv.agda         — S∂F, LBF

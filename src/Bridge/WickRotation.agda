@@ -15,8 +15,9 @@ open import Util.Rationals
 --  This module is the "crown jewel" of Direction E (§7 of
 --  docs/10-frontier.md).  It packages:
 --
---    1. The shared holographic bridge (Theorem 3, from
---       Bridge/EnrichedStarEquiv.agda) — the type equivalence
+--    1. The shared holographic bridge (Theorem 3, produced by the
+--       GENERIC bridge machinery from Bridge/GenericBridge.agda
+--       via Bridge/GenericValidation.agda) — the type equivalence
 --       between boundary and bulk observable packages, which
 --       depends ONLY on the 5-bond star flow-graph topology.
 --
@@ -61,10 +62,31 @@ open import Util.Rationals
 --  analogue of the cosmological constant sign flip
 --  Λ_AdS < 0 → Λ_dS > 0.
 --
+--  Architectural note (Phase 0 rewiring):
+--
+--    This module previously imported  full-witness : BridgeWitness
+--    from  Bridge/EnrichedStarEquiv.agda , creating a dependency on
+--    the hand-written, star-specific enriched bridge.  After the
+--    Phase 0 architectural tightening (docs/repo-close.md §3), the
+--    bridge witness is now imported from  Bridge/GenericValidation
+--    as  star-generic-witness , which is produced by the generic
+--    bridge machinery  (orbit-bridge-witness  from
+--    Bridge/GenericBridge.agda).
+--
+--    This makes it explicit that the shared holographic bridge is
+--    curvature-agnostic: it is produced by an abstract PatchData →
+--    BridgeWitness pipeline that never references curvature values,
+--    vertex classifications, or tiling parameters — only the scalar
+--    constants 1q and 2q from Util/Scalars.agda.
+--
+--    The old  full-witness  from  EnrichedStarEquiv  remains valid
+--    but is no longer on the critical path.
+--
 --  Reference:
 --    §7 of docs/10-frontier.md  (Direction E)
 --    §7.5.1 Components 1–3      (theorem structure)
 --    §7.13                       (exit criterion)
+--    docs/repo-close.md          (Architectural Rewiring §3)
 --    sim/prototyping/10_desitter_prototype.py  (numerical verification)
 --
 --  Exit criterion (§7.13 of docs/10-frontier.md):
@@ -99,12 +121,41 @@ open import Bulk.DeSitterGaussBonnet
 
 
 -- ════════════════════════════════════════════════════════════════════
---  Imports — Shared bridge (Theorem 3, curvature-agnostic)
+--  Imports — Shared bridge (curvature-agnostic)
+-- ════════════════════════════════════════════════════════════════════
+--
+--  BridgeWitness:  the record type, now imported from its canonical
+--  leaf module  Bridge/BridgeWitness.agda  (factored out of
+--  EnrichedStarEquiv during Phase 0, step 1).
+--
+--  star-generic-witness:  the concrete BridgeWitness for the star
+--  patch, produced by the GENERIC bridge machinery:
+--
+--    starPatchData : PatchData
+--      → GenericEnriched starPatchData
+--      → abstract-bridge-witness : BridgeWitness
+--
+--  This replaces the hand-written  full-witness  from
+--  Bridge/EnrichedStarEquiv.agda , making it clear that the
+--  bridge is curvature-agnostic and geometry-agnostic — it depends
+--  only on the abstract PatchData interface (RegionTy, S∂, LB,
+--  obs-path), not on any per-instance implementation details.
+--
+--  Theorem3 and theorem3:  the named star-specific bridge theorem,
+--  still imported from EnrichedStarEquiv for backward compatibility
+--  and downstream reference.  These reference concrete types from
+--  FullEnrichedStarObs (FullBdy, FullBulk) and do not conflict
+--  with the BridgeWitness import from the leaf module.
 -- ════════════════════════════════════════════════════════════════════
 
+open import Bridge.BridgeWitness
+  using (BridgeWitness)
+
+open import Bridge.GenericValidation
+  using (star-generic-witness)
+
 open import Bridge.EnrichedStarEquiv
-  using ( BridgeWitness ; full-witness
-        ; Theorem3 ; theorem3 )
+  using ( Theorem3 ; theorem3 )
 
 
 -- ════════════════════════════════════════════════════════════════════
@@ -192,7 +243,7 @@ ds-κ-positive = dsκ-interior-positive
 --  reference only the scalar constants 1q and 2q from
 --  Util/Scalars.agda.
 --
---  Therefore the same enriched equivalence  FullBdy ≃ FullBulk
+--  Therefore the same enriched equivalence  EnrichedBdy ≃ EnrichedBulk
 --  and the same transport  theorem3  serve BOTH curvature regimes.
 --  The bridge is literally the same Agda term for both {5,4} and
 --  {5,3} — it is the "curvature-free" observable layer from
@@ -204,15 +255,38 @@ ds-κ-positive = dsκ-interior-positive
 --  The bridge re-exported here IS  Obs_flow : the curvature-
 --  agnostic observable package depending only on the star flow
 --  graph.
+--
+--  Architectural note:
+--
+--    After Phase 0 rewiring, the bridge witness is produced by the
+--    GENERIC machinery:
+--
+--      starPatchData : PatchData
+--        (RegionTy = Region, S∂ = star-S∂, LB = star-LB,
+--         obs-path = star-obs-path)
+--        → GenericEnriched starPatchData
+--        → abstract-bridge-witness : BridgeWitness
+--
+--    This is imported as  star-generic-witness  from
+--    Bridge/GenericValidation.agda .  The generic theorem proves
+--    the bridge ONCE and instantiates it at each concrete patch
+--    by applying it to a specific PatchData.  The star patch is
+--    one such instantiation — but the proof itself never looks
+--    inside the PatchData to see whether it came from a {5,4}
+--    or {5,3} tiling.  This structural fact IS the curvature-
+--    agnosticism of the holographic correspondence.
 -- ════════════════════════════════════════════════════════════════════
 
--- The bridge witness, re-exported for the coherence record.
--- This is the SAME term as in Bridge/EnrichedStarEquiv.agda:
--- no new construction, no modification, no curvature reference.
+-- The bridge witness, imported from the GENERIC validation module.
+-- This is the SAME bridge for both curvature regimes:
+-- no curvature reference, no per-instance construction, no
+-- modification — just the generic theorem applied to starPatchData.
 the-bridge : BridgeWitness
-the-bridge = full-witness
+the-bridge = star-generic-witness
 
--- The bridge theorem, re-exported.
+-- The bridge theorem, re-exported from the hand-written enriched
+-- star equiv for backward compatibility.  This is the star-specific
+-- full structural-property transport theorem (FullBdy → FullBulk).
 the-bridge-theorem : Theorem3
 the-bridge-theorem = theorem3
 
@@ -252,7 +326,7 @@ the-ds-theorem = ds-theorem1
 --
 --  This record packages all three components (bridge + two GB
 --  theorems) into a single inspectable artifact, analogous to
---  BridgeWitness from Bridge/EnrichedStarEquiv.agda.
+--  BridgeWitness from Bridge/BridgeWitness.agda.
 --
 --  The record witnesses that:
 --
@@ -278,9 +352,13 @@ record WickRotationWitness : Type₁ where
     -- ── The shared holographic bridge (curvature-agnostic) ──────
     --
     --  This is the SAME bridge for both curvature regimes.
+    --  Produced by the generic bridge machinery from
+    --  Bridge/GenericBridge.agda, imported via
+    --  Bridge/GenericValidation.agda as star-generic-witness.
+    --
     --  It packages:
-    --    • BdyTy  = FullBdy   (boundary obs + subadditivity)
-    --    • BulkTy = FullBulk  (bulk obs + monotonicity)
+    --    • BdyTy  = EnrichedBdy   (boundary obs + spec agreement)
+    --    • BulkTy = EnrichedBulk  (bulk obs + spec agreement)
     --    • bridge : BdyTy ≃ BulkTy
     --    • transport along ua(bridge) verified
     --
@@ -318,13 +396,21 @@ record WickRotationWitness : Type₁ where
 --  the three independently verified components into a single
 --  coherent record.
 --
+--  The shared-bridge field is  star-generic-witness , produced by
+--  the generic bridge machinery (Bridge/GenericBridge.agda →
+--  Bridge/GenericValidation.agda).  This replaces the previous
+--  full-witness  from  Bridge/EnrichedStarEquiv.agda , making the
+--  curvature-agnosticism of the bridge structurally manifest:
+--  the generic theorem never inspects the PatchData to determine
+--  whether it came from a {5,4} or {5,3} tiling.
+--
 --  The euler-coherence field is  refl  because both  χ₁₀  and
 --  dsχ₁₀  are defined as  one₁₀ = pos 10  in their respective
 --  modules (Bulk/GaussBonnet.agda and Bulk/DeSitterGaussBonnet.agda).
 -- ════════════════════════════════════════════════════════════════════
 
 wick-rotation-witness : WickRotationWitness
-wick-rotation-witness .WickRotationWitness.shared-bridge    = full-witness
+wick-rotation-witness .WickRotationWitness.shared-bridge    = star-generic-witness
 wick-rotation-witness .WickRotationWitness.ads-gauss-bonnet = patch-gb-witness
 wick-rotation-witness .WickRotationWitness.ds-gauss-bonnet  = ds-patch-gb-witness
 wick-rotation-witness .WickRotationWitness.euler-coherence  = refl
@@ -364,6 +450,12 @@ ds-theorem1′ = ds-theorem1
 -- ────────────────────────────────────────────────────────────────
 --  The shared bridge theorem: boundary ≃ bulk observable
 --  packages, with transport verified.  Curvature-agnostic.
+--
+--  SharedTheorem3 references the star-specific FullBdy/FullBulk
+--  transport theorem from Bridge/EnrichedStarEquiv.agda.  This
+--  is the concrete star-patch theorem; the generic bridge witness
+--  (star-generic-witness) carries its own transport-verified field
+--  internally via BridgeWitness.transport-verified.
 -- ────────────────────────────────────────────────────────────────
 
 SharedTheorem3 : Type₀
@@ -457,7 +549,8 @@ ds-gb-proof = refl
 -- ════════════════════════════════════════════════════════════════════
 --
 --  The conceptual architecture from §7.15 of docs/10-frontier.md
---  is now fully realized:
+--  is now fully realized, with the bridge produced by the GENERIC
+--  machinery (Phase 0 rewiring):
 --
 --                   ┌─────────────────────────┐
 --                   │  Common/StarSpec.agda   │
@@ -476,9 +569,9 @@ ds-gb-proof = refl
 --                        │                      │
 --                ┌───────▼────────┐             │
 --                │ Bridge/        │             │
---                │ EnrichedStar   │  ◄──────────┘
---                │ Equiv.agda     │  (same bridge!)
---                │ (Theorem 3)    │
+--                │ GenericBridge  │  ◄──────────┘
+--                │ + GenericVal.  │  (same bridge!)
+--                │ (Theorem 3)   │
 --                └───────┬────────┘
 --                        │
 --          ┌─────────────┼─────────────┐
@@ -503,11 +596,15 @@ ds-gb-proof = refl
 --                │ • dS GB       │
 --                │ • Shared       │
 --                │   bridge       │
+--                │   (generic!)   │
 --                └────────────────┘
 --
 --  The bridge sits at the center, shared by both curvature regimes.
---  The two Gauss–Bonnet theorems attach independently to opposite
---  sides.  This module witnesses their coherence.
+--  It is now produced by  GenericBridge.agda  (the generic theorem
+--  proven once) and validated by  GenericValidation.agda  (the
+--  retroactive consistency test).  The two Gauss–Bonnet theorems
+--  attach independently to opposite sides.  This module witnesses
+--  their coherence.
 --
 --  This completes Phase E.1 Step 5 of the dS/AdS translator
 --  development plan (§7.11 of docs/10-frontier.md) and satisfies

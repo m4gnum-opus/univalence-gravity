@@ -1,0 +1,151 @@
+╔═══════════════════════════════════════════════════════════╗
+║  Milestone I:  Entropic Convergence — η_N Tracking       ║
+║  §15.9.7 of docs/10-frontier.md                         ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Parameters:
+    max-cells:        2000
+    max-region-cells: adaptive
+    max-depth-54:     7
+
+  Initializing {4,3,5} Coxeter geometry ...
+  ✓  {4,3,5} ready.
+  Initializing {5,4} Coxeter geometry ...
+  ✓  {5,4} ready.
+
+  ═══  {4,3,5} Dense Strategy  ═══
+    Dense-50 ...  50 cells, 139 regions, η=0.3182  (0.8s)
+    Dense-100 ...  100 cells, 717 regions, η=0.3636  (7.8s)
+    Dense-200 ...  200 cells, 1246 regions, η=0.4091  (28.4s)
+    Dense-500 ...  500 cells, 2186 regions, η=0.4444  (134.6s)
+    Dense-1000 ...  1000 cells, 2749 regions, η=0.5000  (359.1s)
+    Dense-2000 ...  2000 cells, 3385 regions, η=0.5000  (1019.3s)
+
+  ═══  {4,3,5} BFS-Shell Strategy  ═══
+    BFS-7 ...  32 cells, 34 regions, η=0.2000  (0.2s)
+    BFS-15 ...  66 cells, 68 regions, η=0.2000  (0.5s)
+    BFS-25 ...  108 cells, 112 regions, η=0.2000  (1.3s)
+    BFS-35 ...  151 cells, 158 regions, η=0.2000  (2.7s)
+    BFS-50 ...  214 cells, 236 regions, η=0.2143  (8.0s)
+    BFS-75 ...  317 cells, 351 regions, η=0.2222  (12.8s)
+    BFS-100 ...  417 cells, 455 regions, η=0.2222  (24.5s)
+    BFS-150 ...  612 cells, 632 regions, η=0.2857  (50.7s)
+    BFS-200 ...  809 cells, 835 regions, η=0.3571  (94.6s)
+
+  ═══  {5,4} BFS (depth) Strategy  ═══
+    depth 2 ...  21 tiles, 15 regions, η=0.4000  (0.0s)
+    depth 3 ...  61 tiles, 40 regions, η=0.4000  (0.2s)
+    depth 4 ...  166 tiles, 105 regions, η=0.4000  (1.4s)
+    depth 5 ...  441 tiles, 275 regions, η=0.4000  (10.6s)
+    depth 6 ...  1161 tiles, 720 regions, η=0.4000  (87.2s)
+    depth 7 ...  3046 tiles, 1885 regions, η=0.4000  (709.3s)
+
+════════════════════════════════════════════════════════════════════════
+  CONVERGENCE TABLE:  η_N = max S_N / max area_N
+════════════════════════════════════════════════════════════════════════
+
+  {4,3,5} Dense:
+        Dense-50 (   50 cells) : max S =  7, max area =  22, η = 0.3182  (139 regions, 0.8s)
+       Dense-100 (  100 cells) : max S =  8, max area =  22, η = 0.3636  (717 regions, 7.8s)
+       Dense-200 (  200 cells) : max S =  9, max area =  22, η = 0.4091  (1246 regions, 28.4s)
+       Dense-500 (  500 cells) : max S =  8, max area =  18, η = 0.4444  (2186 regions, 134.6s)
+      Dense-1000 ( 1000 cells) : max S =  7, max area =  14, η = 0.5000  (2749 regions, 359.1s)
+      Dense-2000 ( 2000 cells) : max S =  5, max area =  10, η = 0.5000  (3385 regions, 1019.3s)
+
+  {4,3,5} BFS-shell:
+           BFS-7 (   32 cells) : max S =  2, max area =  10, η = 0.2000  (34 regions, 0.2s)
+          BFS-15 (   66 cells) : max S =  2, max area =  10, η = 0.2000  (68 regions, 0.5s)
+          BFS-25 (  108 cells) : max S =  2, max area =  10, η = 0.2000  (112 regions, 1.3s)
+          BFS-35 (  151 cells) : max S =  2, max area =  10, η = 0.2000  (158 regions, 2.7s)
+          BFS-50 (  214 cells) : max S =  3, max area =  14, η = 0.2143  (236 regions, 8.0s)
+          BFS-75 (  317 cells) : max S =  4, max area =  18, η = 0.2222  (351 regions, 12.8s)
+         BFS-100 (  417 cells) : max S =  4, max area =  18, η = 0.2222  (455 regions, 24.5s)
+         BFS-150 (  612 cells) : max S =  4, max area =  14, η = 0.2857  (632 regions, 50.7s)
+         BFS-200 (  809 cells) : max S =  5, max area =  14, η = 0.3571  (835 regions, 94.6s)
+
+  {5,4} BFS (depth):
+             d=2 (   21 cells) : max S =  2, max area =   5, η = 0.4000  (15 regions, 0.0s)
+             d=3 (   61 cells) : max S =  2, max area =   5, η = 0.4000  (40 regions, 0.2s)
+             d=4 (  166 cells) : max S =  2, max area =   5, η = 0.4000  (105 regions, 1.4s)
+             d=5 (  441 cells) : max S =  2, max area =   5, η = 0.4000  (275 regions, 10.6s)
+             d=6 ( 1161 cells) : max S =  2, max area =   5, η = 0.4000  (720 regions, 87.2s)
+             d=7 ( 3046 cells) : max S =  2, max area =   5, η = 0.4000  (1885 regions, 709.3s)
+
+════════════════════════════════════════════════════════════════════════
+  STRATEGY & TILING COMPARISONS
+════════════════════════════════════════════════════════════════════════
+
+  STRATEGY COMPARISON at comparable N:
+    N ≈    50:  Dense η = 0.3182 (S=7),  BFS η = 0.2000 (S=2)
+    N ≈   100:  Dense η = 0.3636 (S=8),  BFS η = 0.2000 (S=2)
+    N ≈   200:  Dense η = 0.4091 (S=9),  BFS η = 0.2143 (S=3)
+    N ≈   500:  Dense η = 0.4444 (S=8),  BFS η = 0.2222 (S=4)
+    N ≈  1000:  Dense η = 0.5000 (S=7),  BFS η = 0.3571 (S=5)
+
+  TILING COMPARISON ({4,3,5} Dense vs {5,4} BFS):
+    {4,3,5}     Dense-50 (   50 cells) η = 0.3182    vs    {5,4}      d=3 (   61 tiles) η = 0.4000
+    {4,3,5}    Dense-100 (  100 cells) η = 0.3636    vs    {5,4}      d=3 (   61 tiles) η = 0.4000
+    {4,3,5}    Dense-200 (  200 cells) η = 0.4091    vs    {5,4}      d=4 (  166 tiles) η = 0.4000
+    {4,3,5}    Dense-500 (  500 cells) η = 0.4444    vs    {5,4}      d=5 (  441 tiles) η = 0.4000
+    {4,3,5}   Dense-1000 ( 1000 cells) η = 0.5000    vs    {5,4}      d=6 ( 1161 tiles) η = 0.4000
+    {4,3,5}   Dense-2000 ( 2000 cells) η = 0.5000    vs    {5,4}      d=6 ( 1161 tiles) η = 0.4000
+
+════════════════════════════════════════════════════════════════════════
+  CONVERGENCE ASSESSMENT
+════════════════════════════════════════════════════════════════════════
+
+    {4,3,5} Dense η:
+      η sequence: 0.3182, 0.3636, 0.4091, 0.4444, 0.5000, 0.5000
+      Δη sequence: +0.0455, +0.0455, +0.0354, +0.0556, +0.0000
+      Trend: monotone increasing
+      appears to converge
+      Estimated limit: 0.5000
+
+    {4,3,5} BFS-shell η:
+      η sequence: 0.2000, 0.2000, 0.2000, 0.2000, 0.2143, 0.2222, 0.2222, 0.2857, 0.3571
+      Δη sequence: +0.0000, +0.0000, +0.0000, +0.0143, +0.0079, +0.0000, +0.0635, +0.0714
+      Trend: monotone increasing
+      inconclusive
+      Estimated limit: insufficient data
+
+    {5,4} BFS-depth η:
+      η sequence: 0.4000, 0.4000, 0.4000, 0.4000, 0.4000, 0.4000
+      Δη sequence: +0.0000, +0.0000, +0.0000, +0.0000, +0.0000
+      Trend: flat
+      appears to converge
+      Estimated limit: 0.4000
+
+════════════════════════════════════════════════════════════════════════
+  KEY OBSERVATIONS
+════════════════════════════════════════════════════════════════════════
+
+  1. Dense η range:     0.3182 – 0.5000
+     Growth per step:   +0.0455, +0.0455, +0.0354, +0.0556, +0.0000
+
+  2. BFS-shell η range: 0.2000 – 0.3571
+
+  3. {5,4} BFS η range: 0.4000 – 0.4000
+
+  4. Strategy gap:  Dense η_max = 0.5000, BFS η_max = 0.3571
+     Dense growth produces deeper holographic surfaces (higher η).
+     BFS shells have thin boundaries (max S ≈ 1–2).
+
+  ── Interpretation ──
+
+  η_N = max S_N / max area_N  measures the "holographic efficiency"
+  of the discrete patch: how much entanglement entropy (S) the
+  deepest boundary region accumulates per unit of boundary area.
+
+  If η_N converges as N → ∞, the limiting value η_∞ is a candidate
+  for the discrete analogue of 1/(4G_N) in the Bekenstein–Hawking
+  formula  S = A / (4G_N).
+
+  The Dense strategy is the correct one for this analysis: it
+  produces multiply-connected bulk geometry with genuine multi-face
+  separating surfaces, analogous to the RT minimal surfaces in
+  AdS/CFT.  BFS-shell patches have thin, non-entangled boundaries
+  and serve only as a baseline.
+
+  Reference: docs/10-frontier.md §15.9.4 (Entropic Convergence Route)
+
+  Total computation: 21 patches, 16343 regions, 2554.1s

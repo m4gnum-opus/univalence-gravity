@@ -3,9 +3,10 @@ message: "If you use this work, please cite it as below."
 authors:
   - family-names: Bichtemann
     given-names: Sven
+    orcid: 0009-0006-4746-5608
     city: Hanover
     country: DE
 title: "Univalence Gravity: A Constructive Formalization of Discrete Entanglement-Geometry Duality in Cubical Agda"
-version: 0.1.0
+version: 0.3.0
 date-released: 2026-04-10
 url: "https://github.com/m4ximum-opus/univalence-gravity"
