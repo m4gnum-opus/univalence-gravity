@@ -7,6 +7,6 @@ authors:
     city: Hanover
     country: DE
 title: "Univalence Gravity: A Constructive Formalization of Discrete Entanglement-Geometry Duality in Cubical Agda"
-version: 0.3.0
-date-released: 2026-04-10
+version: 0.4.0
+date-released: 2026-04-11
 url: "https://github.com/m4ximum-opus/univalence-gravity"

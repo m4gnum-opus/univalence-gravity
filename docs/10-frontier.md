@@ -5161,9 +5161,9 @@ Whether this route leads to Einstein's equations, or to a deeper structure that 
 
 ---
 
-### 15.10 UPDATE: Results And Further Roadmap
+## 15.10 UPDATE: Results And Further Roadmap
 
-#### Evaluation of `14c_entropic_convergence_sup_half_OUTPUT.txt`
+Evaluation of `14c_entropic_convergence_sup_half_OUTPUT.txt`
 
 ### The Finding
 
@@ -5192,9 +5192,9 @@ The bound $S \leq \text{area}/2$ is likely a **graph-theoretic theorem** (not ju
 
 ---
 
-#### Concrete Elaboration Plan
+### Concrete Elaboration Plan
 
-##### Priority 1: Graph-Theoretic Proof Attempt (Python)
+#### Priority 1: Graph-Theoretic Proof Attempt (Python)
 
 **File:** `sim/prototyping/15_discrete_bekenstein_hawking.py`
 
@@ -5208,7 +5208,7 @@ The bound $S \leq \text{area}/2$ is likely a **graph-theoretic theorem** (not ju
 
 **Output:** Either a clean proof sketch suitable for Agda formalization, or a counterexample identifying the boundary conditions.
 
-##### Priority 2: Agda Formalization of the Bound
+#### Priority 2: Agda Formalization of the Bound
 
 **File:** `src/Bridge/HalfBound.agda`
 
@@ -5230,7 +5230,7 @@ This would require either:
 
 For option (b), extend `Boundary/Dense100AreaLaw.agda` and `Boundary/Dense200AreaLaw.agda` with a strengthened bound.
 
-##### Priority 3: Update §15.9 Documentation
+#### Priority 3: Update §15.9 Documentation
 
 **File:** `docs/10-frontier.md` §15.9
 
@@ -5240,7 +5240,7 @@ For option (b), extend `Boundary/Dense100AreaLaw.agda` and `Boundary/Dense200Are
 3. Identify $1/(4G) = 1/2$ in bond-dimension-1 units as the discrete Newton's constant.
 4. Note that the `ConvergenceWitness` field in the `EntropicConvergence` type (§15.9.5) can potentially be replaced by the sharp half-bound — eliminating the need for constructive reals entirely.
 
-##### Priority 4: Scaling Confirmation
+#### Priority 4: Scaling Confirmation
 
 **File:** `sim/prototyping/16_half_bound_scaling.py`
 
@@ -5264,9 +5264,187 @@ Step 1 is the critical path: the graph-theoretic proof attempt. If it yields a c
 
 The bound $S \leq \text{area}/2$ is almost certainly a theorem — the data is too clean and too universal to be coincidence. The proof should follow from the observation that in a unit-capacity cell complex, each min-cut bond corresponds to exactly 2 cell-face contributions to the area count (one from each side of the cut), so the area double-counts the cut capacity.
 
+## 15.11 UPDATE: Further Roadmap After §15.10
+
+Assuming `16_half_bound_scaling.py` completes successfully — confirming S(A) ≤ area(A)/2 across Dense-2000, all strategies, all tilings ({4,3,5}, {5,4}, {4,4}, {5,3}), and non-unit capacities with zero violations — the finding is qualitatively stronger than §15.9 anticipated. The real invariant is not η_N (which depends on measurement window) but the **sharp pointwise supremum** sup_r S(r)/area(r) = 1/2, which is an exact discrete constant analogous to 1/(4G).
+
+Here is the recommended file elaboration order:
+
 ---
 
-## 16. Execution Plan
+### Phase A: Per-Instance HalfBound Witnesses (1–3 days)
+
+The generic `from-two-cuts` in `Bridge/HalfBound.agda` is proven. Now instantiate it for concrete patches following the established oracle + `abstract` pattern.
+
+| Order | File | Type | Effort | Notes |
+|-------|------|------|--------|-------|
+| 1 | `sim/prototyping/17_generate_half_bound.py` | Python | 1 day | Oracle extending 11/12 pattern to emit `2·S ≤ area` witnesses. Computes `n_cross`, `n_bdy` per region. Generates both the area function and the halved bound. |
+| 2 | `src/Boundary/Dense100HalfBound.agda` | Agda (gen) | auto | 717 `abstract` cases: `(k , refl)` where `k + 2·S(r) ≡ area(r)`. Replaces/supplements `Dense100AreaLaw.agda`. |
+| 3 | `src/Boundary/Dense200HalfBound.agda` | Agda (gen) | auto | 1246 `abstract` cases. Same pattern. |
+
+The Python oracle already has all the data (`n_cross`, `n_bdy`, `area`, `min_cut` per region) from scripts 15/16. The `17_generate_half_bound.py` repackages this into the `HalfBoundWitness` shape:
+
+```python
+# For each region r:
+#   slack = area(r) - 2 * min_cut(r)   (must be ≥ 0)
+#   emit:  half-bound r = slack , refl
+```
+
+The Agda record to instantiate (from `Bridge/HalfBound.agda`):
+
+```agda
+record HalfBoundWitness (pd : PatchData) : Type₀ where
+  field
+    area       : PatchData.RegionTy pd → ℚ≥0
+    half-bound : (r : PatchData.RegionTy pd)
+               → (S∂ pd r +ℚ S∂ pd r) ≤ℚ area r
+    tight      : Σ[ r ∈ PatchData.RegionTy pd ]
+                   (S∂ pd r +ℚ S∂ pd r ≡ area r)
+```
+
+The `tight` field requires identifying a specific achiever region where `2·S = area`. The Python data already shows these exist (e.g., k=1 cells with 3 neighbors in {4,3,5}: S=3, area=6, ratio=0.5).
+
+---
+
+### Phase B: Integration with SchematicTower (1–2 days)
+
+| Order | File | Type | Effort | Notes |
+|-------|------|------|--------|-------|
+| 4 | `src/Bridge/SchematicTower.agda` | Agda (update) | 0.5 day | Extend `AreaLawForPatch` to include the half-bound, or add a new `HalfBoundForPatch` record. Update `ConvergenceCertificate3L` to carry the strengthened bound. |
+| 5 | `src/Bridge/Dense100Thermodynamics.agda` | Agda (update) | 0.5 day | Upgrade from `S ≤ area` to `2·S ≤ area`. The `CoarseGrainedRT` type can carry the halved bound. |
+
+The key architectural insight: the `ConvergenceWitness` field from the `EntropicConvergence` type in §15.9.5 can potentially be **replaced** by the sharp half-bound — eliminating the need for constructive reals entirely. Instead of asking "does η_N converge?", we have the exact answer: η = 1/2, proven for every finite patch, with no limit needed.
+
+This means the type:
+
+```agda
+-- OLD (from §15.9.5):
+EntropicConvergence = Σ[ family ] Σ[ bridges ] Σ[ areas ] Σ[ mono ] ConvergenceWitness
+
+-- NEW (sharp):
+DiscreteBekensteinHawking = Σ[ family ] Σ[ bridges ] Σ[ halfBounds ] Σ[ mono ] ⊤
+```
+
+The `ConvergenceWitness` (which required constructive reals and Cauchy completeness) is replaced by `HalfBoundWitness` at each level (which requires only ℕ arithmetic and `refl`). **This eliminates the constructive-reals wall** from §15.6 for the entropy-area relationship.
+
+---
+
+### Phase C: Documentation Update (0.5–1 day)
+
+| Order | File | Type | Effort | Notes |
+|-------|------|------|--------|-------|
+| 6 | `docs/10-frontier.md` §15.9 update | Docs | 0.5 day | Sharpen Entropic Convergence Conjecture into Discrete Bekenstein-Hawking Bound. See below. |
+| 7 | `docs/10-frontier.md` §15.10 finalization | Docs | 0.5 day | Record final results from 16_half_bound_scaling.py. |
+
+The §15.9 update should:
+1. Restate the conjecture as a **theorem**: S(A) ≤ area(A)/2 for all cell-aligned regions, with equality achieved.
+2. Identify **1/(4G) = 1/2** in bond-dimension-1 units as the discrete Newton's constant.
+3. Note that the `ConvergenceWitness` field can be replaced by the sharp half-bound.
+4. Record the proof mechanism: area = n_cross + n_bdy, S ≤ min(n_cross, n_bdy) ≤ area/2.
+
+---
+
+### Phase D: Documentation Overhaul (2–3 days)
+
+This is the refactoring from `docs/refactoring.md`. After the half-bound work stabilizes:
+
+| Order | File | Type | Effort | Notes |
+|-------|------|------|--------|-------|
+| 8 | `docs/getting-started/abstract.md` | Docs | 0.5 day | Rewrite for current state (includes BH bound) |
+| 9 | `docs/formal/01-theorems.md` | Docs | 1 day | Canonical theorem registry. Include the half-bound as a new theorem alongside Theorems 1-3. |
+| 10 | `docs/physics/entropic-convergence.md` | Docs | 0.5 day | Extract and sharpen from §15.9 |
+| 11 | Move historical docs to `docs/historical/` | Docs | 0.5 day | Preserve development narrative |
+
+---
+
+### Phase E: Extraction and Visualization (1–2 weeks)
+
+This is §16 of `10-frontier.md` — the "Phase 6.0" that was deferred until the theoretical foundation was complete.
+
+| Order | File | Type | Effort | Notes |
+|-------|------|------|--------|-------|
+| 12 | `src/Main.agda` | Agda | 1 day | Top-level module importing all theorem statements, bridge witnesses, and HalfBound instances for extraction. |
+| 13 | Haskell backend compilation | Build | 1–2 days | `agda --compile --ghc Main.agda` → standalone binary. Extract `equivFun` from bridge witnesses as executable translators. |
+| 14 | WebGL/Three.js frontend | JS | 1–2 weeks | Interactive visualization connecting to the extracted binary. |
+
+---
+
+### Summary: Recommended File Order
+
+```
+Phase A (oracle + Agda generation):
+  17_generate_half_bound.py         ← Python oracle: n_cross/n_bdy/halfbound
+  Boundary/Dense100HalfBound.agda   ← 717 abstract (k, refl) proofs
+  Boundary/Dense200HalfBound.agda   ← 1246 abstract (k, refl) proofs
+
+Phase B (integration):
+  Bridge/SchematicTower.agda        ← update: carry HalfBoundWitness
+  Bridge/Dense100Thermodynamics.agda ← upgrade: 2·S ≤ area
+
+Phase C (documentation):
+  docs/10-frontier.md §15.9-15.10   ← sharpen conjecture → theorem
+
+Phase D (overhaul):
+  docs/ restructuring per refactoring.md
+
+Phase E (extraction):
+  src/Main.agda → Haskell backend → WebGL frontend
+```
+
+The critical architectural consequence of the half-bound: **the Entropic Convergence Conjecture from §15.9.3 is resolved without needing constructive reals.** The discrete Newton's constant is exactly 1/2 in bond-dimension-1 units, verified by `refl` on closed ℕ terms at every resolution level. The "Five Walls" from §15.6 are reduced to four — the constructive-reals wall for the entropy-area relationship is bypassed entirely.
+
+---
+
+## 15.12 Finalization
+
+### Evluation and further Roadmap
+
+```md
+## 1. Is there anything left of §15 to aim for? 2D/3D half-bound?
+
+The half-bound $S \leq \text{area}/2$ is already verified **numerically** across 2D ({5,4}, {4,4}, {5,3}) and 3D ({4,3,5}) by the Python oracles (scripts 15, 16). The Agda formalization currently covers:
+
+- **Generic proof**: `Bridge/HalfBound.agda` — `from-two-cuts` and `two-le-sum` (works for any tiling)
+- **Per-instance witnesses**: Only Dense-100 and Dense-200 ({4,3,5} 3D) have generated `HalfBound` modules
+
+What you **could** still do within the current architecture:
+
+| Target | Effort | Value |
+|---|---|---|
+| Generate `HalfBound` modules for 2D {5,4} patches (star, filled) | Extend `17_generate_half_bound.py` to {5,4} | Demonstrates the bound is dimension-agnostic **in Agda**, not just Python. Low effort, high documentation value. |
+| Generate `HalfBound` for {4,4} Euclidean grid | Write a small Agda generator for the grid | Proves the bound in the **flat** regime, completing the curvature-universality story. |
+| Prove the generic half-bound **without oracles** | Formalize max-flow/min-cut in Agda | Enormous effort. This is a research project in itself. Not recommended before publishing. |
+
+**My recommendation**: Don't do more Agda before publishing. The 2D/3D story is already told by the Python data (32,134 regions, 0 violations, 4 tilings, 4 strategies, 3 capacities). The Agda formalization covers the two most important instances (Dense-100 and Dense-200) plus the generic `from-two-cuts` lemma. That's sufficient for a first release.
+
+## 2. How far is this from the theory of everything?
+
+**Honest answer: It is not a theory of everything. It is something more precisely valuable.**
+
+What you have built is the **first machine-checked formal artifact** that simultaneously contains all five pillars of a holographic universe (geometry, causality, gauge matter, curvature, quantum superposition) within a single proof-checked codebase. That is genuinely unprecedented in any proof assistant.
+
+But the gap between "five pillars coexist in a discrete combinatorial toy model" and "a theory of everything" is the entire content of §15.2–§15.6 of your own document, which you wrote with full intellectual honesty. The Five Walls remain:
+
+| Wall | Status |
+|---|---|
+| Constructive reals / smooth manifolds | **Partially bypassed** — the half-bound eliminates the need for limits in the entropy-area relationship, but smooth geometry itself is untouched |
+| Continuous gauge groups ($SU(3) \times SU(2) \times U(1)$) | **Not addressed** — you have $Q_8 \subset SU(2)$, $\mathbb{Z}/3\mathbb{Z} \subset U(1)$ |
+| Lorentzian signature | **Not addressed** — the causal poset provides directionality but no metric signature |
+| Fermionic matter | **Not addressed** |
+| Infinite-dimensional path integrals | **Not addressed** — the quantum bridge works over finite sums only |
+
+The correct framing (which your §15.1 already states perfectly) is: **this is a constructive, machine-checked proof that the combinatorial core of holographic duality can be stated, verified, and computed within Cubical Agda.** Whether our universe is a limiting case of this structure is an open physics question that the repo correctly identifies as the frontier, not as a solved problem.
+
+The half-bound $S \leq \text{area}/2$ with $1/(4G) = 1/2$ is the strongest result — it's a sharp, universal, curvature-agnostic theorem verified across 32,134 regions on 4 tilings. That's a genuine contribution to combinatorial graph theory and discrete physics.
+```
+
+## 16. Crossing the 5 Walls
+
+[IN ELABORATION]
+
+---
+
+## 17. Execution Plan
 
 The theoretical formalization of the discrete holographic universe is complete. The repository has successfully bypassed the AST memory wall (Dense-100), proven the discrete Area Law (Thermodynamics), verified the curvature-agnostic Wick Rotation (dS/AdS), and packaged the discrete time evolution (Dynamics).
 
@@ -5279,7 +5457,7 @@ The immediate development pathway is now strictly focused on software extraction
 
 ---
 
-## 17. Summary of Research Positioning
+## 18. Summary of Research Positioning
 
 | Direction | Type of Boundary | Novel Contribution | Status |
 |---|---|---|---|

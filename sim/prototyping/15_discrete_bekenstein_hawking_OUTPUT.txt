@@ -1,0 +1,230 @@
+╔═══════════════════════════════════════════════════════════╗
+║  §15.10 Priority 1:  Discrete Bekenstein–Hawking Proof   ║
+║  S(A) ≤ area(A)/2  — Graph-Theoretic Characterization   ║
+╚═══════════════════════════════════════════════════════════╝
+
+  ════════════════════════════════════════════════════════════════
+  THEOREM (Discrete Bekenstein–Hawking Half-Bound).
+
+  For any connected cell-aligned boundary region A in a finite
+  cell complex with uniform bond capacity c:
+
+      S(A) ≤ area(A) / 2
+
+  where S(A) = min-cut entropy, area(A) = boundary surface area
+  (in capacity-weighted units).
+
+  PROOF.
+
+  Decompose  area(A) = n_cross + n_bdy  where:
+    • n_cross = capacity of bonds from A-cells to non-A cells
+    • n_bdy   = capacity of boundary legs of A-cells
+
+  The max-flow S(A) is bounded by TWO independent cuts:
+    Cut 1: Sever all cross-bonds           →  S(A) ≤ n_cross
+    Cut 2: Sever all A-boundary-legs       →  S(A) ≤ n_bdy
+
+  Cut 1 disconnects source from sink because after removal,
+  A-cells can only reach other A-cells and A's pseudo-nodes
+  (all source-connected); no path to any complement pseudo-node
+  (all sink-connected) survives.
+
+  Cut 2 disconnects source from sink because after removal,
+  source has no finite-capacity path to any cell (all A-boundary
+  legs are severed); hence no path to sink.
+
+  Therefore:
+    S(A) ≤ min(n_cross, n_bdy)
+         ≤ (n_cross + n_bdy) / 2      [since min(a,b) ≤ (a+b)/2]
+         = area(A) / 2
+
+  Equality S = area/2 iff n_cross = n_bdy = area/2 and the
+  max-flow saturates both cuts.                                □
+  ════════════════════════════════════════════════════════════════
+
+  Parameters: max-cells=200, max-rc=5
+
+  Initializing {4,3,5} Coxeter geometry ...
+  ✓  {4,3,5} ready.
+  Initializing {5,4} Coxeter geometry ...
+  ✓  {5,4} ready.
+
+  ═══  {4,3,5} Dense  ═══
+    435-Dense-50 ...  139 regions, ½-viol=0, sup=0.5000, ach=10  (0.8s)
+    435-Dense-100 ...  717 regions, ½-viol=0, sup=0.5000, ach=40  (7.4s)
+    435-Dense-200 ...  1246 regions, ½-viol=0, sup=0.5000, ach=88  (28.5s)
+
+  ═══  {4,3,5} BFS-shell  ═══
+    435-BFS-50 ...  236 regions, ½-viol=0, sup=0.5000, ach=6  (5.5s)
+    435-BFS-100 ...  455 regions, ½-viol=0, sup=0.5000, ach=11  (24.5s)
+
+  ═══  {4,3,5} Geodesic  ═══
+    435-Geo-50 ...  68 regions, ½-viol=0, sup=0.3333  (0.4s)
+
+  ═══  {4,3,5} Hemisphere  ═══
+    435-Hemi-50 ...  562 regions, ½-viol=0, sup=0.5000  (1.3s)
+
+  ═══  {5,4} Dense  ═══
+    54-Dense-50 ...  185 regions, ½-viol=0, sup=0.5000, ach=9  (1.4s)
+    54-Dense-100 ...  380 regions, ½-viol=0, sup=0.5000, ach=20  (5.5s)
+    54-Dense-200 ...  735 regions, ½-viol=0, sup=0.5000, ach=39  (24.3s)
+
+  ═══  Non-Unit Capacity Test ({4,3,5} Dense-50)  ═══
+    435-D50-cap1 ...  139 regions, ½-viol=0, sup=0.5000  (0.8s)
+    435-D50-cap2 ...  139 regions, ½-viol=0, sup=0.5000  (0.8s)
+    435-D50-cap3 ...  139 regions, ½-viol=0, sup=0.5000  (0.8s)
+
+════════════════════════════════════════════════════════════════════════
+  RESULTS — S(A) ≤ area(A)/2 VERIFICATION
+════════════════════════════════════════════════════════════════════════
+
+  All Strategies (unit capacity):
+    Label                |     N |  #reg | ½-viol | tight |  ach½ |    sup |   mean |  time
+    ──────────────────────────────────────────────────────────────────────────────────
+    435-Dense-50         |    50 |   139 |      0 |     0 |    10 | 0.5000 | 0.2902 |  0.8s
+    435-Dense-100        |   100 |   717 |      0 |     0 |    40 | 0.5000 | 0.3281 |  7.4s
+    435-Dense-200        |   200 |  1246 |      0 |     0 |    88 | 0.5000 | 0.3455 | 28.5s
+    435-BFS-50           |   214 |   236 |      0 |     0 |     6 | 0.5000 | 0.2775 |  5.5s
+    435-BFS-100          |   417 |   455 |      0 |     0 |    11 | 0.5000 | 0.2767 | 24.5s
+    435-Geo-50           |    50 |    68 |      0 |     0 |     0 | 0.3333 | 0.1733 |  0.4s
+    435-Hemi-50          |    20 |   562 |      0 |     0 |    20 | 0.5000 | 0.3355 |  1.3s
+    54-Dense-50          |    50 |   185 |      0 |     0 |     9 | 0.5000 | 0.3540 |  1.4s
+    54-Dense-100         |   100 |   380 |      0 |     0 |    20 | 0.5000 | 0.3565 |  5.5s
+    54-Dense-200         |   200 |   735 |      0 |     0 |    39 | 0.5000 | 0.3568 | 24.3s
+
+  Non-Unit Capacity:
+    Label                |     N |  #reg | ½-viol | tight |  ach½ |    sup |   mean |  time
+    ──────────────────────────────────────────────────────────────────────────────────
+    435-D50-cap1         |    50 |   139 |      0 |     0 |    10 | 0.5000 | 0.2902 |  0.8s
+    435-D50-cap2         |    50 |   139 |      0 |     0 |    10 | 0.5000 | 0.2902 |  0.8s
+    435-D50-cap3         |    50 |   139 |      0 |     0 |    10 | 0.5000 | 0.2902 |  0.8s
+
+════════════════════════════════════════════════════════════════════════
+  VIOLATION SUMMARY
+════════════════════════════════════════════════════════════════════════
+
+  Total regions tested:       5140
+  Half-bound violations:      0
+  Tight-bound violations:     0
+     (tight = S ≤ min(n_cross, n_bdy))
+
+  ✓  ZERO VIOLATIONS across all 5140 regions!
+     Both the half-bound S ≤ area/2 and the tighter
+     bound S ≤ min(n_cross, n_bdy) hold universally.
+
+════════════════════════════════════════════════════════════════════════
+  ACHIEVER ANALYSIS: When does S = area/2?
+════════════════════════════════════════════════════════════════════════
+
+  S = area/2 iff n_cross = n_bdy = area/2.
+
+    435-Dense-50 achievers: k=1(8), k=2(2)
+      k=2: S=5, n_cross=5, n_bdy=5, area=10, S/area=0.5000
+      k=1: S=3, n_cross=3, n_bdy=3, area=6, S/area=0.5000
+    435-Dense-100 achievers: k=1(40)
+      k=1: S=3, n_cross=3, n_bdy=3, area=6, S/area=0.5000
+    435-Dense-200 achievers: k=1(80), k=2(4), k=3(4)
+      k=2: S=5, n_cross=5, n_bdy=5, area=10, S/area=0.5000
+      k=3: S=7, n_cross=7, n_bdy=7, area=14, S/area=0.5000
+    435-BFS-50 achievers: k=1(6)
+      k=1: S=3, n_cross=3, n_bdy=3, area=6, S/area=0.5000
+    435-BFS-100 achievers: k=1(11)
+      k=1: S=3, n_cross=3, n_bdy=3, area=6, S/area=0.5000
+    54-Dense-50 achievers: k=2(9)
+      k=2: S=4, n_cross=4, n_bdy=4, area=8, S/area=0.5000
+    54-Dense-100 achievers: k=2(20)
+      k=2: S=4, n_cross=4, n_bdy=4, area=8, S/area=0.5000
+    54-Dense-200 achievers: k=2(39)
+      k=2: S=4, n_cross=4, n_bdy=4, area=8, S/area=0.5000
+
+════════════════════════════════════════════════════════════════════════
+  STRATEGY UNIVERSALITY: Does S ≤ area/2 hold for ALL strategies?
+════════════════════════════════════════════════════════════════════════
+
+  ✓  {4,3,5} BFS              :  sup(S/area) = 0.5000, violations = 0/691
+  ✓  {4,3,5} Dense            :  sup(S/area) = 0.5000, violations = 0/2102
+  ✓  {4,3,5} Geodesic         :  sup(S/area) = 0.3333, violations = 0/68
+  ✓  {4,3,5} Hemisphere       :  sup(S/area) = 0.5000, violations = 0/562
+  ✓  {5,4} Dense              :  sup(S/area) = 0.5000, violations = 0/1300
+
+════════════════════════════════════════════════════════════════════════
+  CAPACITY UNIVERSALITY: Does S ≤ area/2 hold for c > 1?
+════════════════════════════════════════════════════════════════════════
+
+  ✓  435-D50-cap1        :  sup = 0.5000, violations = 0/139
+  ✓  435-D50-cap2        :  sup = 0.5000, violations = 0/139
+  ✓  435-D50-cap3        :  sup = 0.5000, violations = 0/139
+
+  Interpretation: With uniform capacity c, the bound becomes
+  S(A) ≤ area_cap(A)/2 where area_cap = c · area_faces.
+  The proof applies identically: just multiply through by c.
+
+════════════════════════════════════════════════════════════════════════
+  AGDA FORMALIZATION GUIDANCE
+════════════════════════════════════════════════════════════════════════
+
+  The half-bound S(A) ≤ area(A)/2 can be formalized in two ways:
+
+  (a) GENERIC PROOF from flow-network theory (ambitious):
+
+      Define:
+        n-cross : PatchData → RegionTy → ℕ
+        n-bdy   : PatchData → RegionTy → ℕ
+        area-decomp : (r : RegionTy) → area r ≡ n-cross r + n-bdy r
+
+      Then prove:
+        S-le-cross : (r : RegionTy) → S r ≤ n-cross r
+        S-le-bdy   : (r : RegionTy) → S r ≤ n-bdy r
+
+      The half-bound follows from:
+        min-le-half : (a b : ℕ) → min a b ≤ (a + b) / 2
+                    (a standard ℕ arithmetic lemma)
+
+      Compose:  S r ≤ min(n-cross r, n-bdy r) ≤ area r / 2
+
+  (b) PER-INSTANCE VERIFICATION via oracle + abstract (immediate):
+
+      For each concrete patch, the Python oracle computes:
+        half-bound : (r : RegionTy) → 2 · S r ≤ area r
+      as  abstract  proofs with witnesses  (k , refl) .
+
+      This extends the existing Dense100AreaLaw pattern with a
+      strengthened bound: replace  S ≤ area  with  2·S ≤ area .
+
+  The generic proof (a) is the more satisfying result.  The key
+  lemma  S-le-cross  states that severing all cross-bonds is a
+  valid cut (a structural property of the flow graph).  The key
+  lemma  S-le-bdy  states that severing all boundary legs is a
+  valid cut.  Both follow from the max-flow / min-cut theorem.
+
+  For the Agda HalfBoundWitness record from §15.10:
+
+    record HalfBoundWitness (pd : PatchData) : Type₀ where
+      field
+        area       : RegionTy pd → ℚ≥0
+        half-bound : (r : RegionTy pd)
+                   → S∂ pd r +ℚ S∂ pd r ≤ℚ area r
+        tight      : Σ[ r ∈ RegionTy pd ]
+                       (S∂ pd r +ℚ S∂ pd r ≡ area r)
+
+════════════════════════════════════════════════════════════════════════
+  VERDICT
+════════════════════════════════════════════════════════════════════════
+
+  ★  S(A) ≤ area(A)/2  VERIFIED for all 5140 regions
+     across 13 patch configurations, 4 growth
+     strategies, 2 tilings, and 3 capacity values.
+
+  The bound is a THEOREM, following from:
+    S ≤ min(n_cross, n_bdy) ≤ (n_cross + n_bdy)/2 = area/2
+
+  where n_cross = capacity of cross-bonds, n_bdy = capacity of
+  boundary legs, and area = n_cross + n_bdy.
+
+  This is the discrete Bekenstein–Hawking formula:
+    S = area / (4G)  with  1/(4G) = 1/2  in bond-dimension-1 units.
+
+  The bound holds for ALL tested strategies (Dense, BFS, Geodesic,
+  Hemisphere) and both tilings ({4,3,5} cubes, {5,4} pentagons).
+
+  Total: 5140 regions, 102.0s

@@ -1,61 +1,105 @@
 # Univalence Gravity
-_By Sven Bichtemann_
 
 **A Constructive Formalization of Discrete Entanglement-Geometry Duality in Cubical Agda**
 
-*Compiler: Agda 2.8.0* | *Library: agda/cubical* | *Paradigm: Homotopy Type Theory (HoTT)*
+*By Sven Bichtemann* | Agda 2.8.0 | agda/cubical library | MIT License
 
-## Overview
-**Univalence Gravity** explores whether discrete quantum-entanglement structures and discrete bulk geometries can be connected by exact equivalences of types. Inspired by the AdS/CFT correspondence and the Ryu–Takayanagi (RT) formula from holographic quantum gravity, this project brings these conjectures into the realm of **machine-checked proof engineering**.
+## What This Is
 
-The objective is *not* to solve quantum gravity, nor to formulate a new continuum physical theory. Instead, it asks a highly constrained, well-defined question:
-> **Can a finite, discrete toy model of a holographic correspondence (e.g., the HaPPY code) be formalized in Cubical Agda such that boundary observables and bulk observables are connected by an exact type equivalence, with the Univalence Axiom providing computational transport between them?**
+A machine-checked proof that five pillars of a holographic universe
+— geometry, causality, gauge matter, curvature, and quantum
+superposition — coexist in a single formal artifact, verified by
+the Cubical Agda type-checker via computational transport along
+Univalence paths.
 
-## The Mathematical Architecture
-Rather than attempting to map raw structural types to each other, this formalization relies on a **Common Source Specification** ($c : C$) which encodes the tiling, triangulation, and weight assignments. From this source, two distinct views are extracted:
+## Key Results (All Machine-Checked)
 
-1.  **Type A (Boundary):** A finite discrete entanglement network, paired with a min-cut entropy functional $\text{Obs}_{\partial}(c)$.
-2.  **Type B (Bulk):** A finite 2D simplicial complex paired with combinatorial curvature and a minimal-chain-length functional $\text{Obs}_{\text{bulk}}(c)$.
+| Result | Module | Statement |
+|--------|--------|-----------|
+| **Discrete Ryu–Takayanagi** | `Bridge/GenericBridge.agda` | S_cut = L_min for all boundary regions, on any patch, via a single generic theorem |
+| **Discrete Gauss–Bonnet** | `Bulk/GaussBonnet.agda` | Σκ(v) = χ(K) = 1 for the {5,4} hyperbolic tiling (by `refl`) |
+| **Discrete Wick Rotation** | `Bridge/WickRotation.agda` | The holographic bridge is curvature-agnostic: same Agda term for AdS ({5,4}) and dS ({5,3}) |
+| **No Closed Timelike Curves** | `Causal/NoCTC.agda` | Structural acyclicity from ℕ well-foundedness — the type system prevents time travel |
+| **Discrete Bekenstein–Hawking** | `Bridge/HalfBound.agda` | S(A) ≤ area(A)/2 with 1/(4G) = 1/2 in bond-dimension-1 units |
+| **Matter as Topological Defects** | `Gauge/Holonomy.agda` | Non-trivial Q₈ Wilson loops on the holographic network |
+| **Quantum Superposition Bridge** | `Quantum/QuantumBridge.agda` | ⟨S⟩ = ⟨L⟩ for any finite superposition (5-line proof, amplitude-polymorphic) |
 
-### The Core Theorem
-The primary formalization target is constructing an exact equivalence between the packaged observable records. In Homotopy Type Theory, applying Univalence (`ua`) to this equivalence yields a path between the types, giving us a **computational transport mechanism**.
+## Verification
 
-```agda
-{-# OPTIONS --cubical --safe #-}
-module ArchitectureSketch where
+```bash
+# Prerequisites: Agda 2.8.0, agda/cubical library
+# See docs/dev-setup.md for full setup instructions
 
-open import Cubical.Foundations.Prelude
-open import Cubical.Foundations.Equiv
-open import Cubical.Foundations.Univalence
-
-postulate
-  -- Common source specification (tiling, weights, partition)
-  C : Type ℓ-zero
-  
-  -- Extracted Observable Packages
-  Obs∂    : C → Type ℓ-zero
-  ObsBulk : C → Type ℓ-zero
-
-  -- Theorem 3: The Exact Equivalence
-  bridge-equiv : (c : C) → Obs∂ c ≃ ObsBulk c
-
--- The Univalence Bridge: Proof extracted as an executable translator
-holographic-path : (c : C) → Obs∂ c ≡ ObsBulk c
-holographic-path c = ua (bridge-equiv c)
+# Type-check the core theorems:
+agda src/Bridge/GenericBridge.agda
+agda src/Bulk/GaussBonnet.agda
+agda src/Bridge/WickRotation.agda
+agda src/Causal/NoCTC.agda
+agda src/Quantum/QuantumBridge.agda
+agda src/Bridge/HalfBound.agda
 ```
-*Note: Transport along `holographic-path` gives a verified translator that computes bulk geometry observables strictly from boundary entanglement data.*
 
-## Project Non-Goals
-To keep this project mathematically tractable and constructive, several elements are explicitly **out of scope**:
-* **No continuum limits:** Everything is finite, discrete, and combinatorial.
-* **No smooth or Lorentzian manifolds:** We rely on combinatorial and Regge curvature.
-* **No AI as a proof oracle:** Machine learning is strictly relegated to a non-critical discovery layer for hypothesis ranking.
+## Architecture
 
-## Repository Structure
-* `docs/`: Extensive project documentation, roadmaps, and architectural decisions.
-    * Start with [`docs/00-abstract.md`](docs/00-abstract.md) and [`docs/dev-setup.md`](docs/dev-setup.md).
-* `src/`: The Cubical Agda formalization (Common, Boundary, Bulk, Bridge).
-* `sim/`: Geometry-first discovery layer for interactive invariant extraction.
+```
+src/
+├── Util/         — Scalars (ℚ≥0 = ℕ), Rationals (ℚ₁₀ = ℤ), NatLemmas
+├── Common/       — Patch specifications (star, filled, dense, layer)
+├── Boundary/     — Min-cut observables, subadditivity, area law, half-bound
+├── Bulk/         — Chain observables, curvature, Gauss–Bonnet
+├── Bridge/       — GenericBridge, SchematicTower, WickRotation, Dynamics
+├── Causal/       — Event, CausalDiamond, NoCTC, LightCone
+├── Gauge/        — FiniteGroup, Q₈, Connection, Holonomy, ConjugacyClass
+└── Quantum/      — AmplitudeAlg, Superposition, QuantumBridge
 
-## Getting Started
-To verify the proofs or contribute, you will need Agda 2.8.0 and the `agda/cubical` library. Please follow the step-by-step instructions in [**`docs/dev-setup.md`**](docs/dev-setup.md) to configure your WSL/Ubuntu environment and establish the editor bridge.
+sim/prototyping/  — 17 Python oracle scripts generating Agda code
+docs/             — Mathematical documentation and development narrative
+```
+
+## The Generic Bridge (The Core Innovation)
+
+Every holographic bridge in this repository is an instance of a single
+generic theorem (`Bridge/GenericBridge.agda`), parameterized by an
+abstract `PatchData` interface. The Python oracle generates concrete
+patches; the generic theorem handles the proof — once.
+
+## What This Does NOT Prove
+
+- That discrete structures converge to smooth geometry as N → ∞
+- That finite gauge groups relate to continuous Lie groups
+- That the causal poset approximates a Lorentzian metric
+- That "transport along a Univalence path" has physical meaning
+
+See `docs/10-frontier.md` §15 for the honest assessment of the
+translation problem between this discrete model and our universe.
+
+## Future Work & Roadmap
+
+This project is currently in version 0.4.0, and active development is split into three upcoming phases:
+
+**Phase 1: Mathematical Groundwork (Current)**
+* Generate `HalfBound` modules for 2D {5,4} patches (star, filled).
+* Generate `HalfBound` for the {4,4} Euclidean grid.
+* Prove the generic half-bound without relying on Python oracles.
+* Revisit and resolve (at least one) of the 5 pillar proof boundaries.
+
+**Phase 2: Documentation & Refactoring**
+* Overhaul the `docs/` directory to align with the proposed structural refactoring in `docs/refactoring.md`.
+* Expand and clean up inline comments across all `.agda` files.
+* Restructure the core Agda files into distinct, logically separated directories.
+
+**Phase 3: Tooling & Visualization**
+* Develop a Haskell backend.
+* Create a WebGL adapter for browser-based visualization of the holographic network.
+
+## Acknowledgements
+
+While this repository is a solo-developed project, I want to express my gratitude to Anthropic's Claude Opus 4.6. Claude acted as an invaluable sounding board, pair-programmer, and rubber duck throughout the mathematical groundwork and architectural design phases of this project.
+
+## Citation
+
+Please cite this repository as described in `CITATION.cff`.
+
+## License
+
+MIT

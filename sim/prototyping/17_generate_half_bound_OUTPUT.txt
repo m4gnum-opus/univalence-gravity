@@ -1,0 +1,80 @@
+╔═══════════════════════════════════════════════════════════╗
+║  §15.11 Phase A:  Per-Instance HalfBound Witnesses       ║
+║  2·S(A) ≤ area(A)  — Dense-100 and Dense-200 patches    ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Building Dense-100 patch ...
+  ✓  Reflections: involution, G-preservation, Coxeter relations.
+  ✓  100 cells, 150 internal faces, 300 boundary faces.  (1.3s)
+  Computing half-bound data for all regions (max_rc=5) ...
+  ✓  717 regions computed.  (7.7s)
+
+  ── Dense-100 Half-Bound Statistics (717 regions) ──
+  Half-slack distribution (area − 2·S):
+    k =  0:     40 regions
+    k =  2:     91 regions
+    k =  4:    101 regions
+    k =  6:    177 regions
+    k =  8:    251 regions
+    k = 10:     29 regions
+    k = 12:     26 regions
+    k = 14:      2 regions
+  Slack range:  0 – 14  (mean 6.0)
+  ✓  Half-bound 2·S ≤ area verified for all 717 regions.
+  Achievers (2·S = area): 40 regions
+    k=1 cells: 40 regions  (e.g. S=3, area=6)
+
+  Output: /home/zimablue/univalence-gravity/src/Boundary/Dense100HalfBound.agda
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Dense100HalfBound.agda  (1390 lines)
+
+  Building Dense-200 patch ...
+  ✓  Reflections: involution, G-preservation, Coxeter relations.
+  ✓  200 cells, 308 internal faces, 584 boundary faces.  (4.5s)
+  Computing half-bound data for all regions (max_rc=5) ...
+  ✓  1246 regions computed.  (29.7s)
+
+  ── Dense-200 Half-Bound Statistics (1246 regions) ──
+  Half-slack distribution (area − 2·S):
+    k =  0:     88 regions
+    k =  2:    204 regions
+    k =  4:    210 regions
+    k =  6:    360 regions
+    k =  8:    336 regions
+    k = 10:     42 regions
+    k = 14:      6 regions
+  Slack range:  0 – 14  (mean 5.3)
+  ✓  Half-bound 2·S ≤ area verified for all 1246 regions.
+  Achievers (2·S = area): 88 regions
+    k=1 cells: 80 regions  (e.g. S=3, area=6)
+    k=2 cells: 4 regions  (e.g. S=5, area=10)
+    k=3 cells: 4 regions  (e.g. S=7, area=14)
+
+  Output: /home/zimablue/univalence-gravity/src/Boundary/Dense200HalfBound.agda
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Dense200HalfBound.agda  (2350 lines)
+
+════════════════════════════════════════════════════════════
+  ✓  Successfully generated 2 modules.
+
+  Each generated module provides a  HalfBoundWitness pd  containing:
+    • area       :  regionArea  (imported from DenseNAreaLaw)
+    • half-bound :  abstract proof,  (k , refl) per region
+    • tight      :  concrete achiever where 2·S = area
+
+  The strengthened bound  2·S ≤ area  replaces the weaker  S ≤ area
+  from the AreaLaw modules.  Together with the generic  from-two-cuts
+  lemma in  Bridge/HalfBound.agda , this establishes:
+
+    1/(4G) = 1/2  in bond-dimension-1 units
+
+  as an exact discrete constant — the discrete Newton's constant.
+
+  This eliminates the constructive-reals wall for the entropy-area
+  relationship: no convergence argument needed, just refl on closed
+  ℕ terms at every resolution level.
+
+  Next steps:
+    1. Load generated modules in Agda to verify they type-check.
+    2. Extend  Bridge/SchematicTower.agda  to carry HalfBoundWitness
+       at each tower level.
+    3. Update  Bridge/Dense100Thermodynamics.agda  to use the
+       strengthened bound.
