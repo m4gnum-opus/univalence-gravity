@@ -140,3 +140,8 @@ This translation is currently an unsolved mystery in physics. To complete this t
 3. Provide a "Proposed Translation Dictionary" mapping our Agda types to physical reality, explicitly noting the theoretical hurdles that remain.
 4. Output a fully revised and deeply thought-provoking draft of **§15 for `10-frontier.md`**.
 </TASK>
+
+
+
+
+* The full prompts except system prompts from this document can be seen in the `OpenRouterGUI.7z` extracted folder. In the `Output` folder are the full responses on from the moment the 200.000 token non-api frontend coverage was reeached.

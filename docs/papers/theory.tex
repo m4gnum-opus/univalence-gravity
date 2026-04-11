@@ -1,0 +1,673 @@
+% docs/papers/theory.tex
+%
+% Univalence Gravity: A Constructive Formalization of Discrete
+% Entanglement-Geometry Duality in Cubical Agda
+%
+% Draft paper — machine-checked results only, no conjectures.
+% Every theorem cited here type-checks in Agda 2.8.0 + agda/cubical.
+
+\documentclass[11pt,a4paper]{article}
+
+% ── Packages ────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{microtype}
+
+% ── Theorem environments ────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+% ── Custom commands ─────────────────────────────────────────────────
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Qi}{\mathbb{Z}[i]}
+\newcommand{\Qge}{\mathbb{Q}_{\geq 0}}
+\newcommand{\Qten}{\mathbb{Q}_{10}}
+\newcommand{\refl}{\mathsf{refl}}
+\newcommand{\ua}{\mathsf{ua}}
+\newcommand{\transport}{\mathsf{transport}}
+\newcommand{\funExt}{\mathsf{funExt}}
+\newcommand{\isSet}{\mathsf{isSet}}
+\newcommand{\isContr}{\mathsf{isContr}}
+\newcommand{\isProp}{\mathsf{isProp}}
+\newcommand{\Type}{\mathsf{Type}}
+\newcommand{\Scut}{S_{\mathrm{cut}}}
+\newcommand{\Lmin}{L_{\mathrm{min}}}
+\newcommand{\Agda}{\textsc{Agda}}
+\newcommand{\module}[1]{\texttt{#1}}
+
+% ── Title ───────────────────────────────────────────────────────────
+
+\title{%
+  Univalence Gravity:\\[4pt]
+  A Constructive Formalization of Discrete\\
+  Entanglement-Geometry Duality in Cubical Agda%
+}
+
+\author{Sven Bichtemann}
+
+\date{Draft — \today}
+
+% ════════════════════════════════════════════════════════════════════
+\begin{document}
+\maketitle
+
+% ════════════════════════════════════════════════════════════════════
+\begin{abstract}
+We present a machine-checked formalization in Cubical Agda of five
+pillars of a discrete holographic universe---geometry, causality,
+gauge matter, curvature, and quantum superposition---coexisting in
+a single formal artifact verified by computational transport along
+Univalence paths.
+
+The central results, all constructively proven:
+\begin{enumerate}[nosep]
+\item A \emph{generic} discrete Ryu--Takayanagi theorem
+  ($\Scut = \Lmin$ on every boundary region) parameterized by
+  an abstract patch interface, instantiated on twelve patches
+  spanning 1D trees, 2D pentagonal tilings, and 3D cubic
+  honeycombs.
+\item A discrete Gauss--Bonnet theorem
+  ($\sum \kappa(v) = \chi(K) = 1$) for both hyperbolic and
+  spherical pentagonal tilings, discharged by $\refl$.
+\item A sharp discrete Bekenstein--Hawking bound
+  $S(A) \leq \mathrm{area}(A)/2$ with $1/(4G) = 1/2$ in
+  bond-dimension-1 units---an exact rational verified by
+  $\refl$ on closed $\N$ terms, eliminating the
+  constructive-reals obstacle for the entropy-area relationship.
+\item Structural acyclicity (no closed timelike curves) as a
+  consequence of $\N$ well-foundedness, enforced by the type
+  signature rather than by a separate axiom.
+\item A five-line amplitude-polymorphic quantum bridge theorem
+  lifting the per-microstate correspondence to arbitrary finite
+  superpositions.
+\end{enumerate}
+
+The proof architecture introduces three engineering innovations:
+a \emph{generic bridge pattern} (one proof, $N$ instances),
+\emph{orbit reduction} (717 regions $\to$ 8 proof cases), and
+the \emph{abstract barrier} for propositional proofs sealed against
+downstream RAM cascades.  No axioms are postulated; all transport
+computes via the $\ua\beta$ reduction rule of Cubical Type Theory.
+\end{abstract}
+
+\tableofcontents
+
+% ════════════════════════════════════════════════════════════════════
+\section{Introduction}
+\label{sec:intro}
+
+The holographic principle~\cite{Maldacena1997,Ryu2006} asserts that
+the physics of a bulk gravitational spacetime is encoded on its
+lower-dimensional boundary.  The Ryu--Takayanagi (RT) formula
+\[
+  S(A) \;=\; \frac{\mathrm{Area}(\gamma_A)}{4 G_N}
+\]
+quantifies this duality: the entanglement entropy $S(A)$ of a
+boundary region $A$ equals the area of the minimal bulk surface
+$\gamma_A$ homologous to $A$, measured in Planck units.
+
+This paper presents the first machine-checked formal artifact in
+which the combinatorial core of this correspondence---together with
+discrete curvature, causal structure, gauge matter, and quantum
+superposition---is stated, proven, and computed within a single
+constructive type theory.
+
+\paragraph{Contributions.}
+\begin{enumerate}[nosep]
+\item A generic bridge theorem (\cref{sec:bridge}) producing a
+  full enriched type equivalence + Univalence path + verified
+  transport for \emph{any} finite patch satisfying a four-field
+  abstract interface.
+\item A sharp half-bound (\cref{sec:bekenstein}) identifying the
+  discrete Newton's constant as $1/(4G) = 1/2$ by $\refl$.
+\item A curvature-agnostic bridge (\cref{sec:wick}) that is
+  literally the same Agda term for both AdS-like and dS-like
+  geometries.
+\item Three proof-engineering patterns (\cref{sec:engineering})
+  that scale the formalization from 8-region toy models to
+  1885-region exponentially growing hyperbolic patches.
+\end{enumerate}
+
+\paragraph{Scope and honesty.}
+We prove properties of \emph{finite, discrete, combinatorial}
+structures.  We do \emph{not} prove convergence to smooth
+geometry, connection to continuous gauge groups, or that
+``transport along a Univalence path'' has physical meaning.
+Four hard walls remain between this formalization and continuum
+physics (\cref{sec:walls}).
+
+% ════════════════════════════════════════════════════════════════════
+\section{Background: Cubical Agda and Univalence}
+\label{sec:background}
+
+We work in Cubical Agda~\cite{VezzosiMortbergAbel2021}, an
+implementation of Cubical Type Theory~\cite{CCHM2018} in which:
+\begin{itemize}[nosep]
+\item Paths are functions from the abstract interval $I$ with
+  endpoints $i_0, i_1$.
+\item Function extensionality ($\funExt$) is a theorem, not an axiom.
+\item The Univalence Axiom ($\ua : A \simeq B \to A \equiv B$) is
+  implemented via Glue types and has a computation rule:
+  \[
+    \ua\beta(e, a) \;:\;
+    \transport(\ua\, e)\, a \;\equiv\; \mathrm{equivFun}\, e\, a
+  \]
+  Transport along a $\ua$ path \emph{computes} as the forward map
+  of the equivalence.
+\end{itemize}
+
+\begin{definition}[Scalar types]
+\label{def:scalars}
+The nonneg.\ scalar type is $\Qge = \N$ (\module{Util/Scalars}).
+The signed curvature type is $\Qten = \Z$, where integer $n$
+represents $n/10$ (\module{Util/Rationals}).  All arithmetic
+reduces judgmentally on closed constructor terms, enabling every
+agreement and Gauss--Bonnet proof to be discharged by $\refl$.
+\end{definition}
+
+% ════════════════════════════════════════════════════════════════════
+\section{The Generic Holographic Bridge}
+\label{sec:bridge}
+
+\subsection{The PatchData Interface}
+
+\begin{definition}[\module{Bridge/GenericBridge}]
+\label{def:patchdata}
+A \textbf{PatchData} record consists of:
+\begin{align*}
+  &\mathsf{RegionTy} : \Type_0 \\
+  &S_\partial : \mathsf{RegionTy} \to \Qge \\
+  &L_B : \mathsf{RegionTy} \to \Qge \\
+  &\mathsf{obs\text{-}path} : S_\partial \equiv L_B
+\end{align*}
+Nothing about pentagons, cubes, curvature, dimension, gauge
+groups, or Coxeter reflections appears.
+\end{definition}
+
+\subsection{The Generic Enriched Equivalence}
+
+\begin{theorem}[Generic Bridge, \module{Bridge/GenericBridge}]
+\label{thm:generic-bridge}
+For any $\mathit{pd} : \mathsf{PatchData}$, the parameterized
+module $\mathsf{GenericEnriched}(\mathit{pd})$ produces:
+\begin{enumerate}[nosep]
+\item Enriched types
+  $\mathsf{EnrichedBdy} = \Sigma_{f} (f \equiv S_\partial)$,
+  $\mathsf{EnrichedBulk} = \Sigma_{f} (f \equiv L_B)$
+  (reversed singletons, contractible).
+\item $\mathsf{enriched\text{-}equiv} :
+  \mathsf{EnrichedBdy} \simeq \mathsf{EnrichedBulk}$.
+\item $\mathsf{enriched\text{-}ua\text{-}path} :
+  \mathsf{EnrichedBdy} \equiv \mathsf{EnrichedBulk}$.
+\item $\mathsf{enriched\text{-}transport} :
+  \transport(\mathsf{enriched\text{-}ua\text{-}path})\,
+  \mathsf{bdy} \equiv \mathsf{bulk}$.
+\item $\mathsf{abstract\text{-}bridge\text{-}witness} :
+  \mathsf{BridgeWitness}$.
+\end{enumerate}
+The transport step closes by contractibility of
+$\Sigma_{x \in A}(x \equiv a)$ via $\isContr \to \isProp$,
+then $\ua\beta$ reduces transport to the forward map.
+\end{theorem}
+
+\subsection{Orbit Reduction}
+
+\begin{definition}[\module{Bridge/GenericBridge}]
+An \textbf{OrbitReducedPatch} carries a large $\mathsf{RegionTy}$,
+a small $\mathsf{OrbitTy}$, a classification function
+$\mathsf{classify} : \mathsf{RegionTy} \to \mathsf{OrbitTy}$, and
+orbit-level observables $S_{\mathrm{rep}}, L_{\mathrm{rep}}$ with
+pointwise $\refl$ agreement.  The PatchData is extracted
+automatically:
+\[
+  S_\partial(r) = S_{\mathrm{rep}}(\mathsf{classify}\, r), \qquad
+  \mathsf{obs\text{-}path} =
+  \funExt(\lambda r.\, \mathsf{rep\text{-}agree}(\mathsf{classify}\, r))
+\]
+The one-function composition
+$\mathsf{orbit\text{-}bridge\text{-}witness} :
+\mathsf{OrbitReducedPatch} \to \mathsf{BridgeWitness}$
+produces the full proof-carrying result.
+\end{definition}
+
+Twelve patch instances have been verified, from 8-region trees to
+1885-region $\{5,4\}$ depth-7 patches (942$\times$ orbit reduction).
+
+% ════════════════════════════════════════════════════════════════════
+\section{Discrete Gauss--Bonnet}
+\label{sec:gauss-bonnet}
+
+\begin{theorem}[Discrete Gauss--Bonnet, \module{Bulk/GaussBonnet}]
+\label{thm:gauss-bonnet}
+For the 11-tile filled patch $K$ of the $\{5,4\}$ hyperbolic tiling
+with combinatorial curvature
+$\kappa(v) = 1 - \deg(v)/2 + \sum_{f \ni v} 1/\mathrm{sides}(f)$:
+\[
+  \sum_{v} \kappa(v) \;=\; \chi(K) \;=\; 1
+\]
+The proof is $\refl$: the class-weighted $\Z$ sum normalizes
+judgmentally to $\mathsf{pos}\, 10 = \mathsf{one}_{10}$.
+\end{theorem}
+
+Five vertex classes suffice (Strategy~A from~\cite{HaPPYInstance}):
+$5 \cdot (-2) + 5 \cdot (-1) + 5 \cdot (+2) + 5 \cdot (-1) +
+10 \cdot (+2) = +10$ in tenths.
+
+A parallel theorem holds for the $\{5,3\}$ spherical tiling with
+\emph{positive} interior curvature $\kappa = +1/10$
+(\module{Bulk/DeSitterGaussBonnet}).
+
+% ════════════════════════════════════════════════════════════════════
+\section{The Discrete Bekenstein--Hawking Bound}
+\label{sec:bekenstein}
+
+\begin{theorem}[Half-Bound, \module{Bridge/HalfBound}]
+\label{thm:half-bound}
+For any cell-aligned boundary region $A$ on a verified patch:
+\[
+  S(A) \;\leq\; \frac{\mathrm{area}(A)}{2}
+\]
+with a tight achiever where $2 \cdot S(A) = \mathrm{area}(A)$.
+The discrete Newton's constant is $1/(4G) = 1/2$ in
+bond-dimension-1 units.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+Decompose $\mathrm{area}(A) = n_{\mathrm{cross}} + n_{\mathrm{bdy}}$
+where $n_{\mathrm{cross}}$ counts bonds crossing from $A$ to its
+complement and $n_{\mathrm{bdy}}$ counts boundary legs of $A$-cells.
+The max-flow $S(A)$ is bounded by two independent cuts:
+\begin{enumerate}[nosep]
+\item Sever all crossing bonds: $S \leq n_{\mathrm{cross}}$.
+\item Sever all $A$-boundary legs: $S \leq n_{\mathrm{bdy}}$.
+\end{enumerate}
+Therefore
+$S \leq \min(n_{\mathrm{cross}}, n_{\mathrm{bdy}})
+\leq (n_{\mathrm{cross}} + n_{\mathrm{bdy}})/2
+= \mathrm{area}/2$.
+The Agda formalization composes these via the
+$\mathsf{two\text{-}le\text{-}sum}$ arithmetic lemma and the
+$\mathsf{from\text{-}two\text{-}cuts}$ generic lemma.
+Per-instance witnesses (717 for Dense-100, 1246 for Dense-200) are
+generated by the Python oracle and sealed behind
+$\mathsf{abstract}$.
+\end{proof}
+
+Numerically confirmed across 32,134 regions on 4 tilings
+($\{4,3,5\}$, $\{5,4\}$, $\{4,4\}$, $\{5,3\}$), 4 growth
+strategies, and 3 bond capacities---zero violations.
+
+\begin{remark}[Elimination of the constructive-reals wall]
+The original \emph{Entropic Convergence Conjecture} required a
+$\mathsf{ConvergenceWitness}$ involving Cauchy completeness.
+The sharp half-bound replaces this with
+$\mathsf{HalfBoundWitness}$ requiring only $\N$ arithmetic and
+$\refl$.  The discrete Newton's constant is an exact rational,
+not a real-valued limit.
+\end{remark}
+
+% ════════════════════════════════════════════════════════════════════
+\section{Discrete Wick Rotation}
+\label{sec:wick}
+
+\begin{theorem}[Curvature-Agnostic Bridge,
+    \module{Bridge/WickRotation}]
+\label{thm:wick}
+The holographic bridge is curvature-agnostic: the same Agda term
+serves both the negatively curved $\{5,4\}$ (AdS-like) and the
+positively curved $\{5,3\}$ (dS-like) pentagonal tilings.  A
+$\mathsf{WickRotationWitness}$ record packages:
+\begin{enumerate}[nosep]
+\item A shared $\mathsf{BridgeWitness}$ (produced by the generic
+  theorem, never inspecting curvature).
+\item An AdS Gauss--Bonnet witness ($\kappa_{\mathrm{int}} = -1/5$).
+\item A dS Gauss--Bonnet witness ($\kappa_{\mathrm{int}} = +1/10$).
+\item Euler coherence: $\chi_{10}^{\mathrm{AdS}} \equiv
+  \chi_{10}^{\mathrm{dS}}$ by $\refl$.
+\end{enumerate}
+No complex numbers, no analytic continuation, no Lorentzian geometry.
+\end{theorem}
+
+% ════════════════════════════════════════════════════════════════════
+\section{Causal Structure and No Closed Timelike Curves}
+\label{sec:causal}
+
+\begin{theorem}[NoCTC, \module{Causal/NoCTC}]
+\label{thm:noctc}
+In any time-stratified causal poset (where each causal link strictly
+increases the $\N$-valued time index), no closed timelike curve
+exists:
+\[
+  \mathsf{CausalChain}\; e\; e'
+  \;\to\; \mathsf{CausalLink}\; e'\; e
+  \;\to\; \bot
+\]
+\end{theorem}
+
+\begin{proof}
+$\mathsf{chain\text{-}step\text{-}<}$ composes single-step
+orderings via $<_\N$-transitivity to get
+$\mathsf{time}(e) <_\N \mathsf{time}(e)$; then
+$<_\N$-irreflexivity (from $\mathsf{snotz}$ + $\mathsf{injSuc}$)
+yields $\bot$.
+\end{proof}
+
+The acyclicity is a \emph{structural consequence of the type
+signature} of $\mathsf{CausalLink}$---the type system prevents
+time travel by construction.
+
+% ════════════════════════════════════════════════════════════════════
+\section{Gauge Theory: Matter as Topological Defects}
+\label{sec:gauge}
+
+\begin{definition}[\module{Gauge/Holonomy}]
+A \textbf{ParticleDefect} at a face $f$ under gauge connection
+$\omega$ is:
+\[
+  \mathsf{ParticleDefect}(\omega, \partial f)
+  \;:=\;
+  \neg\bigl(\mathsf{holonomy}(\omega, \partial f)
+  \equiv \varepsilon\bigr)
+\]
+\end{definition}
+
+\begin{theorem}[\module{Gauge/Holonomy}]
+For the quaternion group $Q_8 \subset SU(2)$ on the 6-tile star
+patch with connection $\mathsf{starQ8\text{-}i}$ (bond
+$\mathsf{bCN0} = q_i$, rest $= q_1$), the holonomy at the central
+face reduces to $q_i$ and $\mathsf{defect\text{-}Q8\text{-}i}$
+inhabits $\mathsf{ParticleDefect}$.  Non-commutativity is witnessed:
+swapping bond assignments changes the holonomy from $q_k$ to
+$q_{-k}$.
+\end{theorem}
+
+The bridge is \textbf{gauge-agnostic}: the dimension functor
+$\dim : \mathrm{Rep}\, G \to \N$ extracts scalar bond capacities,
+and the generic theorem operates on these scalars without seeing
+the group.
+
+% ════════════════════════════════════════════════════════════════════
+\section{Quantum Superposition Bridge}
+\label{sec:quantum}
+
+\begin{theorem}[Quantum Bridge, \module{Quantum/QuantumBridge}]
+\label{thm:quantum}
+For any finite superposition $\psi$ of configurations with
+amplitudes in any algebra $A$, if $S(\omega) = L(\omega)$ for every
+microstate $\omega$, then $\mathbb{E}[\psi, S] \equiv
+\mathbb{E}[\psi, L]$.
+\end{theorem}
+
+\begin{proof}
+Structural induction on the list $\psi$.  Base: $\refl$.
+Step: $\mathsf{cong}_2\; {+_A}\;
+(\mathsf{cong}\; (\alpha \cdot_A {-})\;
+(\mathsf{cong}\; \mathsf{embed}_\N\; (\mathsf{eq}\; \omega)))\;
+(\mathsf{IH})$.
+Five lines.  No ring axioms.
+\end{proof}
+
+Verified with 3-configuration $Q_8$ superpositions exhibiting
+destructive interference ($\Qi$ amplitudes), with the bridge
+holding through the cancellation.
+
+% ════════════════════════════════════════════════════════════════════
+\section{Proof Engineering}
+\label{sec:engineering}
+
+\subsection{The Generic Bridge Pattern}
+One parameterized proof ($\sim$30 lines) subsumes all twelve
+bridge instances.  Adding a new patch requires zero new hand-written
+Agda proof---only oracle-generated data modules.
+
+\subsection{Orbit Reduction}
+For the Dense-100 patch: 717 regions share 8 distinct min-cut
+values.  The proof operates on the 8-constructor orbit type; a
+1-line lifting connects to the full 717-constructor region type.
+The depth-7 $\{5,4\}$ layer achieves 942$\times$ reduction (1885
+regions, 2 orbits).
+
+\subsection{The \texttt{abstract} Barrier}
+Wrapping propositional proofs in $\mathsf{abstract}$ seals them
+against downstream re-normalization, halting the RAM cascade
+documented in Agda Issue \#4573.  Since $\_\leq_{\Qge}\_$ is
+propositional ($\isProp$ by $\N$ cancellation + $\isSet_\N$),
+sealing loses zero information.
+
+\subsection{The Oracle Pipeline}
+Seventeen Python scripts generate Agda modules with explicit
+$\refl$-based witnesses.  The oracle is the search engine; Agda
+is the checker.  This is the same division of labor as the Four
+Color Theorem proof in Coq.
+
+% ════════════════════════════════════════════════════════════════════
+\section{The Schematic Tower and Convergence Certificate}
+\label{sec:tower}
+
+The $\mathsf{SchematicTower}$ assembles verified patches into a
+resolution sequence with monotonicity witnesses:
+
+\begin{center}
+\begin{tabular}{lcccl}
+\toprule
+Level & Patch & Regions & Orbits & Max $S$ \\
+\midrule
+0 & Dense-50  & 139  & --- & 7 \\
+1 & Dense-100 & 717  & 8   & 8 \\
+2 & Dense-200 & 1246 & 9   & 9 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Monotonicity: $7 \leq 8$ via $(1, \refl)$; $8 \leq 9$ via
+$(1, \refl)$.  The $\mathsf{DiscreteBekensteinHawking}$ capstone
+type carries half-bounds at each level:
+
+\begin{align*}
+  &\mathsf{DiscreteBekensteinHawking} : \Type_1 \\
+  &\mathsf{DiscreteBekensteinHawking} =
+    \mathsf{ConvergenceCertificate3L\text{-}HB}
+\end{align*}
+
+% ════════════════════════════════════════════════════════════════════
+\section{The Hard Boundaries}
+\label{sec:walls}
+
+Four independent obstacles remain between the discrete formalization
+and continuum physics:
+
+\begin{enumerate}[nosep]
+\item \textbf{Infinite-dimensional path integrals.}  The quantum
+  bridge works for finite sums only.
+\item \textbf{Continuous gauge groups.}  $Q_8 \subset SU(2)$ is
+  the farthest reach; $|G| \to \infty$ limits require constructive
+  Lie theory.
+\item \textbf{Lorentzian signature.}  The causal poset provides
+  time-directionality but no metric signature.
+\item \textbf{Fermionic matter.}  The gauge construction produces
+  bosonic defects; Grassmann variables are unexplored constructively.
+\end{enumerate}
+
+The constructive-reals wall for the entropy-area relationship is
+\textbf{partially bypassed}: $1/(4G) = 1/2$ is an exact rational
+verified by $\refl$, not a real-valued limit.
+
+% ════════════════════════════════════════════════════════════════════
+\section{Related Work}
+\label{sec:related}
+
+The HaPPY code~\cite{Pastawski2015} introduced the tensor-network
+model of holographic quantum error correction on which this
+formalization is based.  The Ryu--Takayanagi
+formula~\cite{Ryu2006} and its covariant
+generalization~\cite{Wall2012} motivate the min-cut/max-flow
+observables.  Jacobson's thermodynamic derivation of Einstein's
+equations~\cite{Jacobson1995} provides the physical context for
+the entropy-area relationship.
+
+In formal methods, the Cubical Agda
+framework~\cite{VezzosiMortbergAbel2021} provides computational
+Univalence; the oracle-plus-checker paradigm follows the Four Color
+Theorem~\cite{Gonthier2005} and Kepler
+Conjecture~\cite{Hales2017} proofs.
+
+To our knowledge, no previous work has machine-checked a
+holographic correspondence at the type-equivalence level in any
+proof assistant, nor combined it with discrete curvature, causal
+structure, gauge matter, and quantum superposition in a single
+formal artifact.
+
+% ════════════════════════════════════════════════════════════════════
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have constructed, from first principles, a discrete holographic
+universe inside a proof assistant: boundary entanglement entropy
+exactly equals bulk minimal surface area (RT), spacetime curvature
+satisfies Gauss--Bonnet, the arrow of time is enforced by $\N$
+well-foundedness, matter manifests as topological defects in $Q_8$
+Wilson loops, quantum superposition preserves the correspondence,
+and the sharp half-bound $S \leq \mathrm{area}/2$ identifies the
+discrete Newton's constant as an exact rational.
+
+The bridge is \emph{geometrically blind}: it depends on four inputs
+(a region type, two observable functions, a path between them) and
+never inspects dimension, curvature, gauge group, or tiling
+geometry.  This blindness is the structural content of the claim
+that the holographic correspondence is a property of information
+flow, not of geometry.
+
+Whatever the continuum theory turns out to be, it must be consistent
+with the discrete theorems proven here.
+
+% ════════════════════════════════════════════════════════════════════
+\section*{Acknowledgements}
+
+The author thanks Anthropic's Claude for serving as an invaluable
+sounding board and pair-programmer throughout the mathematical
+groundwork and architectural design phases.
+
+% ════════════════════════════════════════════════════════════════════
+\bibliographystyle{alpha}
+
+\begin{thebibliography}{99}
+
+\bibitem[CCHM18]{CCHM2018}
+C.~Cohen, T.~Coquand, S.~Huber, A.~M\"ortberg.
+\newblock Cubical Type Theory: A Constructive Interpretation of the
+  Univalence Axiom.
+\newblock \emph{Journal of Automated Reasoning}, 60(2):195--230, 2018.
+
+\bibitem[Gon05]{Gonthier2005}
+G.~Gonthier.
+\newblock A computer-checked proof of the Four Colour Theorem.
+\newblock Unpublished manuscript, Microsoft Research, 2005.
+
+\bibitem[Hal+17]{Hales2017}
+T.~Hales et~al.
+\newblock A Formal Proof of the Kepler Conjecture.
+\newblock \emph{Forum of Mathematics, Pi}, 5:e2, 2017.
+
+\bibitem[Jac95]{Jacobson1995}
+T.~Jacobson.
+\newblock Thermodynamics of Spacetime: The Einstein Equation of State.
+\newblock \emph{Physical Review Letters}, 75(7):1260--1263, 1995.
+
+\bibitem[Mal97]{Maldacena1997}
+J.~Maldacena.
+\newblock The Large $N$ Limit of Superconformal Field Theories and
+  Supergravity.
+\newblock \emph{Advances in Theoretical and Mathematical Physics},
+  2(2):231--252, 1998.
+
+\bibitem[Pas+15]{Pastawski2015}
+F.~Pastawski, B.~Yoshida, D.~Harlow, J.~Preskill.
+\newblock Holographic Quantum Error-Correcting Codes: Toy Models for
+  the Bulk/Boundary Correspondence.
+\newblock \emph{Journal of High Energy Physics}, 2015(6):149, 2015.
+
+\bibitem[RT06]{Ryu2006}
+S.~Ryu, T.~Takayanagi.
+\newblock Holographic Derivation of Entanglement Entropy from AdS/CFT.
+\newblock \emph{Physical Review Letters}, 96(18):181602, 2006.
+
+\bibitem[VMA21]{VezzosiMortbergAbel2021}
+A.~Vezzosi, A.~M\"ortberg, A.~Abel.
+\newblock Cubical Agda: A Dependently Typed Programming Language with
+  Univalence and Higher Inductive Types.
+\newblock \emph{Journal of Functional Programming}, 31:e8, 2021.
+
+\bibitem[Wal12]{Wall2012}
+A.~Wall.
+\newblock Maximin Surfaces, and the Strong Subadditivity of the
+  Covariant Holographic Entanglement Entropy.
+\newblock \emph{Classical and Quantum Gravity}, 31(22):225007, 2014.
+
+\bibitem[HaPPYInstance]{HaPPYInstance}
+S.~Bichtemann.
+\newblock HaPPY Instance specification.
+\newblock \texttt{historical/development-docs/09-happy-instance.md}
+  in the repository, 2025.
+
+\end{thebibliography}
+
+% ════════════════════════════════════════════════════════════════════
+\appendix
+\section{Module Index (Selected)}
+\label{app:modules}
+
+\begin{center}
+\small
+\begin{tabular}{ll}
+\toprule
+Module & Content \\
+\midrule
+\module{Bridge/GenericBridge} & PatchData, OrbitReducedPatch,
+  GenericEnriched \\
+\module{Bridge/HalfBound} & from-two-cuts, HalfBoundWitness \\
+\module{Bridge/WickRotation} & WickRotationWitness \\
+\module{Bridge/SchematicTower} & TowerLevel, DiscreteBekensteinHawking \\
+\module{Bridge/BridgeWitness} & Universal result record \\
+\module{Bulk/GaussBonnet} & $\sum\kappa = \chi$ by $\refl$ \\
+\module{Causal/NoCTC} & Structural acyclicity \\
+\module{Causal/LightCone} & FutureCone, Spacelike \\
+\module{Gauge/Holonomy} & holonomy, ParticleDefect \\
+\module{Gauge/Q8} & 400-case associativity by $\refl$ \\
+\module{Quantum/QuantumBridge} & 5-line superposition bridge \\
+\module{Quantum/AmplitudeAlg} & $\Qi$ instance \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Verification Commands}
+\label{app:verification}
+
+\begin{verbatim}
+agda src/Bridge/GenericBridge.agda     # Theorem 1 (RT)
+agda src/Bulk/GaussBonnet.agda         # Theorem 2 (GB)
+agda src/Bridge/HalfBound.agda         # Theorem 3 (BH)
+agda src/Bridge/WickRotation.agda      # Theorem 4 (Wick)
+agda src/Causal/NoCTC.agda             # Theorem 5 (NoCTC)
+agda src/Gauge/Holonomy.agda           # Theorem 6 (Matter)
+agda src/Quantum/QuantumBridge.agda    # Theorem 7 (Quantum)
+\end{verbatim}
+
+Each command loads the target module and all transitive dependencies.
+The full repository type-checks via
+\texttt{agda src/Bridge/SchematicTower.agda}.
+
+\end{document}
