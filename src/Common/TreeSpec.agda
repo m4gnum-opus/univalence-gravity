@@ -11,6 +11,13 @@ open import Util.Scalars
 --  Vertex — 7 vertices of the weighted binary tree
 -- ════════════════════════════════════════════════════════════════════
 --
+--  The tree pilot is the repository's first bridge calibration
+--  object — a 1D weighted binary tree with 4 boundary sites
+--  (leaves) and 3 interior nodes.  It validates the full
+--  common-source → views → observable packages → pointwise
+--  agreement → package path pipeline before any 2D or 3D
+--  geometry is introduced.
+--
 --  Boundary sites: L₁, L₂, R₁, R₂
 --  Interior nodes: A, B, Root
 --
@@ -20,6 +27,17 @@ open import Util.Scalars
 --                |                        |
 --    L₂ ——(1)——+                        +——(1)—— R₂
 --
+--  Architectural role:
+--    This is a Tier 1 (Specification Layer) module.  It defines
+--    the common source specification consumed by the boundary
+--    view (Boundary/TreeCut.agda) and bulk view (Bulk/TreeChain.agda),
+--    which produce observable packages assembled in Bridge/TreeObs.agda.
+--
+--  Reference:
+--    docs/instances/tree-pilot.md         (instance data sheet)
+--    docs/getting-started/architecture.md (Specification Layer)
+--    docs/formal/03-holographic-bridge.md (observable packages)
+--    docs/reference/module-index.md       (module description)
 -- ════════════════════════════════════════════════════════════════════
 
 data Vertex : Type₀ where
@@ -75,7 +93,14 @@ data Region : Type₀ where
 --    πbulk : TreeSpec → BulkView       (Bulk/TreeChain.agda)
 --
 --  and from those views, observable packages are constructed in
---  Bridge/TreeObs.agda.
+--  Bridge/TreeObs.agda.  The generic bridge theorem from
+--  Bridge/GenericBridge.agda then produces the full enriched
+--  type equivalence + Univalence path + verified transport
+--  automatically from the resulting PatchData.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §2 (pointwise agreement)
+--    docs/formal/11-generic-bridge.md        (PatchData interface)
 -- ════════════════════════════════════════════════════════════════════
 
 record TreeSpec : Type₀ where
@@ -97,6 +122,13 @@ record TreeSpec : Type₀ where
 --  that the scalar constants flowing into S-cut (boundary) and
 --  L-min (bulk) have identical normal forms, enabling the refl
 --  proofs in tree-pointwise (Bridge/TreeObs.agda).
+--
+--  The constants 1q and 2q are imported from Util.Scalars (where
+--  1q = 1 and 2q = 2 as natural numbers).  They must NOT be
+--  reconstructed independently on each side — identical normal
+--  forms are required for the refl proofs of pointwise observable
+--  agreement.  This shared-constants discipline is documented in
+--  docs/formal/02-foundations.md §6.3.
 -- ════════════════════════════════════════════════════════════════════
 
 treeWeight : Edge → ℚ≥0

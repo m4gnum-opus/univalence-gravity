@@ -17,7 +17,7 @@ open import Common.StarSpec
 --
 --  For the star instance this is intentionally minimal: a single
 --  field carrying the weight function over bonds.  Later instances
---  (11-tile filled patch) will enrich this record with genuine bulk
+--  (11-tile filled patch) enrich this record with genuine bulk
 --  structure such as face incidence data, curvature annotations,
 --  vertex classifications, or simplicial-complex combinatorics.
 --
@@ -29,10 +29,21 @@ open import Common.StarSpec
 --  sides are semantically distinct even when structurally identical,
 --  which is the expected situation for this instance.
 --
+--  Architectural role:
+--    This is a Tier 2 (Observable Layer) module.  It extracts the
+--    bulk-side observable lookup from the common source
+--    specification defined in Common/StarSpec.agda.  The boundary-
+--    side counterpart is BoundaryView in Boundary/StarCut.agda.
+--
 --  Design parallel:  This follows the same pattern as the tree
 --  pilot's BulkView (Bulk/TreeChain.agda), scaled from 6 edges
 --  to 5 bonds, and mirrors the boundary-side BoundaryView in
 --  Boundary/StarCut.agda.
+--
+--  Reference:
+--    docs/getting-started/architecture.md   (Observable Layer)
+--    docs/instances/star-patch.md §2        (topology)
+--    docs/formal/03-holographic-bridge.md §2 (pointwise agreement)
 -- ════════════════════════════════════════════════════════════════════
 
 record BulkView : Type₀ where
@@ -54,8 +65,16 @@ record BulkView : Type₀ where
 --  definitionally equal to  StarSpec.bondWeight c , so that scalar
 --  constants flowing into L-min inherit the same normal forms as
 --  those flowing into the boundary-side S-cut via π∂.  This enables
---  the refl proofs in star-pointwise (Bridge/StarObs.agda, §11.3
---  of docs/09-happy-instance.md).
+--  the refl proofs in star-pointwise (Bridge/StarObs.agda).
+--
+--  The shared-constants discipline — defining 1q and 2q once in
+--  Util/Scalars.agda and importing them into both Boundary and
+--  Bulk modules — is the foundational invariant enabling all
+--  refl-based pointwise agreement proofs.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §6.3     (shared-constants discipline)
+--    docs/instances/star-patch.md §11       (scalar representation)
 -- ════════════════════════════════════════════════════════════════════
 
 πbulk : StarSpec → BulkView
@@ -85,19 +104,17 @@ record BulkView : Type₀ where
 --  6-tile star, so the minimal separating-chain length equals the
 --  boundary min-cut value for every tile-aligned region.  This is
 --  the content of the discrete RT correspondence for this instance,
---  verified numerically by sim/prototyping/01_happy_patch_cuts.py
---  (§3.1 of docs/09-happy-instance.md): S = geodesic for all 20
---  regions.
+--  verified numerically by sim/prototyping/01_happy_patch_cuts.py:
+--  S = geodesic for all 20 regions.
 --
 --  This is a specification-level lookup realization: the values are
---  taken directly from the finite separator table (§10.1 of
---  docs/09-happy-instance.md) rather than computed by a generic
---  chain-minimization or shortest-path algorithm.  The purpose of
---  this instance is to validate the packaging and bridge
---  architecture on a genuine 2D tiling, not to formalize graph
---  algorithms.  Generic algorithmic implementations belong in later
---  phases, after the architecture has been validated on this
---  known-good instance.
+--  taken directly from the finite separator table rather than
+--  computed by a generic chain-minimization or shortest-path
+--  algorithm.  The purpose of this instance is to validate the
+--  packaging and bridge architecture on a genuine 2D tiling, not
+--  to formalize graph algorithms.  Generic algorithmic
+--  implementations belong in later phases, after the architecture
+--  has been validated on this known-good instance.
 --
 --  The BulkView argument is accepted but not inspected: every
 --  clause returns a fixed constant from Util.Scalars.  This is
@@ -118,17 +135,26 @@ record BulkView : Type₀ where
 --    regN3N4  →  chain {C–N3, C–N4}    →  length 2
 --    regN4N0  →  chain {C–N4, C–N0}    →  length 2
 --
---  All 10 values verified numerically by
---  sim/prototyping/01_happy_patch_cuts.py (§3.1 of
---  docs/09-happy-instance.md): geodesic equality S = L holds for
---  all 20 regions (including triples and quadruples by complement
---  symmetry).
+--  All 10 values documented in docs/instances/star-patch.md §4
+--  (min-cut / observable agreement table) and verified numerically
+--  by sim/prototyping/01_happy_patch_cuts.py: geodesic equality
+--  S = L holds for all 20 regions (including triples and quadruples
+--  by complement symmetry).
 --
 --  The constants 1q and 2q are imported from Util.Scalars (where
 --  1q = suc zero and 2q = suc (suc zero) as natural numbers).
 --  They must NOT be reconstructed independently — identical normal
 --  forms are required for the refl proofs of pointwise observable
---  agreement in star-pointwise (§15.5 of docs/09-happy-instance.md).
+--  agreement in star-pointwise (Bridge/StarObs.agda).  This
+--  shared-constants discipline is documented in
+--  docs/formal/02-foundations.md §6.3.
+--
+--  Reference:
+--    docs/instances/star-patch.md §4       (min-cut / observable agreement)
+--    docs/formal/03-holographic-bridge.md §2 (pointwise agreement path)
+--    docs/formal/02-foundations.md §6.3     (shared-constants discipline)
+--    docs/reference/module-index.md         (module description)
+--    sim/prototyping/01_happy_patch_cuts.py (numerical verification)
 -- ════════════════════════════════════════════════════════════════════
 
 L-min : BulkView → Region → ℚ≥0

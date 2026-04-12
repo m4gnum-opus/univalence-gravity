@@ -38,7 +38,9 @@ open import Bridge.BridgeWitness
 --  as a field.
 --
 --  Reference:
---    docs/10-frontier.md §5.4  (Step 1 — The PatchData Record)
+--    docs/formal/11-generic-bridge.md §2   (The PatchData Interface)
+--    docs/formal/03-holographic-bridge.md §5.2  (The PatchData Interface)
+--    docs/engineering/generic-bridge-pattern.md §4.1  (PatchData)
 -- ════════════════════════════════════════════════════════════════════
 
 record PatchData : Type₁ where
@@ -77,8 +79,10 @@ record PatchData : Type₁ where
 --  propositional.
 --
 --  Reference:
---    docs/10-frontier.md §5.4  (Step 2 — The Generic Bridge Theorem)
---    docs/10-frontier.md §5.3  (Separation of Geometry and Proof)
+--    docs/formal/11-generic-bridge.md §3    (The Parameterized Module)
+--    docs/formal/03-holographic-bridge.md §5  (The Generic Bridge Theorem)
+--    docs/formal/02-foundations.md §7         (The Generic Bridge Pattern)
+--    docs/engineering/generic-bridge-pattern.md §4.2  (GenericEnriched)
 -- ════════════════════════════════════════════════════════════════════
 
 module GenericEnriched (pd : PatchData) where
@@ -289,9 +293,9 @@ module GenericEnriched (pd : PatchData) where
 --  §3.  OrbitReducedPatch — Interface for orbit-reduced patches
 -- ════════════════════════════════════════════════════════════════════
 --
---  The orbit reduction strategy (§6.5 of docs/10-frontier.md)
---  factors the observable lookup through a small orbit type.
---  The OrbitReducedPatch record captures this pattern:
+--  The orbit reduction strategy factors the observable lookup
+--  through a small orbit type.  The OrbitReducedPatch record
+--  captures this pattern:
 --
 --    • RegionTy  — the (potentially large) region type
 --    • OrbitTy   — the (small) orbit representative type
@@ -311,9 +315,10 @@ module GenericEnriched (pd : PatchData) where
 --  The record lives in Type₁ because it stores types as fields.
 --
 --  Reference:
---    docs/10-frontier.md §5.4  (Step 3 — The Orbit-Reduced Interface)
---    docs/10-frontier.md §6.5  (Stage 2 — Orbit Reduction)
---    Bridge/Dense100Obs.agda   (the pattern being generalized)
+--    docs/formal/11-generic-bridge.md §3   (Orbit Reduction via
+--                                           OrbitReducedPatch)
+--    docs/engineering/orbit-reduction.md   (the scaling strategy)
+--    Bridge/Dense100Obs.agda               (the pattern being generalized)
 -- ════════════════════════════════════════════════════════════════════
 
 record OrbitReducedPatch : Type₁ where
@@ -347,8 +352,11 @@ record OrbitReducedPatch : Type₁ where
 --  now stated generically for any orbit-reduced patch.
 --
 --  Reference:
---    docs/10-frontier.md §5.4  (Step 3)
---    Bridge/Dense100Obs.agda   (d100-pointwise via classify100)
+--    docs/formal/11-generic-bridge.md §3.3  (Automatic PatchData
+--                                            Extraction)
+--    docs/engineering/orbit-reduction.md §4  (The 1-line lifting)
+--    Bridge/Dense100Obs.agda                (d100-pointwise via
+--                                            classify100)
 -- ════════════════════════════════════════════════════════════════════
 
 orbit-to-patch : OrbitReducedPatch → PatchData
@@ -377,7 +385,10 @@ orbit-to-patch orp = record
 --  OrbitReducedPatch in a single step.
 --
 --  Reference:
---    docs/10-frontier.md §5.4  (Step 4 — Automatic Bridge)
+--    docs/formal/11-generic-bridge.md §3.4  (The One-Function
+--                                            Composition)
+--    docs/engineering/generic-bridge-pattern.md §5  (The One-Function
+--                                                   Composition)
 -- ════════════════════════════════════════════════════════════════════
 
 orbit-bridge-witness : OrbitReducedPatch → BridgeWitness
@@ -451,9 +462,13 @@ orbit-bridge-witness orp =
 --      • Bridge/GenericValidation.agda  — regression tests
 --
 --  Reference:
---    docs/10-frontier.md §5    (Direction C — N Layers)
---    docs/10-frontier.md §5.4  (The Novel Approach)
---    docs/10-frontier.md §5.5  (What This Achieves)
---    docs/10-frontier.md §5.11 (Execution Plan, Phase C.0)
---    docs/10-frontier.md §5.12 (Conditions for Advancement)
+--    docs/formal/11-generic-bridge.md        (The Generic Bridge and
+--                                            Schematic Tower)
+--    docs/formal/03-holographic-bridge.md §5 (The Generic Bridge Theorem)
+--    docs/formal/01-theorems.md §Thm 1       (Theorem registry —
+--                                            Discrete Ryu–Takayanagi)
+--    docs/engineering/generic-bridge-pattern.md  (One proof, N instances)
+--    docs/engineering/orbit-reduction.md     (717→8 orbits, scaling)
+--    docs/getting-started/architecture.md    (Module dependency DAG)
+--    docs/reference/module-index.md          (Module description)
 -- ════════════════════════════════════════════════════════════════════

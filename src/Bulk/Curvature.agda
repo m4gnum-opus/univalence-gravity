@@ -16,8 +16,8 @@ open import Bulk.PatchComplex
 --  This module defines the combinatorial curvature function  κ  for
 --  the 11-tile filled patch of the {5,4} hyperbolic tiling, encoded
 --  in  Bulk/PatchComplex.agda .  It is the primary curvature
---  formalization for Phase 2B.2 of the roadmap, implementing
---  Option A (combinatorial curvature) as frozen in assumptions.md.
+--  formalization, implementing Option A (combinatorial curvature)
+--  as frozen in  docs/reference/assumptions.md  (Assumption A11).
 --
 --  The combinatorial curvature formula is:
 --
@@ -39,13 +39,17 @@ open import Bulk.PatchComplex
 --  this representation is exact and supports judgmental computation
 --  of all arithmetic identities.
 --
---  Mathematical reference:
---    §4.1 of docs/09-happy-instance.md  (numerical verification)
---    §13  of docs/09-happy-instance.md  (formalization plan)
---    sim/prototyping/02_happy_patch_curvature.py  (Python prototype)
+--  Numerical verification:
+--    sim/prototyping/02_happy_patch_curvature.py
 --
 --  Downstream modules:
---    src/Bulk/GaussBonnet.agda  — Σ κ(v) ≡ χ(K)  (Theorem 1)
+--    src/Bulk/GaussBonnet.agda  — Σ κ(v) ≡ χ(K)  (Theorem 2)
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §4  (curvature formula)
+--    docs/formal/01-theorems.md §Thm 2      (Discrete Gauss–Bonnet)
+--    docs/instances/filled-patch.md §6       (curvature on filled patch)
+--    docs/reference/assumptions.md §A11      (combinatorial curvature)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -74,6 +78,9 @@ open import Bulk.PatchComplex
 --  Interior vertices (vTiling) have κ < 0, confirming the negative
 --  (hyperbolic) curvature of the {5,4} tiling.  Boundary vertices
 --  have mixed signs; the sum over all vertices yields χ(K) = 1.
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §4.2  (curvature per class)
 -- ════════════════════════════════════════════════════════════════════
 
 κ-class : VClass → ℚ₁₀
@@ -138,6 +145,10 @@ open import Bulk.PatchComplex
 --  this computation matches the lookup table on all 5 classes.  Each
 --  case holds by  refl  because ℤ arithmetic reduces judgmentally on
 --  closed terms.
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §4.1  (the curvature formula)
+--    sim/prototyping/02_happy_patch_curvature.py  (numerical check)
 -- ════════════════════════════════════════════════════════════════════
 
 κ-formula : VClass → ℚ₁₀
@@ -254,7 +265,7 @@ open import Bulk.PatchComplex
 --    = one₁₀
 --    = χ(K)  in tenths
 --
---  This is the 5-class grouping from §4.2 of gauss-bonnet-sum-5class
+--  This is the 5-class grouping from gauss-bonnet-sum-5class
 --  in Util/Rationals.agda, now expressed through the curvature
 --  function defined in this module rather than through raw constants.
 --
@@ -276,10 +287,8 @@ totalCurvature =
 --  Gauss–Bonnet witness:  Σ κ(v) = χ(K) = 1 = 10/10
 -- ────────────────────────────────────────────────────────────────
 --
---  This is the computational core of Theorem 1 (discrete
---  Gauss–Bonnet) for the combinatorial curvature formulation,
---  corresponding to Phase 2B.3 of docs/05-roadmap.md and §13
---  of docs/09-happy-instance.md.
+--  This is the computational core of Theorem 2 (Discrete
+--  Gauss–Bonnet) for the combinatorial curvature formulation.
 --
 --  The proof is  refl  because every operation in the left-hand
 --  side ( vCount, κ-class, _·₁₀_, _+₁₀_ ) computes by
@@ -289,6 +298,10 @@ totalCurvature =
 --  Verified numerically by
 --  sim/prototyping/02_happy_patch_curvature.py :
 --    Σ κ(v) = (−1) + (−1/2) + 1 + (−1/2) + 2 = 1 = χ(K)   ✓
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 2    (Discrete Gauss–Bonnet)
+--    docs/formal/04-discrete-geometry.md §5 (the proof)
 -- ────────────────────────────────────────────────────────────────
 
 totalCurvature≡χ : totalCurvature ≡ one₁₀
@@ -381,6 +394,7 @@ contrib-outerG = refl
 --        the composition  κ-class ∘ classify .  This leverages the
 --        5-fold symmetry of the {5,4} tiling and keeps the
 --        curvature function compact and readable.
+--        (See docs/formal/04-discrete-geometry.md §3.3.)
 --
 --    2.  The lookup table is the PRIMARY definition;  κ-formula  is
 --        a DERIVED verification.  The formula serves as a
@@ -391,27 +405,34 @@ contrib-outerG = refl
 --        ℚ₁₀ encoding of the combinatorial formula).
 --
 --    3.  The  totalCurvature≡χ  proof is included here as a sanity
---        check.  The downstream  GaussBonnet.agda  module will
---        provide a more formally packaged version connecting this
---        to the Euler characteristic from PatchComplex, potentially
---        with an explicit statement of the theorem in the form
+--        check.  The downstream  GaussBonnet.agda  module provides
+--        a more formally packaged version connecting this to the
+--        Euler characteristic from PatchComplex, with an explicit
+--        statement of the theorem:
 --
 --            Σ_v κ(v) = χ(K)
 --
 --        where χ(K) is computed from the V, E, F counts.
+--        (See docs/formal/01-theorems.md §Thm 2.)
 --
 --    4.  The angular curvature (Option B, stretch goal) would
 --        require representing π constructively.  If attempted,
 --        it should be defined in a separate module
---        (e.g. Bulk/AngularCurvature.agda) using the angular
---        values from §4.2 of docs/09-happy-instance.md, and
---        should NOT modify this module.  The combinatorial
---        formulation is sufficient for Theorem 1.
+--        (e.g. Bulk/AngularCurvature.agda) and should NOT modify
+--        this module.  The combinatorial formulation is sufficient
+--        for Theorem 2 (Discrete Gauss–Bonnet).
+--        (See docs/reference/assumptions.md §A11.)
 --
 --    5.  All named constants (neg1/5, neg1/10, pos1/5, one₁₀) are
 --        imported from Util/Rationals.agda and NEVER reconstructed
 --        locally.  This maintains the judgmental stability guarantee
---        required for refl-based proofs (same principle as §11.5 of
---        docs/08-tree-instance.md and §15.5 of
---        docs/09-happy-instance.md).
+--        required for refl-based proofs — the shared-constants
+--        discipline documented in docs/formal/02-foundations.md §6.3.
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md   (curvature and Gauss–Bonnet)
+--    docs/formal/01-theorems.md §Thm 2    (Theorem 2 registry entry)
+--    docs/formal/02-foundations.md §6      (scalar representation)
+--    docs/instances/filled-patch.md §6     (curvature on the filled patch)
+--    docs/reference/assumptions.md §A11    (combinatorial curvature)
 -- ════════════════════════════════════════════════════════════════════

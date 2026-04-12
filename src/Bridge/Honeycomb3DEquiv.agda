@@ -31,9 +31,8 @@ open import Bridge.Honeycomb3DObs
 --  25 BFS-expanded neighbors), 31 internal shared faces, and 130
 --  boundary faces.  The Python oracle (06_generate_honeycomb_3d.py)
 --  identified 26 singleton-cell boundary regions, all with min-cut
---  value 1.  Since the orbit count (26) is well below the ~50
---  threshold from §6.9 of docs/10-frontier.md, Phase D.2 (boolean
---  reflection) is not triggered.
+--  value 1.  Since the orbit count (26) is small, flat enumeration
+--  suffices (no orbit reduction needed).
 --
 --  The enriched equivalence uses the specification-agreement pattern:
 --  the two enriched types are Σ-types centered at definitionally
@@ -45,8 +44,21 @@ open import Bridge.Honeycomb3DObs
 --  cell complex in the repository, demonstrating that the
 --  holographic formalization architecture is not dimension-specific.
 --
---  Phase:  D.3 (Enriched bridge and transport)
---  Reference:  §6.8–6.9 of docs/10-frontier.md
+--  Architectural note:
+--    This hand-written module is architecturally superseded by the
+--    generic bridge (Bridge/GenericBridge.agda).  The 3D honeycomb
+--    BridgeWitness is now produced automatically by GenericEnriched
+--    via h3-generic-witness in Bridge/GenericValidation.agda.  This
+--    module is retained as the historical first 3D enriched bridge
+--    and as a concrete demonstration of the enriched-Σ / Iso /
+--    isoToEquiv / ua / uaβ pipeline on a 3D cell complex.
+--
+--  Reference:
+--    docs/instances/honeycomb-3d.md        (instance data sheet)
+--    docs/formal/03-holographic-bridge.md  (enriched equivalence)
+--    docs/formal/11-generic-bridge.md      (generic bridge — subsumes this)
+--    docs/engineering/oracle-pipeline.md   (Python oracle: script 06)
+--    docs/reference/module-index.md        (module description)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -92,6 +104,9 @@ LB3D = L-min h3BulkView
 --  in a set, paths between elements are propositional (isProp),
 --  which means the specification-agreement fields are propositional,
 --  which means round-trip homotopies are automatic.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §1  (h-levels and truncation)
 -- ════════════════════════════════════════════════════════════════════
 
 isSetH3Obs : isSet (H3Region → ℚ≥0)
@@ -117,7 +132,12 @@ isSetH3Obs = isOfHLevelΠ 2 (λ _ → isSetℚ≥0)
 --  scalars, but a function CERTIFIED to match a specific physical
 --  specification.  The boundary certification references 3D min-cut
 --  entropy (minimal separating surface area); the bulk certification
---  references 3D minimal separating-surface length.
+--  references 3D minimal separating-surface area.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §3.1  (specification-agreement types)
+--    docs/formal/02-foundations.md §7            (the generic bridge pattern)
+--    docs/instances/honeycomb-3d.md §6           (bridge construction)
 -- ════════════════════════════════════════════════════════════════════
 
 H3EnrichedBdy : Type₀
@@ -166,6 +186,10 @@ h3-bulk-instance = LB3D , refl
 --  This is structurally identical to the 2D constructions in
 --  Bridge/EnrichedStarObs.agda and Bridge/FilledEquiv.agda, using
 --  h3-obs-path in place of star-obs-path or filled-obs-path.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §3.2  (the Iso construction)
+--    docs/formal/02-foundations.md §4            (equivalences)
 -- ════════════════════════════════════════════════════════════════════
 
 h3-enriched-iso : Iso H3EnrichedBdy H3EnrichedBulk
@@ -194,6 +218,9 @@ h3-enriched-iso = iso fwd bwd fwd-bwd bwd-fwd
 --
 --  Promoting the Iso to a full coherent equivalence (with
 --  contractible fibers).  This is required for  ua  application.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §4  (equivalences and isoToEquiv)
 -- ════════════════════════════════════════════════════════════════════
 
 h3-enriched-equiv : H3EnrichedBdy ≃ H3EnrichedBulk
@@ -217,6 +244,11 @@ h3-enriched-equiv = isoToEquiv h3-enriched-iso
 --  extending the holographic formalization from the 2D → 3D
 --  dimensional regime where holographic duality was originally
 --  formulated (Maldacena, 1997).
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5            (the Univalence axiom)
+--    docs/formal/03-holographic-bridge.md §3.3   (Univalence application)
+--    docs/instances/honeycomb-3d.md §14          (the dimensional transition)
 -- ════════════════════════════════════════════════════════════════════
 
 h3-enriched-ua-path : H3EnrichedBdy ≡ H3EnrichedBulk
@@ -248,6 +280,10 @@ h3-enriched-ua-path = ua h3-enriched-equiv
 --  a computable transport between exactly equivalent 3D observable
 --  packages, where the min-cut is a minimal SURFACE (not a curve)
 --  through the 3D cell complex.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5.1          (ua and uaβ in Cubical Agda)
+--    docs/formal/03-holographic-bridge.md §3.4   (verified transport)
 -- ════════════════════════════════════════════════════════════════════
 
 -- Step 1:  uaβ reduces transport to the forward map
@@ -297,6 +333,11 @@ h3-enriched-transport = h3-transport-computes ∙ h3-fwd-eq-bulk
 --    Filled (90 regions, 2D full disk)
 --  to:
 --    Honeycomb (26 regions, 3D {4,3,5} star patch)
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 1           (Discrete Ryu–Takayanagi)
+--    docs/formal/03-holographic-bridge.md §3.4    (verified transport)
+--    docs/instances/honeycomb-3d.md §6            (bridge construction)
 -- ════════════════════════════════════════════════════════════════════
 
 h3-enriched-transport-obs :
@@ -384,11 +425,16 @@ h3-roundtrip-bulk =
 -- ════════════════════════════════════════════════════════════════════
 --
 --  Packages the 3D honeycomb bridge into a single inspectable
---  artifact, following the BridgeWitness / FilledBridgeWitness
---  pattern from Bridge/EnrichedStarEquiv.agda and
---  Bridge/FilledEquiv.agda.
+--  artifact, following the BridgeWitness pattern from
+--  Bridge/BridgeWitness.agda (originally from
+--  Bridge/EnrichedStarEquiv.agda).
 --
 --  This record lives in  Type₁  because it stores types as fields.
+--
+--  Note: The canonical BridgeWitness for the honeycomb patch is now
+--  produced by the generic bridge machinery (GenericEnriched applied
+--  to h3PatchData in Bridge/GenericValidation.agda).  This local
+--  record type is retained for the self-contained demonstration.
 -- ════════════════════════════════════════════════════════════════════
 
 record H3BridgeWitness : Type₁ where
@@ -438,8 +484,11 @@ h3-bridge-witness .H3BridgeWitness.transport-verified = h3-enriched-transport
 --  — the dimensional regime where holographic duality was
 --  originally formulated by Maldacena (1997).
 --
---  Phase:  D.3 (Enriched bridge and transport)
---  Reference:  §6.8–6.9 of docs/10-frontier.md
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 1           (Discrete Ryu–Takayanagi)
+--    docs/formal/03-holographic-bridge.md         (holographic bridge overview)
+--    docs/instances/honeycomb-3d.md               (instance data sheet)
+--    docs/reference/module-index.md               (module description)
 -- ════════════════════════════════════════════════════════════════════
 
 H3Theorem3 : Type₀
@@ -516,10 +565,10 @@ h3-package-coherence = refl
 --
 --  The complete 3D pipeline for the {4,3,5} honeycomb patch:
 --
---    05_honeycomb_3d_prototype.py          (Phase D.0: feasibility)
+--    05_honeycomb_3d_prototype.py          (feasibility probe)
 --      │  Gate: 130 bdy faces ✓, 26 regions ✓, full valence ✓
 --      ▼
---    06_generate_honeycomb_3d.py           (Phase D.1: code gen)
+--    06_generate_honeycomb_3d.py           (Agda code generation)
 --      │
 --      ├──▶ Common/Honeycomb3DSpec.agda    (26-ctor H3Region)
 --      ├──▶ Boundary/Honeycomb3DCut.agda   (26 S-cut clauses)
@@ -552,8 +601,24 @@ h3-package-coherence = refl
 --  the cell complex = minimal separating surface area) is the
 --  content of the 26 pointwise refl proofs in h3-pointwise.
 --
---  This module completes Phase D.3 and demonstrates that the
---  holographic formalization architecture is dimension-agnostic:
---  the same enriched-Σ / Iso / isoToEquiv / ua / uaβ pipeline
---  works identically on 1D trees, 2D tilings, and 3D honeycombs.
+--  This module demonstrates that the holographic formalization
+--  architecture is dimension-agnostic: the same enriched-Σ / Iso
+--  / isoToEquiv / ua / uaβ pipeline works identically on 1D trees,
+--  2D tilings, and 3D honeycombs.
+--
+--  The generic bridge theorem (Bridge/GenericBridge.agda) subsumes
+--  this hand-written construction: h3-generic-witness in
+--  Bridge/GenericValidation.agda produces the same BridgeWitness
+--  automatically from the h3PatchData interface, without any
+--  per-instance proof engineering.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md         (enriched equivalence)
+--    docs/formal/11-generic-bridge.md             (generic bridge — subsumes)
+--    docs/instances/honeycomb-3d.md               (instance data sheet)
+--    docs/engineering/oracle-pipeline.md           (Python oracle scripts)
+--    docs/getting-started/architecture.md         (module dependency DAG)
+--    docs/reference/module-index.md               (module description)
+--    docs/historical/development-documents/10-frontier.md §6
+--                                                 (original development plan)
 -- ════════════════════════════════════════════════════════════════════

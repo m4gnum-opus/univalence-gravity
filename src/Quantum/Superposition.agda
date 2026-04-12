@@ -40,9 +40,26 @@ open import Quantum.AmplitudeAlg
 --  this parametricity: it proves 𝔼[ψ,S] ≡ 𝔼[ψ,L] for ANY
 --  superposition, ANY config type, and ANY amplitude algebra.
 --
+--  Architectural role:
+--    This is a Tier 2 module in the Quantum layer providing the
+--    Superposition type and the 𝔼 functional consumed by
+--    Quantum/QuantumBridge.agda (Theorem 7) and
+--    Quantum/StarQuantumBridge.agda (concrete instantiation).
+--    The quantum layer is purely additive — it enriches the
+--    repository with amplitude-polymorphic superposition
+--    infrastructure without modifying any existing module.
+--    See docs/getting-started/architecture.md for the module
+--    dependency DAG.
+--
 --  Reference:
---    docs/10-frontier.md §14.4  (Superposition as a List)
---    docs/10-frontier.md §14.9  (module plan)
+--    docs/formal/07-quantum-superposition.md §4
+--                          (Superposition as a List, 𝔼 functional)
+--    docs/formal/01-theorems.md §Thm 7
+--                          (Quantum Superposition Bridge — theorem registry)
+--    docs/reference/module-index.md
+--                          (module description)
+--    docs/getting-started/architecture.md
+--                          (Quantum layer — module dependency DAG)
 -- ════════════════════════════════════════════════════════════════════
 
 Superposition : Type₀ → AmplitudeAlg → Type₀
@@ -88,8 +105,14 @@ Superposition Config alg = List (Config × AmplitudeAlg.A alg)
 --      a single amplitude-ring element: the path integral.
 --
 --  Reference:
---    docs/10-frontier.md §14.4  (Expected Value as List Fold)
---    docs/10-frontier.md §14.5  (Quantum Bridge Theorem — uses 𝔼)
+--    docs/formal/07-quantum-superposition.md §4
+--                          (Expected Value as List Fold — the 𝔼 functional)
+--    docs/formal/07-quantum-superposition.md §5
+--                          (Quantum Bridge Theorem — uses 𝔼)
+--    docs/formal/01-theorems.md §Thm 7
+--                          (Quantum Superposition Bridge — theorem registry)
+--    docs/physics/holographic-dictionary.md §6
+--                          (𝔼 ↔ finite path integral in the dictionary)
 -- ════════════════════════════════════════════════════════════════════
 
 𝔼 : (alg : AmplitudeAlg) {Config : Type₀}
@@ -123,7 +146,10 @@ Superposition Config alg = List (Config × AmplitudeAlg.A alg)
 --  amplitude ring is not available.
 --
 --  Reference:
---    docs/10-frontier.md §14.4  (Partition Function definition)
+--    docs/formal/07-quantum-superposition.md §4.3
+--                          (The Partition Function)
+--    docs/formal/07-quantum-superposition.md §7
+--                          (The Partition Function and Cancellation)
 -- ════════════════════════════════════════════════════════════════════
 
 Z : (alg : AmplitudeAlg) {Config : Type₀}
@@ -398,8 +424,9 @@ private
 --        not require this.
 --
 --    4.  The fold direction (right fold, accumulating from the
---        empty list) matches §14.4 of docs/10-frontier.md.  The
---        choice is cosmetic because the quantum bridge proof uses
+--        empty list) matches the definition in
+--        docs/formal/07-quantum-superposition.md §4.  The choice
+--        is cosmetic because the quantum bridge proof uses
 --        structural induction on the list, not fold laws.
 --
 --    5.  No ring axioms are assumed.  The destructive-interference
@@ -431,14 +458,17 @@ private
 --    src/Quantum/StarQuantumBridge.agda  — instantiation for the
 --                                          6-tile star + Q₈
 --
---  Exit criterion contribution (§14.10 of docs/10-frontier.md):
---
---    This module provides the Superposition type and the 𝔼
---    functional needed by exit criterion items 2–4.  The type
---    𝔼[ψ, S] ≡ 𝔼[ψ, L]  is the statement of the quantum bridge
---    theorem, proven in QuantumBridge.agda using the definitions
---    from this module.
---
---    The regression tests verify that 𝔼 reduces by  refl  on
---    closed ℤ[i] superpositions (partial exit criterion item 4).
+--  Reference:
+--    docs/formal/07-quantum-superposition.md §4
+--                        (Superposition type and 𝔼 functional)
+--    docs/formal/07-quantum-superposition.md §5
+--                        (Quantum Bridge Theorem — consumes 𝔼)
+--    docs/formal/01-theorems.md §Thm 7
+--                        (Quantum Superposition Bridge — theorem registry)
+--    docs/physics/holographic-dictionary.md §6
+--                        (quantum superposition Agda ↔ physics table)
+--    docs/reference/module-index.md
+--                        (module description)
+--    docs/getting-started/architecture.md
+--                        (Quantum layer — module dependency DAG)
 -- ════════════════════════════════════════════════════════════════════

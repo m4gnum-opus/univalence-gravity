@@ -483,4 +483,3 @@ raw-filled-obs-coherence = raw-filled-transport-obs
 raw-filled-bulk-coherence :
   fst (transport raw-filled-ua-path raw-filled-bulk) ≡ LBF
 raw-filled-bulk-coherence = raw-filled-transport-obs ∙ filled-obs-path
-

@@ -33,10 +33,30 @@ open import Causal.NoCTC using (<ℕ-irrefl ; chain-step-<)
 --  the zero-length case  done e  (reflexivity: every event is in
 --  its own future light cone, corresponding to  m ≥ n  when  m = n).
 --
+--  Architectural role:
+--    This is a Tier 2 (Observable / Geometry Layer) module providing
+--    the discrete light-cone, spacelike-separation, and same-time-
+--    spacelike infrastructure.  It is the fourth and final module in
+--    the causal layer:
+--
+--      Event.agda         — spacetime atoms, causal links, chains
+--      CausalDiamond.agda — finite causal intervals, maximin, proper time
+--      NoCTC.agda         — no closed timelike curves (acyclicity)
+--      LightCone.agda     — future cone, spacelike separation (this module)
+--
+--    It depends on  Causal/Event.agda  (for Event, CausalLink,
+--    CausalChain, chain-length) and  Causal/NoCTC.agda  (for
+--    <ℕ-irrefl and chain-step-<).  It does not depend on any Bridge,
+--    Boundary, Bulk, Gauge, or Quantum module — the causal layer is
+--    orthogonal to all other enrichment layers.
+--
 --  Reference:
---    docs/10-frontier.md §12.8  (The Discrete Light Cone)
---    docs/10-frontier.md §12.11 (New Module Plan)
---    docs/10-frontier.md §12.13 (Exit Criterion, item 4 — stretch)
+--    docs/formal/06-causal-structure.md §8    (The Discrete Light Cone)
+--    docs/formal/06-causal-structure.md §8.1  (Future Cone)
+--    docs/formal/01-theorems.md §Thm 5        (No Closed Timelike Curves
+--                                              — additional results)
+--    docs/getting-started/architecture.md     (module dependency DAG)
+--    docs/reference/module-index.md           (module description)
 -- ════════════════════════════════════════════════════════════════════
 
 record FutureCone
@@ -56,6 +76,10 @@ record FutureCone
 --  The reflexive case:  J⁺(e)  contains  e  itself, via the
 --  zero-length chain  done e .  This corresponds to  m ≥ n  when
 --  m = n  in the definition of  J⁺(e) .
+--
+--  Reference:
+--    docs/formal/06-causal-structure.md §8.1  (Future Cone —
+--                                              self-inclusion)
 -- ════════════════════════════════════════════════════════════════════
 
 self-in-cone :
@@ -76,6 +100,10 @@ self-in-cone e .FutureCone.chain  = done e
 --
 --  This is the transitivity of causal reachability: the new chain
 --  is the old chain extended by one step.
+--
+--  Reference:
+--    docs/formal/06-causal-structure.md §8.1  (Future Cone —
+--                                              cone extension)
 -- ════════════════════════════════════════════════════════════════════
 
 extend-cone :
@@ -110,6 +138,12 @@ extend-cone fc       link .FutureCone.chain  =
 --  separation: an event is trivially in its own FutureCone
 --  (via  done), but it is NOT causally related to itself
 --  (no positive-length self-loop, by the no-CTC theorem).
+--
+--  In the physics interpretation (docs/physics/holographic-dictionary.md §5):
+--    "Timelike" = causally related = CausallyRelated CellAt Adj e₁ e₂
+--
+--  Reference:
+--    docs/formal/06-causal-structure.md §8.2  (Causal Relatedness)
 -- ════════════════════════════════════════════════════════════════════
 
 CausallyRelated :
@@ -134,6 +168,12 @@ CausallyRelated CellAt Adj e₁ e₂ =
 --
 --  This is the type-theoretic content of the physical statement:
 --  "causally related events are timelike-separated."
+--
+--  Reference:
+--    docs/formal/06-causal-structure.md §8.2  (Causal Relatedness —
+--                                              implies strict ordering)
+--    docs/physics/holographic-dictionary.md §5  (causal structure
+--                                               Agda ↔ physics)
 -- ════════════════════════════════════════════════════════════════════
 
 related→time-< :
@@ -166,12 +206,14 @@ related→time-< (e' , ch , link) = chain-step-< ch link
 --  increases the time index, so there can be no positive-length
 --  chain between same-time events.
 --
+--  In the physics interpretation (docs/physics/holographic-dictionary.md §5):
+--    "Spacelike" = incomparable in the poset = Spacelike CellAt Adj e₁ e₂
+--
 --  Reference:
---    docs/10-frontier.md §12.8 :  "Two events at the same time
---    that are not in each other's light cones are spacelike
---    separated — they cannot influence each other."
---    docs/10-frontier.md §12.9 :  "Spacelike = incomparable in
---    the poset."
+--    docs/formal/06-causal-structure.md §8.3  (Spacelike Separation)
+--    docs/formal/06-causal-structure.md §10   (Bypassing Smooth Geometry)
+--    docs/physics/holographic-dictionary.md §5  (causal structure
+--                                               Agda ↔ physics)
 -- ════════════════════════════════════════════════════════════════════
 
 Spacelike :
@@ -200,6 +242,10 @@ Spacelike CellAt Adj e₁ e₂ =
 --  This lemma is the bridge between the no-CTC theorem (which
 --  prevents self-loops) and spacelike separation (which prevents
 --  same-time causal connections).
+--
+--  Reference:
+--    docs/formal/06-causal-structure.md §8.4  (Same-Time Events
+--                                              Are Spacelike)
 -- ════════════════════════════════════════════════════════════════════
 
 same-time→¬related :
@@ -242,9 +288,21 @@ same-time→¬related {e₁ = e₁} p rel =
 --  structure of the {5,4} tiling, the Dense-100 patch, or any
 --  other concrete instance.
 --
+--  The key insight: spacelike separation in a time-stratified poset
+--  is a CONSEQUENCE of acyclicity (no-CTC), not an independent
+--  axiom.  The type system enforces both properties simultaneously
+--  through the single constraint that CausalLink.time-suc strictly
+--  advances the time index.
+--
 --  Reference:
---    docs/10-frontier.md §12.8   (spacelike separation definition)
---    docs/10-frontier.md §12.13  (Exit Criterion, item 4 — stretch)
+--    docs/formal/06-causal-structure.md §8.4  (Same-Time Events
+--                                              Are Spacelike —
+--                                              the deepest result)
+--    docs/formal/01-theorems.md §Thm 5        (No Closed Timelike
+--                                              Curves — additional
+--                                              results)
+--    docs/physics/holographic-dictionary.md §5  (causal structure
+--                                               Agda ↔ physics)
 -- ════════════════════════════════════════════════════════════════════
 
 same-time-spacelike :
@@ -263,17 +321,22 @@ same-time-spacelike p =
 --
 --  These regression tests verify FutureCone and spacelike-separation
 --  on a trivial cell family (ℕ at all times) with a trivially-
---  satisfied adjacency relation.  This satisfies the stretch goal
---  of exit criterion §12.13 item 4:
---
---    "(Stretch) FutureCone and spacelike-separation are defined
---     and instantiated for at least one concrete event."
+--  satisfied adjacency relation.  This demonstrates that the types
+--  are well-formed and the proofs compute.
 --
 --  A genuine instantiation for the {5,4} tower diamond would
 --  require the Python oracle to emit adjacency data between
---  cells at consecutive BFS depths (Phase H.3, estimated 1–2
---  weeks).  The trivial instantiation below demonstrates that
---  the types are well-formed and the proofs compute.
+--  cells at consecutive BFS depths.  The trivial instantiation
+--  below validates the type-level infrastructure on a concrete
+--  example: two same-time events proven spacelike-separated, and
+--  future cone elements constructed with chains of length 0, 1,
+--  and 2.
+--
+--  Reference:
+--    docs/formal/06-causal-structure.md §8    (The Discrete Light Cone)
+--    docs/instances/layer-54-tower.md §5      (CausalDiamond packaging
+--                                              — the tower provides the
+--                                              spatial slices)
 -- ════════════════════════════════════════════════════════════════════
 
 private
@@ -418,8 +481,8 @@ private
 --  Architecture:
 --
 --    This module completes the discrete light-cone infrastructure
---    for §12 of docs/10-frontier.md.  The four Causal modules form
---    a coherent package:
+--    for the causal layer.  The four Causal modules form a coherent
+--    package:
 --
 --      Event.agda         — spacetime atoms, causal links, chains
 --      CausalDiamond.agda — finite causal intervals, maximin, proper time
@@ -440,7 +503,7 @@ private
 --    the single constraint that CausalLink.time-suc strictly advances
 --    the time index.
 --
---  Relationship to the physical causal interpretation (§12.9):
+--  Relationship to the physical causal interpretation:
 --
 --    • "Timelike" = causally related = CausallyRelated CellAt Adj e₁ e₂
 --    • "Spacelike" = incomparable in the poset = Spacelike CellAt Adj e₁ e₂
@@ -449,15 +512,10 @@ private
 --      — not formalized here; would require a notion of "same cell"
 --      across time steps.
 --
---  Exit criterion (§12.13 of docs/10-frontier.md):
+--    See docs/physics/holographic-dictionary.md §5 for the full
+--    causal-structure Agda ↔ physics translation table.
 --
---    4. (Stretch) ✓  FutureCone and spacelike-separation are defined
---       and instantiated for concrete events (§9 above: trivial cell
---       family with two same-time events proven spacelike-separated,
---       and future cone elements constructed with chains of length
---       0, 1, and 2).
---
---  Future work (Phase H.3 — Python oracle):
+--  Future work (Python oracle integration):
 --
 --    To instantiate FutureCone for concrete events in the {5,4}
 --    tower diamond, the Python oracle (13_generate_layerN.py) would
@@ -475,13 +533,20 @@ private
 --      • Concrete  FutureCone  elements showing reachability
 --        through multiple tower levels.
 --
---    This is estimated at 1–2 weeks of development (Phase H.3 of
---    §12.12) and is not required for the current exit criteria.
---
 --  Reference:
---    docs/10-frontier.md §12    (The Causal Light Cone)
---    docs/10-frontier.md §12.8  (The Discrete Light Cone)
---    docs/10-frontier.md §12.9  (Bypassing Smooth Geometry)
---    docs/10-frontier.md §12.11 (New Module Plan)
---    docs/10-frontier.md §12.13 (Exit Criterion)
+--    docs/formal/06-causal-structure.md       (The Causal Light Cone —
+--                                              full formal treatment)
+--    docs/formal/06-causal-structure.md §8    (The Discrete Light Cone)
+--    docs/formal/06-causal-structure.md §8.3  (Spacelike Separation)
+--    docs/formal/06-causal-structure.md §8.4  (Same-Time Events
+--                                              Are Spacelike)
+--    docs/formal/06-causal-structure.md §10   (Bypassing Smooth Geometry)
+--    docs/formal/01-theorems.md §Thm 5        (No Closed Timelike Curves
+--                                              — additional results)
+--    docs/physics/holographic-dictionary.md §5  (causal structure
+--                                               Agda ↔ physics table)
+--    docs/getting-started/architecture.md     (module dependency DAG)
+--    docs/reference/module-index.md           (module description)
+--    docs/historical/development-docs/10-frontier.md §12
+--                                             (original development plan)
 -- ════════════════════════════════════════════════════════════════════

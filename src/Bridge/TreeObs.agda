@@ -14,27 +14,38 @@ open import Bulk.TreeChain
 -- ════════════════════════════════════════════════════════════════════
 --
 --  A single-field record parameterized by a region index type R.
---  The minimal observable-package record  ObsPackage  is now defined
+--  The minimal observable-package record  ObsPackage  is defined
 --  in  Common.ObsPackage  so that all instances (Tree, Star, and
---  future HaPPY-derived patches) import it from a single canonical
+--  all subsequent patches) import it from a single canonical
 --  location, without any cross-dependency between bridge modules.
 --
 --  The region index is a parameter rather than a stored field to
---  keep  ObsPackage Region  in Type₀ (see §8.1 of
---  docs/08-tree-instance.md).
+--  keep  ObsPackage Region  in Type₀.
 --
 --  For the tree pilot the only field is the observable function
 --  obs : R → ℚ≥0.  Proof-carrying fields (subadditivity,
---  monotonicity witnesses, etc.) are intentionally omitted in this
---  first pass — they should be added only after the minimal bridge
---  succeeds, and any such additions should be proposition-valued
---  (see §11.2 of docs/08-tree-instance.md).
+--  monotonicity witnesses, etc.) are intentionally omitted from
+--  this minimal record — they are added in the enriched types
+--  FullBdy / FullBulk  defined in Bridge/FullEnrichedStarObs.agda,
+--  keeping the minimal packaging separate from the structural
+--  property layer.  Any such additions should be proposition-valued
+--  to enable round-trip homotopies via isProp.
 --
 --  Because the record has a single field, package equality reduces
 --  directly to observable-function equality via a record path
---  whose sole component is the obs-field path.
---  See §8.1 of docs/08-tree-instance.md and §16 of
---  docs/09-happy-instance.md for the design rationale.
+--  whose sole component is the obs-field path.  This is exploited
+--  in every  *-package-path  definition across the Bridge modules.
+--
+--  Architectural role:
+--    This is a Tier 3 (Bridge Layer) module assembling observable
+--    packages from the boundary and bulk views defined in Tier 2.
+--    It is the tree pilot's first end-to-end bridge test.
+--
+--  Reference:
+--    docs/instances/tree-pilot.md §5        (observable packages)
+--    docs/formal/03-holographic-bridge.md   (observable packages)
+--    docs/getting-started/architecture.md   (Bridge Layer)
+--    docs/reference/module-index.md         (module description)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Common.ObsPackage public
@@ -50,6 +61,10 @@ open import Common.ObsPackage public
 --
 --  Definitional unfolding for the canonical instance:
 --    Obs∂ treeSpec .obs r  ≡  S-cut (π∂ treeSpec) r
+--
+--  Reference:
+--    docs/instances/tree-pilot.md §5         (observable packages)
+--    docs/formal/03-holographic-bridge.md §2 (pointwise agreement)
 -- ════════════════════════════════════════════════════════════════════
 
 Obs∂ : TreeSpec → ObsPackage Region
@@ -66,6 +81,10 @@ Obs∂ c .ObsPackage.obs = S-cut (π∂ c)
 --
 --  Definitional unfolding for the canonical instance:
 --    ObsBulk treeSpec .obs r  ≡  L-min (πbulk treeSpec) r
+--
+--  Reference:
+--    docs/instances/tree-pilot.md §5         (observable packages)
+--    docs/formal/03-holographic-bridge.md §2 (pointwise agreement)
 -- ════════════════════════════════════════════════════════════════════
 
 ObsBulk : TreeSpec → ObsPackage Region
@@ -93,16 +112,26 @@ ObsBulk c .ObsPackage.obs = L-min (πbulk c)
 --
 --    3. The constants are defined once in Util.Scalars and imported
 --       by both Boundary.TreeCut and Bulk.TreeChain, so the normal
---       forms on both sides are judgmentally identical (§11.5 of
---       docs/08-tree-instance.md).
+--       forms on both sides are judgmentally identical.  This is
+--       the shared-constants discipline documented in
+--       docs/formal/02-foundations.md §6.3.
 --
 --  This proof is the content of the discrete Ryu–Takayanagi
 --  correspondence for the tree instance: boundary entanglement
 --  (min-cut) equals bulk geometry (minimal chain length) on every
 --  admissible region.
 --
---  Mathematical justification per region (see §7 of
---  docs/08-tree-instance.md):
+--  The tree pilot is the repository's first bridge calibration
+--  object — it validates the full common-source → views →
+--  observable packages → pointwise agreement pipeline before any
+--  2D or 3D geometry is introduced.  After this proof succeeds,
+--  the function path  tree-obs-path = funExt tree-pointwise  and
+--  the package path are assembled in Bridge/TreeEquiv.agda, and
+--  the generic bridge from Bridge/GenericBridge.agda produces
+--  the full BridgeWitness automatically.
+--
+--  Mathematical justification per region
+--  (see docs/instances/tree-pilot.md §4):
 --
 --    regL₁    :  S-cut = 1  (cut {L₁–A})      =  L-min = 1  (chain {L₁–A})
 --    regL₂    :  S-cut = 1  (cut {L₂–A})      =  L-min = 1  (chain {L₂–A})
@@ -112,6 +141,14 @@ ObsBulk c .ObsPackage.obs = L-min (πbulk c)
 --    regL₂R₁  :  S-cut = 2  (cut {L₂–A,B–R₁})=  L-min = 2  (chain {L₂–A,B–R₁})
 --    regR₁R₂  :  S-cut = 2  (cut {Root–B})    =  L-min = 2  (chain {Root–B})
 --    regR₂L₁  :  S-cut = 2  (cut {L₁–A,B–R₂})=  L-min = 2  (chain {L₁–A,B–R₂})
+--
+--  Reference:
+--    docs/instances/tree-pilot.md §4         (min-cut / observable agreement)
+--    docs/instances/tree-pilot.md §6         (bridge construction)
+--    docs/formal/02-foundations.md §6.3      (shared-constants discipline)
+--    docs/formal/03-holographic-bridge.md §2 (pointwise agreement path)
+--    docs/formal/11-generic-bridge.md        (PatchData interface)
+--    docs/reference/module-index.md          (module description)
 -- ════════════════════════════════════════════════════════════════════
 
 tree-pointwise :

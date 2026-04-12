@@ -46,9 +46,11 @@ open import Causal.Event
 --                                  CausalChain, causal-link-<
 --
 --  Reference:
---    docs/10-frontier.md §12.5   (Acyclicity: No CTCs)
---    docs/10-frontier.md §12.12  (Phase H.2 — No-CTC proof)
---    docs/10-frontier.md §12.13  (Exit Criterion, item 3)
+--    docs/formal/06-causal-structure.md §5  (No Closed Timelike Curves)
+--    docs/formal/01-theorems.md §Thm 5     (theorem registry entry)
+--    docs/reference/module-index.md        (module description)
+--    docs/historical/development-docs/10-frontier.md §12
+--                                          (original development plan)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -181,7 +183,7 @@ chain-step-< (step ch link₁) link₂ =
 --    2.  <ℕ-irrefl     gives  ⊥ .
 --
 --  This is the "one-line appeal to the well-foundedness of (ℕ, <)"
---  described in Phase H.2 of §12.12 of docs/10-frontier.md.
+--  — the type-level time stratification makes cycles impossible.
 --
 --  The theorem is fully parametric: it works for ANY cell family and
 --  ANY adjacency relation.  It does not depend on the specific
@@ -196,9 +198,10 @@ chain-step-< (step ch link₁) link₂ =
 --  to a previously visited time — because ℕ has no cycles.
 --
 --  Reference:
---    docs/10-frontier.md §12.5   (Acyclicity: No CTCs)
---    docs/10-frontier.md §12.12  (Phase H.2)
---    docs/10-frontier.md §12.13  (Exit criterion, item 3)
+--    docs/formal/06-causal-structure.md §5  (No Closed Timelike Curves)
+--    docs/formal/01-theorems.md §Thm 5     (theorem registry entry)
+--    docs/physics/holographic-dictionary.md §5  (causal structure
+--                                               Agda ↔ physics table)
 -- ════════════════════════════════════════════════════════════════════
 
 no-ctc :
@@ -358,8 +361,10 @@ private
 --
 --      no-ctc ch link = <ℕ-irrefl (time e) (chain-step-< ch link)
 --
---    This is the "one-line appeal to well-foundedness" promised in
---    Phase H.2 of §12.12 of docs/10-frontier.md.
+--    This is a one-line appeal to well-foundedness: the type
+--    signature of CausalLink (requiring suc(time e₁) ≡ time e₂)
+--    forces strict time advancement, and ℕ irreflexivity closes
+--    any attempted cycle.
 --
 --  Relationship to existing infrastructure:
 --
@@ -403,23 +408,29 @@ private
 --        architectural advantage of the time-stratification
 --        approach: the acyclicity guarantee is free.
 --
---  Exit criterion (§12.13 of docs/10-frontier.md):
+--  Architectural role:
 --
---    3. ✓  A  no-ctcs  proof type-checks, witnessing that the
---          stratified causal poset admits no directed cycles.
---
---  Research significance (§12.14):
---
---    This is the first machine-checked proof of CTC-freedom as a
---    structural consequence of type-level time stratification in a
---    cubical type theory.  The proof demonstrates that the causal
---    structure of discrete quantum gravity is compatible with the
---    spatial holographic correspondence formalized in the rest of
---    the repository.
+--    This is a Tier 2 (Observable / Geometry Layer) module providing
+--    the structural acyclicity proof consumed by:
+--      • Causal/LightCone.agda  (same-time-spacelike uses <ℕ-irrefl
+--                                 and chain-step-<)
+--    It is orthogonal to and independent of all Bridge, Boundary,
+--    Bulk, Gauge, and Quantum modules.  The causal structure
+--    enriches the holographic network with temporal directionality
+--    without modifying any existing module.
 --
 --  Reference:
---    docs/10-frontier.md §12.5   (Acyclicity: No CTCs)
---    docs/10-frontier.md §12.12  (Phase H.2 — No-CTC proof)
---    docs/10-frontier.md §12.13  (Exit Criterion, item 3)
---    docs/10-frontier.md §12.14  (Research Significance, item 3)
+--    docs/formal/06-causal-structure.md §5    (No Closed Timelike
+--                                              Curves — full formal
+--                                              treatment)
+--    docs/formal/06-causal-structure.md §5.3  (Parametricity)
+--    docs/formal/01-theorems.md §Thm 5        (theorem registry entry)
+--    docs/getting-started/architecture.md     (module dependency DAG)
+--    docs/reference/module-index.md           (module description)
+--    docs/physics/holographic-dictionary.md §5 (causal structure
+--                                              Agda ↔ physics table)
+--    docs/historical/development-docs/10-frontier.md §12
+--                                             (original development
+--                                              plan for the causal
+--                                              light cone)
 -- ════════════════════════════════════════════════════════════════════

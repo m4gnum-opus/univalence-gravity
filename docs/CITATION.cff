@@ -6,6 +6,6 @@ authors:
   - given-names: Sven
     family-names: Bichtemann
     orcid: "https://orcid.org/0009-0006-4746-5608"
-version: 0.4.0
+version: 0.5.0
 license: MIT
 repository-code: "https://github.com/m4ximum-opus/univalence-gravity"

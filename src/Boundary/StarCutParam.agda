@@ -28,18 +28,31 @@ open import Boundary.StarCut using (S-cut ; π∂ ; BoundaryView)
 --  entanglement (min-cut values).
 --
 --  This definition is equivalent to  minCutFromWeights  from
---  Bridge/StarRawEquiv.agda (§4), now promoted to the Boundary
---  layer as a first-class definition for the step-invariance
---  theorem (§11 of docs/10-frontier.md).
+--  Bridge/StarRawEquiv.agda, now promoted to the Boundary layer
+--  as a first-class definition for the step-invariance theorem
+--  (Theorem 9 in docs/formal/01-theorems.md).
+--
+--  Architectural role:
+--    This is a Tier 2 (Observable Layer) module providing the
+--    parameterized boundary observable consumed by the dynamics
+--    layer.  The bulk-side counterpart is L-param in
+--    Bulk/StarChainParam.agda.  For the star topology, S-param
+--    and L-param are definitionally the same function — the
+--    structural content of the discrete RT correspondence for
+--    parameterized weights.
 --
 --  Downstream modules:
---    src/Bulk/StarChainParam.agda         (identical parameterized L-min)
---    src/Bridge/StarStepInvariance.agda   (step-invariance theorem)
---    src/Bridge/StarDynamicsLoop.agda     (iterated loop)
+--    Bulk/StarChainParam.agda                (identical parameterized L-min)
+--    Bridge/StarStepInvariance.agda          (step-invariance theorem)
+--    Bridge/StarDynamicsLoop.agda            (iterated dynamics loop)
+--    Bridge/EnrichedStarStepInvariance.agda  (enriched step invariance)
+--    Quantum/StarQuantumBridge.agda          (quantum superposition bridge)
 --
 --  Reference:
---    docs/10-frontier.md §11.5  (Strategy A, Step 1)
---    docs/10-frontier.md §11.7  (item 2 — this module)
+--    docs/formal/10-dynamics.md §2     (parameterized observables)
+--    docs/formal/01-theorems.md §Thm 9 (step invariance statement)
+--    docs/instances/star-patch.md §7   (dynamics on the star patch)
+--    docs/reference/module-index.md    (module description)
 -- ════════════════════════════════════════════════════════════════════
 
 S-param : (Bond → ℚ≥0) → Region → ℚ≥0
@@ -82,6 +95,10 @@ S-param w regN4N0 = w bCN4 +ℚ w bCN0
 --  (star-pointwise in Bridge/StarObs.agda), ensuring that the
 --  new parameterized development is consistent with all existing
 --  refl-based proofs.
+--
+--  Reference:
+--    docs/formal/10-dynamics.md §2.5   (specification agreement)
+--    docs/formal/02-foundations.md §6.3 (shared-constants discipline)
 -- ════════════════════════════════════════════════════════════════════
 
 S-param-spec-pointwise :
@@ -141,7 +158,7 @@ private
 --  Relationship to existing code:
 --
 --    The definition of  S-param  is identical to  minCutFromWeights
---    in  Bridge/StarRawEquiv.agda  (§4).  It is defined here in the
+--    in  Bridge/StarRawEquiv.agda .  It is defined here in the
 --    Boundary layer rather than imported from the Bridge layer
 --    because:
 --
@@ -159,7 +176,7 @@ private
 --      3.  If a future refactor wishes to eliminate the duplication
 --          with  minCutFromWeights , either module can import from
 --          the other — but this is not required for the current
---          milestone.
+--          architecture.
 --
 --  Design decisions:
 --
@@ -179,12 +196,8 @@ private
 --        identity between functions into ℕ (a set), and the 10
 --        refl cases are small enough to normalize quickly.
 --
---  Conditions for advancement (§11.12 of docs/10-frontier.md):
---
---    "The  minCutFromWeights  function from  Bridge/StarRawEquiv.agda
---     has been validated as the correct parameterized observable for
---     both boundary and bulk sides."
---
---  This module satisfies that condition for the boundary side.
---  The next step is  Bulk/StarChainParam.agda  (item 3 of §11.7).
+--  Reference:
+--    docs/formal/10-dynamics.md         (dynamics layer overview)
+--    docs/instances/star-patch.md §7    (dynamics on the star patch)
+--    docs/getting-started/architecture.md (Observable Layer)
 -- ════════════════════════════════════════════════════════════════════

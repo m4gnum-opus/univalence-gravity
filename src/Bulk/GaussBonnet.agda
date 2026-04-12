@@ -15,18 +15,18 @@ open import Bulk.Curvature
 -- ════════════════════════════════════════════════════════════════════
 --
 --  This module provides the polished theorem statement and milestone
---  packaging for **Theorem 1** (Discrete Gauss–Bonnet), as defined
---  in §3.0 of docs/03-architecture.md and targeted by Phase 2B.3
---  of docs/05-roadmap.md.
+--  packaging for **Theorem 2** (Discrete Gauss–Bonnet), as listed
+--  in the canonical theorem registry (docs/formal/01-theorems.md).
 --
 --  The theorem asserts that for the 11-tile filled patch K of the
 --  {5,4} hyperbolic tiling:
 --
 --      Σ_v κ(v) = χ(K)
 --
---  where κ is the combinatorial curvature function (Option A from
---  assumptions.md) and χ(K) = V − E + F = 30 − 40 + 11 = 1 is
---  the Euler characteristic of the disk-shaped patch.
+--  where κ is the combinatorial curvature function (Assumption A11
+--  from docs/reference/assumptions.md) and χ(K) = V − E + F =
+--  30 − 40 + 11 = 1 is the Euler characteristic of the disk-shaped
+--  patch.
 --
 --  The proof is entirely computational: the curvature function
 --  κ-class : VClass → ℚ₁₀  and the class counts  vCount : VClass → ℕ
@@ -42,14 +42,15 @@ open import Bulk.Curvature
 --    Bulk/Curvature.agda    — κ-class, κ, totalCurvature,
 --                             totalCurvature≡χ
 --
---  Mathematical references:
---    §4.1 of docs/09-happy-instance.md  (numerical verification)
---    §13  of docs/09-happy-instance.md  (formalization plan)
---    sim/prototyping/02_happy_patch_curvature.py  (Python prototype)
+--  Numerical verification:
+--    sim/prototyping/02_happy_patch_curvature.py
 --
---  Exit criterion (docs/05-roadmap.md, Phase 2B):
---    "The concrete bulk type, discrete curvature, and Gauss–Bonnet
---     theorem type-check.  This satisfies Milestone 1 of §6.9."
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 2     (theorem registry entry)
+--    docs/formal/04-discrete-geometry.md §5 (the proof)
+--    docs/instances/filled-patch.md §6      (curvature on filled patch)
+--    docs/reference/assumptions.md §A11     (combinatorial curvature)
+--    docs/reference/module-index.md         (module description)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -107,7 +108,7 @@ open import Bulk.Curvature
 
 
 -- ════════════════════════════════════════════════════════════════════
---  §2.  Discrete Gauss–Bonnet theorem  (Theorem 1)
+--  §2.  Discrete Gauss–Bonnet theorem  (Theorem 2)
 -- ════════════════════════════════════════════════════════════════════
 --
 --  THEOREM (Discrete Gauss–Bonnet, combinatorial form).
@@ -138,10 +139,14 @@ open import Bulk.Curvature
 --  constructor terms, and the ℤ normalizer reduces the entire
 --  expression to  pos 10 .
 --
---  This corresponds to Phase 2B.3 of docs/05-roadmap.md and
---  §13 of docs/09-happy-instance.md.  Verified numerically by
+--  Verified numerically by
 --  sim/prototyping/02_happy_patch_curvature.py :
 --    Σ κ(v) = (−1) + (−1/2) + 1 + (−1/2) + 2 = 1 = χ(K)  ✓
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 2       (theorem registry)
+--    docs/formal/04-discrete-geometry.md §5.2 (the refl proof)
+--    docs/instances/filled-patch.md §6        (curvature on patch)
 -- ════════════════════════════════════════════════════════════════════
 
 discrete-gauss-bonnet : totalCurvature ≡ χ₁₀
@@ -179,6 +184,9 @@ discrete-gauss-bonnet = totalCurvature≡χ
 --  combinatorial formula absorbs the interior/boundary distinction
 --  into a single formula, but the decomposition below makes the
 --  two contributions explicit.
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §5.3  (decomposition)
 -- ════════════════════════════════════════════════════════════════════
 
 -- ────────────────────────────────────────────────────────────────
@@ -243,12 +251,9 @@ interior+boundary≡χ = refl
 -- ════════════════════════════════════════════════════════════════════
 --
 --  This record packages all the data and proofs constituting
---  Theorem 1 into a single inspectable artifact.  It serves as
---  the **Milestone 1 deliverable** from §6.9 of docs/06-challenges.md:
---
---    "Formal proof of discrete Gauss–Bonnet (combinatorial or Regge
---     form, with boundary correction for finite patches).  This is
---     independently publishable as a formalization result."
+--  Theorem 2 into a single inspectable artifact.  It serves as
+--  the **Milestone 1 deliverable** — the first independently
+--  publishable formalization result of the project.
 --
 --  The record captures:
 --
@@ -265,8 +270,17 @@ interior+boundary≡χ = refl
 --    • A face-count field for completeness
 --
 --  These are omitted in the first pass following the design
---  principle from §11.2 of docs/08-tree-instance.md: keep records
---  minimal until the end-to-end pipeline works.
+--  principle: keep records minimal until the end-to-end pipeline
+--  works.
+--
+--  This record is consumed by:
+--    • Bridge/WickRotation.agda  (ads-gauss-bonnet field)
+--    • Bridge/SchematicTower.agda (tower integration)
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §5.4  (GaussBonnetWitness)
+--    docs/formal/08-wick-rotation.md §7        (WickRotationWitness)
+--    docs/instances/filled-patch.md §6          (curvature on patch)
 -- ════════════════════════════════════════════════════════════════════
 
 record GaussBonnetWitness : Type₀ where
@@ -305,9 +319,14 @@ patch-gb-witness .GaussBonnetWitness.gauss-bonnet   = discrete-gauss-bonnet
 -- ════════════════════════════════════════════════════════════════════
 --
 --  The type  Theorem1  and its inhabitant  theorem1  provide a
---  stable reference point for the roadmap and documentation.
---  Phase 3 modules (Bridge/) may refer to  Theorem1  when
+--  stable reference point for the documentation.  Bridge modules
+--  (e.g. Bridge/WickRotation.agda) refer to  Theorem1  when
 --  recording that the bulk foundations are in place.
+--
+--  NOTE: Despite the name  Theorem1 , this corresponds to
+--  **Theorem 2** in the canonical registry
+--  (docs/formal/01-theorems.md).  The name is retained for
+--  backward compatibility with existing code that imports it.
 --
 --  The type is a proposition (it lives in a set type ℚ₁₀ = ℤ,
 --  so paths between elements of ℤ are propositions by isSetℤ).
@@ -355,8 +374,8 @@ boundary-raw = refl
 --  §7.  Summary and design notes
 -- ════════════════════════════════════════════════════════════════════
 --
---  This module completes Phase 2B.3 of the roadmap and satisfies
---  Milestone 1 of §6.9 (docs/06-challenges.md).
+--  This module provides the polished Theorem 2 statement and
+--  the GaussBonnetWitness packaging.
 --
 --  Proof pipeline:
 --
@@ -366,7 +385,7 @@ boundary-raw = refl
 --    Curvature.agda           defines κ-class, κ, totalCurvature
 --         │                   and verifies  totalCurvature≡χ = refl
 --         ▼
---    GaussBonnet.agda         names χ₁₀, states Theorem 1,
+--    GaussBonnet.agda         names χ₁₀, states the theorem,
 --      (this module)          decomposes interior/boundary,
 --                             and packages GaussBonnetWitness.
 --
@@ -389,7 +408,9 @@ boundary-raw = refl
 --
 --    4.  All named constants are defined once in Util/Rationals.agda
 --        and imported (never reconstructed), guaranteeing identical
---        normal forms wherever they appear.
+--        normal forms wherever they appear.  This is the shared-
+--        constants discipline documented in
+--        docs/formal/02-foundations.md §6.3.
 --
 --  Relationship to the angular formulation:
 --
@@ -399,8 +420,8 @@ boundary-raw = refl
 --        Σ_{int} κ(v) + Σ_{∂} τ(v) = 2π · χ(K)
 --
 --    requires representing π constructively, which is a stretch
---    goal (assumptions.md, assumption 5).  The decomposition in §3
---    above is the combinatorial analogue of this split, with:
+--    goal (docs/reference/assumptions.md §A11).  The decomposition
+--    in §3 above is the combinatorial analogue of this split, with:
 --
 --      interiorCurvature  ↔  Σ_{int} κ    (= −10/10 ↔ −2π)
 --      boundaryCurvature  ↔  Σ_{∂} τ      (=  20/10 ↔  4π)
@@ -409,14 +430,27 @@ boundary-raw = refl
 --    The proportionality factor is  2π/10  per tenth-unit, but
 --    this identification is interpretive, not formalized.  The
 --    combinatorial formulation is self-contained and sufficient
---    for Theorem 1.
+--    for Theorem 2.
 --
---  Next steps:
+--  De Sitter analogue:
 --
---    • Phase 2B.4 (Bulk/StarChain.agda):  already complete for
---      the 6-tile star.
---    • Phase 2B.5 (concrete instance):  the patch-gb-witness
---      record IS the concrete instance.
---    • Phase 3 (Bridge):  the bulk foundations are now in place
---      for constructing the observable-package equivalence.
+--    A parallel theorem holds for the {5,3} spherical tiling with
+--    positive interior curvature κ = +1/10, formalized in
+--    Bulk/DeSitterGaussBonnet.agda.  Both the AdS ({5,4}) and
+--    dS ({5,3}) Gauss–Bonnet witnesses are packaged together
+--    with the shared holographic bridge in the WickRotationWitness
+--    record (Bridge/WickRotation.agda).
+--
+--  Downstream consumers:
+--
+--    • Bridge/WickRotation.agda     — ads-gauss-bonnet field
+--    • Bridge/SchematicTower.agda   — tower integration (indirect)
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 2      (theorem registry)
+--    docs/formal/04-discrete-geometry.md     (curvature and GB)
+--    docs/formal/08-wick-rotation.md         (dS/AdS coherence)
+--    docs/instances/filled-patch.md §6       (curvature on patch)
+--    docs/getting-started/architecture.md    (module dependency DAG)
+--    docs/reference/module-index.md          (module description)
 -- ════════════════════════════════════════════════════════════════════

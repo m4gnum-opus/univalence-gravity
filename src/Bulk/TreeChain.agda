@@ -17,7 +17,7 @@ open import Common.TreeSpec
 --
 --  For the tree pilot this is intentionally minimal: a single field
 --  carrying the weight function.  Later instances (HaPPY-derived)
---  will enrich this record with genuine bulk structure such as face
+--  enrich this record with genuine bulk structure such as face
 --  incidence data, curvature annotations, or simplicial-complex
 --  combinatorics.
 --
@@ -28,6 +28,17 @@ open import Common.TreeSpec
 --  extracted view.  It also enforces that the boundary and bulk
 --  sides are semantically distinct even when structurally identical,
 --  which is the expected situation for this pilot instance.
+--
+--  Architectural role:
+--    This is a Tier 2 (Observable Layer) module.  It extracts the
+--    bulk-side observable lookup from the common source
+--    specification defined in Common/TreeSpec.agda.  The boundary-
+--    side counterpart is BoundaryView in Boundary/TreeCut.agda.
+--
+--  Reference:
+--    docs/getting-started/architecture.md   (Observable Layer)
+--    docs/instances/tree-pilot.md §5        (observable packages)
+--    docs/formal/03-holographic-bridge.md §2 (pointwise agreement)
 -- ════════════════════════════════════════════════════════════════════
 
 record BulkView : Type₀ where
@@ -40,15 +51,24 @@ record BulkView : Type₀ where
 --
 --  Projects the edge-weight data from the common source into the
 --  bulk view.  For the tree pilot this is a trivial projection;
---  later instances will perform genuine structural extraction
---  (e.g., constructing the dual graph of a triangulation, or
---  restricting to interior edges of a simplicial complex).
+--  later instances perform genuine structural extraction (e.g.,
+--  constructing the dual graph of a triangulation, or restricting
+--  to interior edges of a simplicial complex).
 --
 --  Critically, the weight field of the resulting BulkView is
 --  definitionally equal to  TreeSpec.edgeWeight c , so that scalar
 --  constants flowing into L-min inherit the same normal forms as
 --  those flowing into the boundary-side S-cut via π∂.  This enables
---  the refl proofs in tree-pointwise (Bridge/TreeObs.agda, §9.2).
+--  the refl proofs in tree-pointwise (Bridge/TreeObs.agda).
+--
+--  The shared-constants discipline — defining 1q and 2q once in
+--  Util/Scalars.agda and importing them into both Boundary and
+--  Bulk modules — is the foundational invariant enabling all
+--  refl-based pointwise agreement proofs.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §6.3     (shared-constants discipline)
+--    docs/instances/tree-pilot.md §7        (scalar representation)
 -- ════════════════════════════════════════════════════════════════════
 
 πbulk : TreeSpec → BulkView
@@ -67,13 +87,13 @@ record BulkView : Type₀ where
 --  "chain" is simply the minimal-weight edge cut in the tree.
 --
 --  This is a specification-level lookup realization: the values are
---  taken directly from the finite separator table (§7 of
---  docs/08-tree-instance.md) rather than computed by a generic
---  shortest-path or chain-minimization algorithm.  The purpose of
---  the tree pilot is to validate the packaging and bridge
---  architecture, not to formalize graph algorithms.  Generic
---  algorithmic implementations belong in later phases, after the
---  architecture has been validated on this known-good instance.
+--  taken directly from the finite separator table rather than
+--  computed by a generic shortest-path or chain-minimization
+--  algorithm.  The purpose of the tree pilot is to validate the
+--  packaging and bridge architecture, not to formalize graph
+--  algorithms.  Generic algorithmic implementations belong in later
+--  phases, after the architecture has been validated on this
+--  known-good instance.
 --
 --  The BulkView argument is accepted but not inspected: every
 --  clause returns a fixed constant from Util.Scalars.  This is
@@ -91,6 +111,23 @@ record BulkView : Type₀ where
 --    regL₂R₁  →  chain {L₂–A, B–R₁}    →  length 2
 --    regR₁R₂  →  chain {Root–B}        →  length 2
 --    regR₂L₁  →  chain {L₁–A, B–R₂}    →  length 2
+--
+--  All 8 values documented in docs/instances/tree-pilot.md §4
+--  (min-cut / observable agreement table).
+--
+--  The constants 1q and 2q are imported from Util.Scalars (where
+--  1q = 1 and 2q = 2 as natural numbers).  They must NOT be
+--  reconstructed independently on each side — identical normal
+--  forms are required for the refl proofs of pointwise observable
+--  agreement in tree-pointwise (Bridge/TreeObs.agda).  This
+--  shared-constants discipline is documented in
+--  docs/formal/02-foundations.md §6.3.
+--
+--  Reference:
+--    docs/instances/tree-pilot.md §4       (min-cut / observable agreement)
+--    docs/formal/03-holographic-bridge.md §2 (pointwise agreement path)
+--    docs/formal/02-foundations.md §6.3     (shared-constants discipline)
+--    docs/reference/module-index.md         (module description)
 -- ════════════════════════════════════════════════════════════════════
 
 L-min : BulkView → Region → ℚ≥0

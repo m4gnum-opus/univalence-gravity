@@ -19,9 +19,8 @@ open import Bulk.StarChainParam
 --
 --  This module proves that the discrete RT correspondence
 --  (S-param w ≡ L-param w) is preserved under single-bond weight
---  perturbations.  It is item 4 of the §11.7 implementation plan
---  in docs/10-frontier.md (Phase F.2a — Parameterized Star Bridge,
---  Strategy A: Weight-Perturbation Invariance).
+--  perturbations.  This is **Theorem 9a** (Step Invariance) in the
+--  canonical theorem registry (docs/formal/01-theorems.md).
 --
 --  The key structural fact is that for the star topology, S-param
 --  and L-param are the SAME function of the bond weights (both
@@ -46,16 +45,13 @@ open import Bulk.StarChainParam
 --    Bulk/StarChainParam.agda        — L-param, SL-param-pointwise
 --
 --  Reference:
---    docs/10-frontier.md §11.3   (target theorem)
---    docs/10-frontier.md §11.5   (Strategy A)
---    docs/10-frontier.md §11.7   (implementation plan, item 4)
---    docs/10-frontier.md §11.10  (exit criterion)
---
---  Exit criterion (§11.10 of docs/10-frontier.md):
---    "A  step-invariant  theorem type-checks in
---     Bridge/StarStepInvariance.agda, proving that the discrete
---     Ryu–Takayanagi correspondence is preserved under single-bond
---     weight perturbation for the 6-tile star topology."
+--    docs/formal/01-theorems.md §Thm 9    (Step Invariance & Dynamics Loop)
+--    docs/formal/10-dynamics.md §3        (bond-weight perturbation)
+--    docs/formal/10-dynamics.md §4        (step-invariance theorem)
+--    docs/instances/star-patch.md §7      (dynamics on the star patch)
+--    docs/reference/module-index.md       (module description)
+--    docs/historical/development-docs/10-frontier.md §11
+--                                         (original development plan)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -81,7 +77,8 @@ open import Bulk.StarChainParam
 --  one "tick" of the discrete clock — a local modification to the
 --  entanglement network that changes one bond's capacity.
 --
---  Reference: §11.5 Step 2 of docs/10-frontier.md
+--  Reference:
+--    docs/formal/10-dynamics.md §3   (bond-weight perturbation)
 -- ════════════════════════════════════════════════════════════════════
 
 perturb : (Bond → ℚ≥0) → Bond → ℚ≥0 → (Bond → ℚ≥0)
@@ -129,7 +126,8 @@ perturb w bCN4 δ bCN4 = w bCN4 +ℚ δ
 --  All 5 cases hold by  refl  because the diagonal clauses of
 --  perturb  reduce judgmentally to  w b +ℚ δ .
 --
---  Reference: §11.7 item 1 of docs/10-frontier.md
+--  Reference:
+--    docs/formal/10-dynamics.md §3.2   (specification lemmas)
 -- ════════════════════════════════════════════════════════════════════
 
 perturb-self : (w : Bond → ℚ≥0) (b : Bond) (δ : ℚ≥0)
@@ -232,8 +230,9 @@ perturb-other w bCN4 bCN4 δ ¬p = rec (¬p refl)
 --  trivial.
 --
 --  Reference:
---    docs/10-frontier.md §11.3  (target theorem)
---    docs/10-frontier.md §11.7  (item 4)
+--    docs/formal/01-theorems.md §Thm 9   (theorem registry entry)
+--    docs/formal/10-dynamics.md §4        (step-invariance theorem)
+--    docs/instances/star-patch.md §7      (dynamics on the star patch)
 -- ════════════════════════════════════════════════════════════════════
 
 step-invariant : (w : Bond → ℚ≥0) (b : Bond) (δ : ℚ≥0)
@@ -253,9 +252,11 @@ step-invariant w b δ _ r = SL-param-pointwise (perturb w b δ) r
 --  holds at ANY weight function, perturbed or not.
 --
 --  The conditional formulation (§4) is retained because it matches
---  the type signature from §11.3 of docs/10-frontier.md and
---  generalizes to non-star topologies where the hypothesis is
---  genuinely needed.
+--  the type signature expected for generalizations to non-star
+--  topologies where the hypothesis is genuinely needed.
+--
+--  Reference:
+--    docs/formal/10-dynamics.md §4.3  (unconditional formulation)
 -- ════════════════════════════════════════════════════════════════════
 
 step-invariant-unconditional :
@@ -414,18 +415,18 @@ private
 --        derivation (rec (¬p refl)) visually clear.
 --
 --    3.  The conditional formulation of  step-invariant  matches the
---        target theorem from §11.3 of docs/10-frontier.md.  The
---        unconditional formulation is provided separately because
---        it more accurately reflects the mathematical content for
---        the star topology.  Future modules for non-star topologies
---        would use the conditional formulation.
+--        target theorem type from docs/formal/10-dynamics.md §4 and
+--        generalizes to non-star topologies where the hypothesis is
+--        genuinely needed.  The unconditional formulation is provided
+--        separately because it more accurately reflects the
+--        mathematical content for the star topology.
 --
 --    4.  The hypothesis  hyp  in  step-invariant  is bound by  _
 --        (unused) in the proof body.  A future linter might flag
 --        this; the binding can be removed by switching to the
 --        unconditional formulation in downstream code.
 --
---  Proof effort breakdown (matching §11.5 estimates):
+--  Proof effort breakdown:
 --
 --    perturb definition:          25 lines  (5 bonds × 5 bonds)
 --    perturb-self:                 5 lines  (5 bonds, all refl)
@@ -437,14 +438,27 @@ private
 --                                ─────────
 --    total:                     ~160 lines
 --
---  This satisfies exit criterion 1 of §11.10:
+--  Architectural role:
 --
---    "A  step-invariant  theorem type-checks in
---     Bridge/StarStepInvariance.agda, proving that the discrete
---     Ryu–Takayanagi correspondence is preserved under single-bond
---     weight perturbation for the 6-tile star topology."
+--    This is a Tier 3 (Bridge Layer) module providing the single-
+--    step dynamics invariance consumed by the iterated dynamics
+--    loop in Bridge/StarDynamicsLoop.agda.  Together, Theorems 9a
+--    (this module) and 9b (the loop) establish that the discrete
+--    RT correspondence is preserved under arbitrary finite
+--    sequences of local bond-weight modifications.
 --
---  The next step is  Bridge/StarDynamicsLoop.agda  (item 5 of §11.7),
---  which applies  step-invariant  iteratively to prove preservation
---  under arbitrary finite sequences of perturbations.
+--    See docs/getting-started/architecture.md for the module
+--    dependency DAG and docs/formal/10-dynamics.md for the full
+--    dynamics layer overview.
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 9    (theorem registry entry)
+--    docs/formal/10-dynamics.md           (dynamics layer overview)
+--    docs/formal/10-dynamics.md §3        (bond-weight perturbation)
+--    docs/formal/10-dynamics.md §4        (step-invariance theorem)
+--    docs/instances/star-patch.md §7      (dynamics on the star patch)
+--    docs/getting-started/architecture.md (Bridge Layer)
+--    docs/reference/module-index.md       (module description)
+--    docs/historical/development-docs/10-frontier.md §11
+--                                         (original development plan)
 -- ════════════════════════════════════════════════════════════════════

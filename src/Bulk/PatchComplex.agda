@@ -11,9 +11,9 @@ open import Cubical.Data.Sigma using (_×_)
 -- ════════════════════════════════════════════════════════════════════
 --
 --  This module encodes the polygon complex for the 11-tile filled
---  patch of the {5,4} tiling as specified in §2.2 and §13 of
---  docs/09-happy-instance.md.  It is the primary curvature /
---  Gauss–Bonnet formalization target (Theorem 1).
+--  patch of the {5,4} tiling.  It is the primary curvature /
+--  Gauss–Bonnet formalization target (Theorem 2 in the canonical
+--  theorem registry, docs/formal/01-theorems.md).
 --
 --  Patch composition:
 --    • 1  central pentagon  C
@@ -32,18 +32,22 @@ open import Cubical.Data.Sigma using (_×_)
 --  angle, exceeding 360° by 72° = 2π/5.  This is the source of
 --  negative curvature.
 --
---  The encoding uses Strategy A from §13.2 of docs/09-happy-instance.md:
---  vertices are grouped into 5 classes, and combinatorial curvature
---  is constant within each class.  Individual vertices (30 constructors)
+--  The encoding uses Strategy A (vertex classification): vertices
+--  are grouped into 5 classes, and combinatorial curvature is
+--  constant within each class.  Individual vertices (30 constructors)
 --  are also provided for face-vertex incidence.
 --
 --  Numerical verification:
 --    sim/prototyping/02_happy_patch_curvature.py
---    (§4 of docs/09-happy-instance.md)
 --
 --  Downstream modules:
 --    src/Bulk/Curvature.agda    — κ : VClass → ℚ₁₀
 --    src/Bulk/GaussBonnet.agda  — Σ κ(v) ≡ χ(K)
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §3  (polygon complex)
+--    docs/instances/filled-patch.md §2       (patch topology)
+--    docs/instances/filled-patch.md §6       (curvature — Theorem 2)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -97,6 +101,10 @@ faceSides = 5
 --  combinatorial formula
 --      κ(v) = 1 − deg(v)/2 + Σ_{f ∋ v} 1/sides(f)
 --  and are formalized in Bulk/Curvature.agda.
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §3.3  (vertex classification)
+--    docs/formal/04-discrete-geometry.md §4    (curvature formula)
 -- ════════════════════════════════════════════════════════════════════
 
 data VClass : Type₀ where
@@ -125,8 +133,8 @@ vCount vOuterG  = 10
 --  These functions record the edge degree and face valence at each
 --  vertex class.  They are the inputs to the combinatorial curvature
 --  formula  κ(v) = 1 − deg(v)/2 + faceValence(v)/sides  and are
---  verified against the Python prototype in §4.1 of
---  docs/09-happy-instance.md.
+--  verified against the Python prototype
+--  (sim/prototyping/02_happy_patch_curvature.py).
 --
 --  Edge degree = number of edges incident to the vertex:
 --    vTiling:   4  (two C-edges + one Nᵢ-edge + one Gᵢ-edge)
@@ -345,7 +353,8 @@ boundaryE = 25
 --  These proofs serve three purposes:
 --
 --    1. Machine-checked sanity tests on the polygon complex data.
---    2. Exportable lemmas for the Gauss–Bonnet proof.
+--    2. Exportable lemmas for the Gauss–Bonnet proof
+--       (Bulk/GaussBonnet.agda).
 --    3. Regression tests: if any count is changed (e.g. during a
 --       future patch extension), these proofs will fail at type-check
 --       time, immediately signaling the inconsistency.
@@ -519,4 +528,18 @@ boundary-legs-check = refl
 --    the downstream Gauss–Bonnet proof requires isSet only on the
 --    scalar type ℚ₁₀ (= ℤ), which is provided by isSetℚ₁₀ in
 --    Util/Rationals.agda.
+--
+--  Architectural role:
+--
+--    This is a Tier 1 (Specification Layer) module providing the
+--    polygon complex data consumed by Bulk/Curvature.agda and
+--    Bulk/GaussBonnet.agda.  It has no dependencies on any Bridge
+--    or Boundary module.  See docs/getting-started/architecture.md
+--    for the full module dependency DAG.
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md   (curvature and Gauss–Bonnet)
+--    docs/instances/filled-patch.md        (filled patch instance data)
+--    docs/formal/01-theorems.md §Thm 2    (Theorem 2 registry entry)
+--    docs/reference/module-index.md        (module description)
 -- ════════════════════════════════════════════════════════════════════

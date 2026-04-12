@@ -38,8 +38,23 @@ open import Util.Scalars
 --    N_i: 5 edges, 1 shared → 4 boundary legs
 --  Total boundary legs: 20
 --
---  Reference: Pastawski et al. (2015), arXiv:1503.06237
---  Numerical verification: sim/prototyping/01_happy_patch_cuts.py
+--  Architectural role:
+--    This is a Tier 1 (Specification Layer) module.  It defines the
+--    common source specification consumed by the boundary view
+--    (Boundary/StarCut.agda) and bulk view (Bulk/StarChain.agda).
+--    The star patch is the most heavily exercised single patch in
+--    the repository: it serves the enriched bridge, the dynamics
+--    layer, the gauge layer, the quantum layer, and the Wick
+--    rotation.  See docs/instances/star-patch.md for the complete
+--    instance data sheet.
+--
+--  Reference:
+--    Pastawski et al. (2015), arXiv:1503.06237
+--    docs/instances/star-patch.md               (instance data sheet)
+--    docs/getting-started/architecture.md       (Specification Layer)
+--    docs/formal/03-holographic-bridge.md       (holographic bridge)
+--    docs/reference/module-index.md             (module description)
+--    sim/prototyping/01_happy_patch_cuts.py     (numerical verification)
 -- ════════════════════════════════════════════════════════════════════
 
 data Tile : Type₀ where
@@ -58,6 +73,13 @@ data Tile : Type₀ where
 --  tiles quotiented by symmetry) keeps pattern matching readable
 --  and avoids quotient overhead, following the same design principle
 --  as the tree pilot's Edge type.
+--
+--  The Bond type is reused by:
+--    • The gauge layer (Gauge/Connection.agda — GaugeConnection Q₈ Bond)
+--    • The dynamics layer (Boundary/StarCutParam.agda — S-param w)
+--    • The Wick rotation (Bridge/WickRotation.agda — shared bridge)
+--    • The quantum layer (Quantum/StarQuantumBridge.agda)
+--    • The de Sitter patch (Bulk/DeSitterPatchComplex.agda — same types)
 -- ════════════════════════════════════════════════════════════════════
 
 data Bond : Type₀ where
@@ -95,9 +117,19 @@ endpoints bCN4 = C , N4
 --  splits transparent and avoids any need for subset reasoning or
 --  complement computation.
 --
+--  The full 20-constructor StarRegion type (including triples and
+--  quadruples) is defined in Boundary/StarSubadditivity.agda for
+--  the subadditivity proof.
+--
 --  Numerical verification: all 20 regions verified by
---  sim/prototyping/01_happy_patch_cuts.py (§3.1 of
---  docs/09-happy-instance.md).
+--  sim/prototyping/01_happy_patch_cuts.py — 20/20 symmetry checks
+--  passed, 30/30 subadditivity checks passed, S = geodesic for
+--  all regions.
+--
+--  Reference:
+--    docs/instances/star-patch.md §3     (boundary regions)
+--    docs/instances/star-patch.md §4     (min-cut / observable agreement)
+--    docs/formal/03-holographic-bridge.md §2  (pointwise agreement)
 -- ════════════════════════════════════════════════════════════════════
 
 data Region : Type₀ where
@@ -120,11 +152,19 @@ data Region : Type₀ where
 --  and from those views, observable packages are constructed in
 --  Bridge/StarObs.agda.
 --
+--  The generic bridge theorem from Bridge/GenericBridge.agda then
+--  produces the full enriched type equivalence + Univalence path +
+--  verified transport automatically from the resulting PatchData.
+--
 --  The record is intentionally specialized to the 6-tile star,
---  following the design principle from the tree pilot (§4.3 of
---  docs/08-tree-instance.md): do not over-generalize the source
---  specification before the bridge architecture has been validated
---  on this instance.
+--  following the design principle from the tree pilot: do not
+--  over-generalize the source specification before the bridge
+--  architecture has been validated on this instance.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §2 (pointwise agreement)
+--    docs/formal/11-generic-bridge.md        (PatchData interface)
+--    docs/instances/star-patch.md §6         (bridge construction)
 -- ════════════════════════════════════════════════════════════════════
 
 record StarSpec : Type₀ where
@@ -152,8 +192,13 @@ record StarSpec : Type₀ where
 --  The constants 1q are imported from Util.Scalars (where 1q = 1
 --  as a natural number).  They must NOT be reconstructed
 --  independently on each side — identical normal forms are required
---  for the refl proofs of pointwise observable agreement (§15.5 of
---  docs/09-happy-instance.md).
+--  for the refl proofs of pointwise observable agreement.  This
+--  shared-constants discipline is documented in
+--  docs/formal/02-foundations.md §6.3.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §6.3  (shared-constants discipline)
+--    docs/instances/star-patch.md §11    (scalar representation)
 -- ════════════════════════════════════════════════════════════════════
 
 starWeight : Bond → ℚ≥0

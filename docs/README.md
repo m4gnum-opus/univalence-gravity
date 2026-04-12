@@ -1,4 +1,4 @@
-# Univalence Gravity v0.4.5
+# Univalence Gravity v0.5.0
 
 **A Constructive Formalization of Discrete Entanglement-Geometry Duality in Cubical Agda**
 
@@ -24,7 +24,7 @@ Univalence paths.
 | **Matter as Topological Defects** | `Gauge/Holonomy.agda` | Non-trivial Q₈ Wilson loops on the holographic network |
 | **Quantum Superposition Bridge** | `Quantum/QuantumBridge.agda` | ⟨S⟩ = ⟨L⟩ for any finite superposition (5-line proof, amplitude-polymorphic) |
 
-For the full theorem registry with type signatures and module cross-references, see [`formal/01-theorems.md`](formal/01-theorems.md).
+For the full theorem registry with type signatures and module cross-references, see [`docs/formal/01-theorems.md`](docs/formal/01-theorems.md).
 
 ## Verification
 
@@ -60,7 +60,7 @@ sim/prototyping/  — 17 Python oracle scripts generating Agda code
 docs/             — Documentation (see below)
 ```
 
-For the full module dependency DAG, see [`getting-started/architecture.md`](getting-started/architecture.md).
+For the full module dependency DAG, see [`docs/getting-started/architecture.md`](docs/getting-started/architecture.md).
 
 ## The Generic Bridge (The Core Innovation)
 
@@ -69,7 +69,7 @@ generic theorem (`Bridge/GenericBridge.agda`), parameterized by an
 abstract `PatchData` interface. The Python oracle generates concrete
 patches; the generic theorem handles the proof — once. Twelve patch
 instances have been verified, spanning 1D trees, 2D pentagonal tilings,
-and 3D cubic honeycombs. See [`formal/11-generic-bridge.md`](formal/11-generic-bridge.md).
+and 3D cubic honeycombs. See [`docs/formal/11-generic-bridge.md`](docs/formal/11-generic-bridge.md).
 
 ## The Discrete Bekenstein–Hawking Bound
 
@@ -79,8 +79,8 @@ constant as 1/(4G) = 1/2 in bond-dimension-1 units — is verified across
 strategies, and 3 capacities. The bound is proven generically via the
 `from-two-cuts` lemma and instantiated per-patch by `abstract` witnesses.
 This eliminates the constructive-reals wall for the entropy-area
-relationship. See [`formal/12-bekenstein-hawking.md`](formal/12-bekenstein-hawking.md)
-and [`physics/discrete-bekenstein-hawking.md`](physics/discrete-bekenstein-hawking.md).
+relationship. See [`docs/formal/12-bekenstein-hawking.md`](docs/formal/12-bekenstein-hawking.md)
+and [`docs/physics/discrete-bekenstein-hawking.md`](docs/physics/discrete-bekenstein-hawking.md).
 
 ## What This Does NOT Prove
 
@@ -89,9 +89,9 @@ and [`physics/discrete-bekenstein-hawking.md`](physics/discrete-bekenstein-hawki
 - That the causal poset approximates a Lorentzian metric
 - That "transport along a Univalence path" has physical meaning
 
-See [`physics/translation-problem.md`](physics/translation-problem.md)
+See [`docs/physics/translation-problem.md`](docs/physics/translation-problem.md)
 for the honest assessment of the gap between this discrete model and
-our universe, and [`physics/five-walls.md`](physics/five-walls.md) for
+our universe, and [`docs/physics/five-walls.md`](docs/physics/five-walls.md) for
 the hard boundaries of the formalization (now four — the constructive-reals
 wall for entropy-area is bypassed).
 
@@ -99,14 +99,13 @@ wall for entropy-area is bypassed).
 
 ```
 docs/
-├── README.md                          # This file
 ├── CITATION.cff
 │
 ├── getting-started/
 │   ├── abstract.md                    # One-page summary of what is proven
 │   ├── setup.md                       # Dev environment (Agda 2.8, cubical, Nix)
 │   ├── building.md                    # How to type-check; module load order
-│   └── architecture.md               # Module dependency DAG, layer diagram
+│   └── architecture.md                # Module dependency DAG, layer diagram
 │
 ├── formal/                            # Mathematical content
 │   ├── 01-theorems.md                 # ★ Canonical theorem registry
@@ -157,10 +156,7 @@ docs/
     └── theory.tex                     # LaTeX paper draft
 ```
 
-## Future Work & Roadmap
-
-This project is currently at version 0.4.0. Active development is split
-into three phases:
+## Roadmap
 
 **Phase 1: Mathematical Groundwork (Complete)**
 * All core theorems mechanized (RT, Gauss–Bonnet, Bekenstein–Hawking)
@@ -168,27 +164,28 @@ into three phases:
 * 12 patch instances verified across 2D and 3D
 * Causal, gauge, and quantum layers integrated
 
-**Phase 2: Documentation & Refactoring (Current)**
-* Overhaul `docs/` into the audience-oriented structure above
-* Expand inline comments across all `.agda` files
+**Phase 2: Documentation & Refactoring (Complete)**
+* `docs/` overhauled into the audience-oriented structure above
+* Inline comments expanded across all `.agda` files
 * Historical development docs preserved in `historical/`
 
-**Phase 3: Tooling & Visualization**
+**Phase 3: Tooling & Visualization (Planned)**
 * Develop a Haskell backend via `agda --compile --ghc`
 * Create a WebGL adapter for browser-based visualization
 
 ## Acknowledgements
 
-While this repository is a solo-developed project, I want to express my
-gratitude to Anthropic's Claude Opus 4.6. Claude acted as an invaluable sounding
-board, pair-programmer, and rubber duck throughout the mathematical
-groundwork and architectural design phases of this project. I operated the AI assistance
-only by using the self-developed program `OpenRouterGUI.7z`, that can also be used and found 
-in `documents/historical/tools/OpenRouterGUI.7z`.
+While this repository is a solo-developed project, I want to express my gratitude
+to Anthropic's Claude Opus 4.6. Claude acted as an invaluable sounding board, pair-programmer,
+and rubber duck throughout the mathematical groundwork and architectural design
+phases. The realization of this project relied heavily on advanced prompt
+engineering, which I orchestrated entirely through a tiny self-developed interface
+based on `streamlit`, OpenRouterGUI (available at
+`docs/historical/tools/OpenRouterGUI.7z`).
 
 ## Citation
 
-Please cite this repository as described in [`CITATION.cff`](CITATION.cff).
+Please cite this repository as described in [`docs/CITATION.cff`](docs/CITATION.cff).
 
 ## License
 

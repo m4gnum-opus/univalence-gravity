@@ -17,7 +17,7 @@ open import Common.StarSpec
 --
 --  For the star instance this is intentionally minimal: a single
 --  field carrying the weight function over bonds.  Later instances
---  (11-tile filled patch or larger HaPPY patches) will enrich this
+--  (11-tile filled patch or larger HaPPY patches) enrich this
 --  record with boundary-specific structure such as cyclic ordering
 --  witnesses, boundary-leg counts, or boundary-label data.
 --
@@ -27,9 +27,20 @@ open import Common.StarSpec
 --  StarSpec, enforcing the separation between common source and
 --  extracted view.
 --
+--  Architectural role:
+--    This is a Tier 2 (Observable Layer) module.  It extracts the
+--    boundary-side observable lookup from the common source
+--    specification defined in Common/StarSpec.agda.  The bulk-side
+--    counterpart is BulkView in Bulk/StarChain.agda.
+--
 --  Design parallel:  This follows the same pattern as the tree
 --  pilot's BoundaryView (Boundary/TreeCut.agda), scaled from 6
 --  edges to 5 bonds.
+--
+--  Reference:
+--    docs/getting-started/architecture.md   (Observable Layer)
+--    docs/instances/star-patch.md §2        (topology)
+--    docs/formal/03-holographic-bridge.md §2 (pointwise agreement)
 -- ════════════════════════════════════════════════════════════════════
 
 record BoundaryView : Type₀ where
@@ -42,7 +53,7 @@ record BoundaryView : Type₀ where
 --
 --  Projects the bond-weight data from the common source into the
 --  boundary view.  For the star instance this is a trivial
---  projection; later instances will perform genuine structural
+--  projection; later instances perform genuine structural
 --  extraction (e.g., restricting to boundary-adjacent bonds of a
 --  larger tiling patch, or attaching boundary-leg data).
 --
@@ -50,8 +61,16 @@ record BoundaryView : Type₀ where
 --  definitionally equal to  StarSpec.bondWeight c , so that scalar
 --  constants flowing into S-cut inherit the same normal forms as
 --  those flowing into the bulk-side L-min via πbulk.  This enables
---  the refl proofs in star-pointwise (Bridge/StarObs.agda, §11.3
---  of docs/09-happy-instance.md).
+--  the refl proofs in star-pointwise (Bridge/StarObs.agda).
+--
+--  The shared-constants discipline — defining 1q and 2q once in
+--  Util/Scalars.agda and importing them into both Boundary and
+--  Bulk modules — is the foundational invariant enabling all
+--  refl-based pointwise agreement proofs.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §6.3     (shared-constants discipline)
+--    docs/instances/star-patch.md §11       (scalar representation)
 -- ════════════════════════════════════════════════════════════════════
 
 π∂ : StarSpec → BoundaryView
@@ -75,13 +94,12 @@ record BoundaryView : Type₀ where
 --    Pairs      (k = 2):  S = 2    (cut the two bonds C–N_i, C–N_{i+1})
 --
 --  This is a specification-level lookup realization: the values are
---  taken directly from the finite separator table (§10.1 of
---  docs/09-happy-instance.md) rather than computed by a generic
---  min-cut algorithm.  The purpose of this instance is to validate
---  the packaging and bridge architecture on a genuine 2D tiling,
---  not to formalize graph search.  Generic algorithmic
---  implementations belong in later phases, after the architecture
---  has been validated on this known-good instance.
+--  taken directly from the finite separator table rather than
+--  computed by a generic min-cut algorithm.  The purpose of this
+--  instance is to validate the packaging and bridge architecture
+--  on a genuine 2D tiling, not to formalize graph search.  Generic
+--  algorithmic implementations belong in later phases, after the
+--  architecture has been validated on this known-good instance.
 --
 --  The BoundaryView argument is accepted but not inspected: every
 --  clause returns a fixed constant from Util.Scalars.  This is
@@ -103,15 +121,25 @@ record BoundaryView : Type₀ where
 --    regN4N0  →  separator {C–N4, C–N0}   →  weight 2
 --
 --  All 10 values verified numerically by
---  sim/prototyping/01_happy_patch_cuts.py (§3.1 of
---  docs/09-happy-instance.md): 20/20 regions pass symmetry,
---  30/30 subadditivity checks pass, S = geodesic for all regions.
+--  sim/prototyping/01_happy_patch_cuts.py and documented in
+--  docs/instances/star-patch.md §4 (min-cut / observable agreement):
+--  20/20 regions pass symmetry, 30/30 subadditivity checks pass,
+--  S = geodesic for all regions.
 --
 --  The constants 1q and 2q are imported from Util.Scalars (where
 --  1q = suc zero and 2q = suc (suc zero) as natural numbers).
 --  They must NOT be reconstructed independently — identical normal
 --  forms are required for the refl proofs of pointwise observable
---  agreement in star-pointwise (§15.5 of docs/09-happy-instance.md).
+--  agreement in star-pointwise (Bridge/StarObs.agda).  This
+--  shared-constants discipline is documented in
+--  docs/formal/02-foundations.md §6.3.
+--
+--  Reference:
+--    docs/instances/star-patch.md §4       (min-cut / observable agreement)
+--    docs/formal/03-holographic-bridge.md §2 (pointwise agreement path)
+--    docs/formal/02-foundations.md §6.3     (shared-constants discipline)
+--    docs/reference/module-index.md         (module description)
+--    sim/prototyping/01_happy_patch_cuts.py (numerical verification)
 -- ════════════════════════════════════════════════════════════════════
 
 S-cut : BoundaryView → Region → ℚ≥0

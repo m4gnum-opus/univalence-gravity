@@ -39,11 +39,21 @@ open import Util.Scalars
 --    §6. Dense-200  (1246 regions → 9 orbits)           — OrbitReducedPatch
 --
 --  Reference:
---    docs/10-frontier.md §5.5   (What This Achieves)
---    docs/10-frontier.md §5.11  (Phase C.0 — item 2: retroactive validation)
---    docs/10-frontier.md §5.12  (Conditions for Advancement — item 1)
+--    docs/formal/11-generic-bridge.md §4     (Retroactive Validation)
+--    docs/formal/03-holographic-bridge.md §5 (The Generic Bridge Theorem)
+--    docs/formal/01-theorems.md              (Generic Bridge Validation)
+--    docs/engineering/generic-bridge-pattern.md
+--                                            (one proof, N instances)
+--    docs/reference/module-index.md          (module description)
 --
---  Condition for advancement (§5.12):
+--  Historical development reference:
+--    docs/historical/development-docs/10-frontier.md §5.11
+--                              (Phase C.0 — item 2: retroactive validation)
+--    docs/historical/development-docs/10-frontier.md §5.12
+--                              (Conditions for Advancement — item 1)
+--
+--  The original condition for advancement (§5.12 of the historical
+--  development docs) stated:
 --    "The generic bridge module (Bridge/GenericBridge.agda) type-checks
 --     and retroactively validates at least one existing bridge instance."
 --
@@ -80,6 +90,9 @@ open import Bridge.BridgeWitness
 --
 --  Validation: the generic GenericEnriched applied to starPatchData
 --  produces a BridgeWitness that type-checks.
+--
+--  Reference:
+--    docs/instances/star-patch.md §6  (bridge construction)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Common.StarSpec using (Region)
@@ -124,6 +137,9 @@ private
 --    Common/FilledSpec.agda       — FilledRegion (90 constructors)
 --    Bridge/FilledObs.agda        — filled-obs-path
 --    Bridge/FilledEquiv.agda      — S∂F, LBF, filled-enriched-equiv
+--
+--  Reference:
+--    docs/instances/filled-patch.md §8  (bridge construction)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Common.FilledSpec using (FilledRegion)
@@ -158,6 +174,9 @@ filled-generic-witness = FilledGeneric.abstract-bridge-witness
 --    Common/Honeycomb3DSpec.agda       — H3Region (26 constructors)
 --    Bridge/Honeycomb3DObs.agda        — h3-obs-path
 --    Bridge/Honeycomb3DEquiv.agda      — S∂3D, LB3D, h3-enriched-equiv
+--
+--  Reference:
+--    docs/instances/honeycomb-3d.md §6  (bridge construction)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Common.Honeycomb3DSpec using (H3Region)
@@ -188,6 +207,9 @@ h3-generic-witness = H3Generic.abstract-bridge-witness
 --    Common/Dense50Spec.agda     — D50Region (139 constructors)
 --    Bridge/Dense50Obs.agda      — S∂D50, LBD50, d50-obs-path
 --    Bridge/Dense50Equiv.agda    — d50-enriched-equiv
+--
+--  Reference:
+--    docs/instances/dense-50.md §6  (bridge construction)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Common.Dense50Spec using (D50Region)
@@ -234,6 +256,10 @@ d50-generic-witness = D50Generic.abstract-bridge-witness
 --    Bulk/Dense100Chain.agda       — L-min-rep  (8 clauses)
 --    Bridge/Dense100Obs.agda       — d100-pointwise-rep (8 refl proofs)
 --    Bridge/Dense100Equiv.agda     — d100-enriched-equiv
+--
+--  Reference:
+--    docs/instances/dense-100.md §8         (bridge construction)
+--    docs/engineering/orbit-reduction.md §9  (Dense-100 worked example)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Common.Dense100Spec
@@ -293,6 +319,9 @@ d100-LB-pointwise _ = refl
 --    Boundary/Dense200Cut.agda     — S-cut-rep  (9 clauses)
 --    Bulk/Dense200Chain.agda       — L-min-rep  (9 clauses)
 --    Bridge/Dense200Obs.agda       — d200-pointwise-rep (9 refl proofs)
+--
+--  Reference:
+--    docs/instances/dense-200.md §8  (bridge construction)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Common.Dense200Spec
@@ -381,15 +410,11 @@ d200-LB-pointwise _ = refl
 --       additive, importing from existing modules and constructing
 --       new terms from them.
 --
---  This satisfies the conditions for advancement from §5.12 of
---  docs/10-frontier.md:
---
---    "The generic bridge module (Bridge/GenericBridge.agda) type-checks
---     and retroactively validates at least one existing bridge instance."
---
---  Six instances validated. Direction C can advance from "deferred"
---  to "active" when the Python oracle is extended to emit
---  OrbitReducedPatch Agda modules for layer-N {5,4} patches.
+--  Six instances validated.  Six additional layer instances (depths
+--  2–7) are produced by  orbit-bridge-witness  in
+--  Bridge/SchematicTower.agda, bringing the total to twelve verified
+--  bridge instances spanning 1D trees, 2D pentagonal tilings, and
+--  3D cubic honeycombs.
 --
 --  Relationship to existing code:
 --
@@ -412,4 +437,26 @@ d200-LB-pointwise _ = refl
 --      • Bulk/Dense200Chain.agda         — L-min-rep (D200)
 --      • Bridge/Dense200Obs.agda         — d200-pointwise-rep, S∂D200, LBD200
 --      • Common/*Spec.agda               — region and orbit types
+--
+--  Architectural role:
+--
+--    This is a Tier 3 (Bridge Layer) module.  It validates the
+--    generic bridge architecture by retroactively expressing all
+--    six pre-existing bridge instances as specializations of the
+--    single  GenericEnriched  parameterized proof.  The star-
+--    generic-witness exported here is consumed by:
+--      • Bridge/WickRotation.agda   (shared-bridge field)
+--      • Bridge/SchematicTower.agda (tower integration)
+--
+--  Reference:
+--    docs/formal/11-generic-bridge.md §4     (retroactive validation)
+--    docs/formal/03-holographic-bridge.md §5 (the generic bridge theorem)
+--    docs/formal/01-theorems.md              (theorem registry —
+--                                             Generic Bridge Validation)
+--    docs/engineering/generic-bridge-pattern.md
+--                                            (one proof, N instances)
+--    docs/getting-started/architecture.md    (module dependency DAG)
+--    docs/reference/module-index.md          (module description)
+--    docs/historical/development-docs/10-frontier.md §5
+--                                            (original development plan)
 -- ════════════════════════════════════════════════════════════════════

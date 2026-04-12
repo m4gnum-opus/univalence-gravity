@@ -28,8 +28,20 @@ open import Bridge.TreeObs
 --  Region → ℚ≥0 that interpolates between the boundary min-cut
 --  functional and the bulk minimal-chain-length functional.
 --
---  This is Step 5b of the proof order in §10 of
---  docs/08-tree-instance.md.
+--  Architectural status:
+--    This module is DEAD CODE — architecturally superseded by the
+--    generic bridge (Bridge/GenericBridge.agda).  The tree pilot's
+--    BridgeWitness is now produced by GenericEnriched via
+--    Bridge/GenericValidation.agda.  This module remains valid as
+--    a historical artifact from the initial development phase and
+--    as a pedagogical example of the simplest bridge construction.
+--
+--  Reference:
+--    docs/instances/tree-pilot.md §6          (bridge construction)
+--    docs/formal/03-holographic-bridge.md §2  (pointwise agreement)
+--    docs/formal/02-foundations.md §2.3       (funExt in Cubical Agda)
+--    docs/formal/11-generic-bridge.md         (superseding architecture)
+--    Historical: docs/historical/development-docs/08-tree-instance.md
 -- ════════════════════════════════════════════════════════════════════
 
 tree-obs-path :
@@ -52,20 +64,23 @@ tree-obs-path = funExt tree-pointwise
 --  S-cut (π∂ treeSpec)  (the boundary observable), and at i = i1
 --  it is  L-min (πbulk treeSpec)  (the bulk observable).
 --
---  This is Step 7 of the proof order in §10 of
---  docs/08-tree-instance.md, and it completes the minimal bridge
---  for the tree pilot instance.  The end-to-end pipeline is:
+--  This completes the minimal bridge for the tree pilot instance.
+--  The end-to-end pipeline is:
 --
 --    treeSpec  →  π∂ / πbulk  →  Obs∂ / ObsBulk  →  tree-package-path
 --
 --  All of which is verified by the Cubical Agda type-checker.
+--
+--  Reference:
+--    docs/instances/tree-pilot.md §6          (bridge construction)
+--    docs/formal/03-holographic-bridge.md §2  (pointwise agreement)
 -- ════════════════════════════════════════════════════════════════════
 
 tree-package-path : Obs∂ treeSpec ≡ ObsBulk treeSpec
 tree-package-path i .ObsPackage.obs = tree-obs-path i
 
 -- ════════════════════════════════════════════════════════════════════
---  STRETCH GOAL (Step 7b) — Type-level Univalence calibration
+--  STRETCH GOAL — Type-level Univalence calibration
 -- ════════════════════════════════════════════════════════════════════
 --
 --  The path  tree-package-path  above is a path between *values*
@@ -79,10 +94,20 @@ tree-package-path i .ObsPackage.obs = tree-obs-path i
 --  (Region → ℚ≥0), so the equivalence is  idEquiv  and transport
 --  along the resulting  ua  path is the identity function.  This
 --  is expected and intentional: the tree pilot calibrates the
---  plumbing on a known-trivial case before the HaPPY-derived
---  instance introduces genuinely distinct type structure.
+--  plumbing on a known-trivial case before the enriched star
+--  instance (Bridge/EnrichedStarObs.agda) introduces genuinely
+--  distinct type structure with a nontrivial ua step.
 --
---  See §9.5 of docs/08-tree-instance.md for the full discussion.
+--  The nontrivial Univalence application is exercised first by the
+--  6-tile star patch (Bridge/EnrichedStarObs.agda) and then
+--  generically by Bridge/GenericBridge.agda (GenericEnriched),
+--  which handles all twelve patch instances in the repository.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5         (the Univalence axiom)
+--    docs/formal/03-holographic-bridge.md §3  (enriched equivalence)
+--    docs/instances/tree-pilot.md §10         (what tree does NOT exercise)
+--    Historical: docs/historical/development-docs/08-tree-instance.md §9.5
 -- ════════════════════════════════════════════════════════════════════
 
 -- ────────────────────────────────────────────────────────────────
@@ -102,10 +127,13 @@ ObsBulk-Ty _ = Region → ℚ≥0
 -- ────────────────────────────────────────────────────────────────
 --
 --  Since both type families produce the same type, the equivalence
---  is the identity equivalence on  Region → ℚ≥0 .  In a
---  HaPPY-derived instance where the boundary and bulk sides carry
---  different record structure or different proof fields, this
---  equivalence would require genuine construction work.
+--  is the identity equivalence on  Region → ℚ≥0 .  In the
+--  enriched star instance (Bridge/EnrichedStarObs.agda) and the
+--  generic bridge (Bridge/GenericBridge.agda), this equivalence
+--  is genuinely nontrivial: the boundary and bulk enriched types
+--  reference different specification functions, making the
+--  equivalence carry the content of the discrete RT correspondence
+--  through the Glue type.
 -- ────────────────────────────────────────────────────────────────
 
 tree-type-equiv : Obs∂-Ty treeSpec ≃ ObsBulk-Ty treeSpec
@@ -148,6 +176,9 @@ tree-ua-trivial = uaIdEquiv
 --
 --  Since  equivFun (idEquiv A) x  reduces judgmentally to  x ,
 --  the result is  transport tree-ua-path f ≡ f .
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5.1  (ua and uaβ in Cubical Agda)
 -- ────────────────────────────────────────────────────────────────
 
 tree-transport-id :
@@ -172,10 +203,18 @@ tree-transport-id f = uaβ tree-type-equiv f
 --    common source  →  extract views  →  build packages
 --      →  construct equivalence  →  apply ua  →  transport
 --
---  The analogous proof for the HaPPY-derived instance will
---  replace  idEquiv  with a genuine equivalence between
---  structurally different observable types, making the transport
---  a nontrivial verified translator.
+--  The analogous proof for the enriched star instance
+--  (Bridge/EnrichedStarObs.agda) replaces idEquiv with a genuine
+--  equivalence between structurally different enriched types,
+--  making the transport a nontrivial verified translator.  The
+--  generic bridge (Bridge/GenericBridge.agda) then generalizes
+--  this to all twelve patch instances via the PatchData interface.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5.1       (uaβ computation rule)
+--    docs/formal/03-holographic-bridge.md §3  (enriched equivalence)
+--    docs/formal/11-generic-bridge.md         (generic bridge pattern)
+--    docs/instances/tree-pilot.md §9          (what the tree validates)
 -- ────────────────────────────────────────────────────────────────
 
 tree-transport-obs :

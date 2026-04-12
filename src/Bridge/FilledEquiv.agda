@@ -26,8 +26,8 @@ open import Bridge.FilledObs
 --
 --  S∂F is the boundary min-cut entropy functional (true min-cut,
 --  allowing boundary-bond severing per the N-singleton resolution
---  of §3.2 of docs/10-frontier.md) instantiated at the canonical
---  filled-patch specification.
+--  documented in docs/instances/filled-patch.md §4) instantiated
+--  at the canonical filled-patch specification.
 --
 --  LBF is the bulk minimal separating-chain functional at the same
 --  specification.  Under the N-singleton resolution, both functionals
@@ -45,6 +45,11 @@ open import Bridge.FilledObs
 --  The definitional distinctness makes the enriched types below
 --  genuinely different types in the universe; the propositional
 --  equality makes them equivalent.
+--
+--  Reference:
+--    docs/instances/filled-patch.md §4   (N-singleton discrepancy)
+--    docs/instances/filled-patch.md §5   (min-cut / observable agreement)
+--    docs/formal/03-holographic-bridge.md §3  (enriched types)
 -- ════════════════════════════════════════════════════════════════════
 
 S∂F : FilledRegion → ℚ≥0
@@ -66,6 +71,9 @@ LBF = L-min filledBulkView
 --  in a set, paths between elements are propositional (isProp),
 --  which means the specification-agreement fields are propositional,
 --  which means round-trip homotopies are automatic.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §1  (h-levels and truncation)
 -- ════════════════════════════════════════════════════════════════════
 
 isSetFilledObs : isSet (FilledRegion → ℚ≥0)
@@ -96,6 +104,11 @@ isSetFilledObs = isOfHLevelΠ 2 (λ _ → isSetℚ≥0)
 --  Bridge/EnrichedStarObs.agda, now scaled from 10 representative
 --  regions to 90 contiguous tile-aligned regions on the 11-tile
 --  filled patch of the {5,4} hyperbolic tiling.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §3.1  (specification-agreement types)
+--    docs/instances/filled-patch.md §8          (bridge construction)
+--    docs/instances/star-patch.md §6.2          (enriched bridge — star)
 -- ════════════════════════════════════════════════════════════════════
 
 FilledEnrichedBdy : Type₀
@@ -146,6 +159,10 @@ filled-bulk-instance = LBF , refl
 --  This is structurally identical to the star-patch construction
 --  in Bridge/EnrichedStarObs.agda §5, using  filled-obs-path
 --  in place of  star-obs-path .
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §3.2  (the Iso construction)
+--    docs/formal/02-foundations.md §4           (equivalences)
 -- ════════════════════════════════════════════════════════════════════
 
 filled-enriched-iso : Iso FilledEnrichedBdy FilledEnrichedBulk
@@ -174,6 +191,9 @@ filled-enriched-iso = iso fwd bwd fwd-bwd bwd-fwd
 --
 --  Promoting the Iso to a full coherent equivalence (with
 --  contractible fibers).  This is required for  ua  application.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §4  (equivalences and isoToEquiv)
 -- ════════════════════════════════════════════════════════════════════
 
 filled-enriched-equiv : FilledEnrichedBdy ≃ FilledEnrichedBulk
@@ -199,6 +219,10 @@ filled-enriched-equiv = isoToEquiv filled-enriched-iso
 --  bulk-certified observable packages as equal types, enabled by
 --  the discrete Ryu–Takayanagi correspondence on a complete,
 --  gapless 2D hyperbolic disk.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5           (the Univalence axiom)
+--    docs/formal/03-holographic-bridge.md §3.3  (Univalence application)
 -- ════════════════════════════════════════════════════════════════════
 
 filled-enriched-ua-path : FilledEnrichedBdy ≡ FilledEnrichedBulk
@@ -231,6 +255,10 @@ filled-enriched-ua-path = ua filled-enriched-equiv
 --  a computable transport between exactly equivalent packaged types
 --  on the first complete, gapless 2D hyperbolic disk in the
 --  formalization.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5.1         (ua and uaβ in Cubical Agda)
+--    docs/formal/03-holographic-bridge.md §3.4  (verified transport)
 -- ════════════════════════════════════════════════════════════════════
 
 -- Step 1:  uaβ reduces transport to the forward map
@@ -273,10 +301,15 @@ filled-enriched-transport = filled-transport-computes ∙ filled-fwd-eq-bulk
 --  specification — and that function is exactly the bulk
 --  minimal-chain-length functional LBF.
 --
---  This extends Theorem 3 from the 6-tile star (10 regions) to
---  the 11-tile filled patch (90 regions), proving that the
---  framework scales to a complete 2D hyperbolic disk with 5
---  interior vertices at full valence 4.
+--  This extends the discrete Ryu–Takayanagi bridge from the 6-tile
+--  star (10 regions) to the 11-tile filled patch (90 regions),
+--  proving that the framework scales to a complete 2D hyperbolic
+--  disk with 5 interior vertices at full valence 4.
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 1   (Discrete Ryu–Takayanagi)
+--    docs/instances/filled-patch.md §8    (bridge construction)
+--    docs/instances/star-patch.md §6      (star bridge — predecessor)
 -- ════════════════════════════════════════════════════════════════════
 
 filled-enriched-transport-obs :
@@ -368,6 +401,19 @@ filled-roundtrip-bulk =
 --  Bridge/EnrichedStarEquiv.agda.
 --
 --  This record lives in  Type₁  because it stores types as fields.
+--
+--  Note: This is the hand-written enriched bridge for the filled
+--  patch.  The generic bridge theorem (Bridge/GenericBridge.agda)
+--  subsumes this module's results via filled-generic-witness in
+--  Bridge/GenericValidation.agda, but this module is retained as
+--  the historical first enriched bridge on a complete 2D hyperbolic
+--  disk and as the template for all subsequent per-instance enriched
+--  equivalence modules.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §6  (BridgeWitness record)
+--    docs/formal/11-generic-bridge.md         (generic bridge — subsumes this)
+--    docs/instances/filled-patch.md §8        (bridge construction)
 -- ════════════════════════════════════════════════════════════════════
 
 record FilledBridgeWitness : Type₁ where
@@ -406,25 +452,27 @@ filled-bridge-witness .FilledBridgeWitness.transport-verified = filled-enriched-
 --    transport (ua filled-enriched-equiv) filled-bdy-instance
 --      ≡  filled-bulk-instance
 --
---  This extends Theorem 3 (proven for the 6-tile star in
+--  This extends the enriched bridge (proven for the 6-tile star in
 --  Bridge/EnrichedStarEquiv.agda) to the 11-tile filled patch,
 --  demonstrating that the architecture scales to a complete,
 --  gapless 2D hyperbolic disk with:
 --
 --    • 90 contiguous tile-aligned boundary regions
---    • 360 verified subadditivity cases (abstract, §3.5 Approach A)
+--    • 360 verified subadditivity cases (abstract, sealed behind
+--      the abstract keyword per docs/engineering/abstract-barrier.md)
 --    • 5 interior vertices at full {5,4} valence 4
---    • genuine negative curvature (verified by Theorem 1)
+--    • genuine negative curvature (verified by Theorem 2 in
+--      Bulk/GaussBonnet.agda)
 --    • the same geometric object on which Gauss–Bonnet was proven
 --
---  The unification of curvature (Theorem 1) and bridge (this
---  theorem) results on a single geometric object is the goal
---  stated in §3.1 of docs/10-frontier.md.
+--  The unification of curvature (Theorem 2) and bridge (this
+--  theorem) results on a single geometric object is documented
+--  in docs/instances/filled-patch.md §11.
 --
---  Exit criterion (§3.9 of docs/10-frontier.md):
---    "An Agda module  Bridge/FilledEquiv.agda  constructs the
---     enriched observable-package equivalence for the 11-tile
---     patch and verifies  transport  along the  ua  path."
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 1    (Discrete Ryu–Takayanagi)
+--    docs/formal/01-theorems.md §Thm 2    (Discrete Gauss–Bonnet)
+--    docs/instances/filled-patch.md        (filled patch instance)
 -- ════════════════════════════════════════════════════════════════════
 
 FilledTheorem3 : Type₀
@@ -451,6 +499,10 @@ filled-theorem3 = filled-enriched-transport
 --
 --  Cyclic order: N0(2), G1(3), N1(2), G2(3), N2(2),
 --                G3(3), N3(2), G4(3), N4(2), G0(3)
+--
+--  Reference:
+--    docs/instances/filled-patch.md §3  (boundary regions)
+--    docs/instances/filled-patch.md §5  (min-cut / observable agreement)
 -- ════════════════════════════════════════════════════════════════════
 
 -- Singleton:  {N0}  →  S = 2
@@ -515,8 +567,8 @@ filled-package-coherence = refl
 --
 --  Because the subadditivity proof is  abstract , this module
 --  never re-unfolds the 360 case analyses.  The  abstract  barrier
---  prevents the RAM cascade documented in §3.4 of
---  docs/10-frontier.md and Agda GitHub Issue #4573.
+--  prevents the RAM cascade documented in
+--  docs/engineering/abstract-barrier.md and Agda GitHub Issue #4573.
 --
 --  A full structural-property bridge (mirroring
 --  Bridge/FullEnrichedStarObs.agda) that converts subadditivity
@@ -536,50 +588,4 @@ filled-package-coherence = refl
 --        and the Iso / equiv / ua / transport between them.
 --
 --  These are deferred to a potential  Bridge/FullEnrichedFilledObs.agda
---  module.  The spec-agreement enriched bridge in this module is
---  sufficient for the exit criterion of §3.9 of docs/10-frontier.md.
--- ════════════════════════════════════════════════════════════════════
-
-
--- ════════════════════════════════════════════════════════════════════
---  §19.  End-to-end pipeline summary
--- ════════════════════════════════════════════════════════════════════
---
---  The complete pipeline for the 11-tile filled patch:
---
---    03_generate_filled_patch.py                      (Python oracle)
---      │
---      ├──▶ Common/FilledSpec.agda                    (90 regions + 360 unions)
---      ├──▶ Boundary/FilledCut.agda                   (90 S-cut clauses)
---      ├──▶ Bulk/FilledChain.agda                     (90 L-min clauses)
---      ├──▶ Boundary/FilledSubadditivity.agda         (360 abstract proofs)
---      └──▶ Bridge/FilledObs.agda                     (90 refl + funExt)
---              │
---              ▼
---         filled-obs-path : S∂F ≡ LBF                 (Bridge/FilledObs)
---              │
---              ▼
---         filled-enriched-equiv :                      (this module)
---           FilledEnrichedBdy ≃ FilledEnrichedBulk
---              │
---              ▼
---         filled-enriched-ua-path :
---           FilledEnrichedBdy ≡ FilledEnrichedBulk
---              │
---              ▼
---         filled-enriched-transport :
---           transport ... filled-bdy-instance ≡ filled-bulk-instance
---              │
---              ▼
---         filled-enriched-transport-obs :
---           fst (transport ... filled-bdy-instance) ≡ LBF
---
---  Every step is machine-checked.  Transport is computable: it
---  reduces via uaβ to the forward map of the equivalence.  The
---  Python-to-Agda code generation pattern (§3.6, Approach A+C)
---  successfully scales the holographic formalization from the
---  6-tile star to the full 11-tile disk — the first gapless 2D
---  hyperbolic patch in the formalization, unifying Theorem 1
---  (Gauss–Bonnet) and Theorem 3 (bridge) on a single geometric
---  object.
--- ════════════════════════════════════════════════════════════════════
+--  module.

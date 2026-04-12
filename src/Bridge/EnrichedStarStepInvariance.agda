@@ -35,8 +35,9 @@ open import Bridge.FullEnrichedStarObs
 --
 --  This module proves that the full enriched type equivalence
 --  (including subadditivity ↔ monotonicity conversion) is preserved
---  under single-bond weight perturbations.  It is Phase F.2b of the
---  §11.7 implementation plan in docs/10-frontier.md.
+--  under single-bond weight perturbations.  This is **Theorem 10**
+--  (Enriched Step Invariance) in the canonical theorem registry
+--  (docs/formal/01-theorems.md).
 --
 --  The construction parameterizes FullBdy and FullBulk by an
 --  arbitrary weight function  w : Bond → ℚ≥0 , proves that:
@@ -61,9 +62,24 @@ open import Bridge.FullEnrichedStarObs
 --                                          isPropSubadditive, isPropMonotone
 --    Bulk/StarMonotonicity.agda          — _⊆R_ constructors
 --
+--  Architectural role:
+--    This is a Tier 3 (Bridge Layer) module providing the enriched
+--    step-invariance theorem (including subadditivity ↔ monotonicity
+--    conversion via +-comm) for parameterized weight functions on
+--    the 6-tile star patch.  It extends the pointwise step-invariance
+--    from Bridge/StarStepInvariance.agda (Theorem 9a) and the
+--    dynamics loop from Bridge/StarDynamicsLoop.agda (Theorem 9b)
+--    to the full enriched type equivalence.
+--    See docs/getting-started/architecture.md for the module
+--    dependency DAG.
+--
 --  Reference:
---    docs/10-frontier.md §11.7 Phase F.2b  (enriched step invariance)
---    docs/10-frontier.md §11.10 item 3     (stretch exit criterion)
+--    docs/formal/01-theorems.md §Thm 10    (Enriched Step Invariance)
+--    docs/formal/10-dynamics.md §6          (enriched step invariance)
+--    docs/instances/star-patch.md §7        (dynamics on the star patch)
+--    docs/reference/module-index.md         (module description)
+--    docs/historical/development-docs/10-frontier.md §11.7 Phase F.2b
+--                                           (original development plan)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -83,6 +99,9 @@ open import Bridge.FullEnrichedStarObs
 --  is  (0 , refl)  since  0 + n = n  definitionally.
 --
 --  This works for VARIABLE w — no closed-numeral reduction needed.
+--
+--  Reference:
+--    docs/formal/10-dynamics.md §6.2  (parameterized subadditivity)
 -- ════════════════════════════════════════════════════════════════════
 
 S-param-subadd : (w : Bond → ℚ≥0) → Subadditive (S-param w)
@@ -108,9 +127,12 @@ S-param-subadd w _ _ _ u-N4∪N0 = 0 , refl
 --  the FIRST summand (pair = w bCNi + w bCNk), we need
 --  k + w bCNi = w bCNi + w bCNk ,  i.e.,  +-comm k (w bCNi) .
 --
---  This is the parameterized arithmetic that §11.4 of
---  docs/10-frontier.md identified as necessary for step-invariance
---  beyond closed-numeral reasoning.
+--  This is the parameterized arithmetic identified in
+--  docs/formal/10-dynamics.md §6.3 as necessary for
+--  step-invariance beyond closed-numeral reasoning.
+--
+--  Reference:
+--    docs/formal/10-dynamics.md §6.3  (parameterized monotonicity)
 -- ════════════════════════════════════════════════════════════════════
 
 L-param-mono : (w : Bond → ℚ≥0) → Monotone (L-param w)
@@ -150,6 +172,10 @@ L-param-mono w _ _ sub-N4∈N4N0 = w bCN0 , +-comm (w bCN0) (w bCN4)
 --  These generalize  FullBdy / FullBulk  from
 --  Bridge/FullEnrichedStarObs.agda (which are specialized to the
 --  canonical  starWeight ) to arbitrary weight functions.
+--
+--  Reference:
+--    docs/formal/10-dynamics.md §6.1  (motivation)
+--    docs/formal/03-holographic-bridge.md §4  (full enriched equivalence)
 -- ════════════════════════════════════════════════════════════════════
 
 record FullBdy-w (w : Bond → ℚ≥0) : Type₀ where
@@ -186,6 +212,11 @@ full-bulk-w w .FullBulk-w.mono = L-param-mono w
 --
 --  Given a specification-agreement witness, derive the structural
 --  property by transporting the known property of S-param w / L-param w.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §3.1  (subst)
+--    docs/formal/03-holographic-bridge.md §4.2  (derivation, not
+--                                                preservation)
 -- ════════════════════════════════════════════════════════════════════
 
 private
@@ -211,6 +242,15 @@ private
 --    • spec fields live in a set (isSetObs)
 --    • structural property fields are propositional
 --      (isPropSubadditive, isPropMonotone)
+--
+--  This mirrors the  full-iso  construction in
+--  Bridge/FullEnrichedStarObs.agda §9, now parameterized by an
+--  arbitrary weight function  w .
+--
+--  Reference:
+--    docs/formal/02-foundations.md §4  (equivalences and Iso)
+--    docs/formal/03-holographic-bridge.md §4  (full enriched equiv)
+--    docs/formal/10-dynamics.md §6.4  (the full equivalence for any w)
 -- ════════════════════════════════════════════════════════════════════
 
 full-iso-w : (w : Bond → ℚ≥0) → Iso (FullBdy-w w) (FullBulk-w w)
@@ -286,12 +326,18 @@ full-equiv-w w = isoToEquiv (full-iso-w w)
 --  weight function because  S-param  and  L-param  are
 --  definitionally the same function on the star topology.
 --  The hypothesis is retained to match the type signature
---  from §11.7 Phase F.2b of docs/10-frontier.md and to
---  generalize to non-star topologies where it would be needed.
+--  from the original development plan and to generalize to
+--  non-star topologies where it would be needed.
+--
+--  This is **Theorem 10** (Enriched Step Invariance) in the
+--  canonical theorem registry (docs/formal/01-theorems.md).
 --
 --  Reference:
---    docs/10-frontier.md §11.7 Phase F.2b
---    docs/10-frontier.md §11.10 item 3  (stretch exit criterion)
+--    docs/formal/01-theorems.md §Thm 10     (theorem registry entry)
+--    docs/formal/10-dynamics.md §6.5        (enriched step-invariance)
+--    docs/instances/star-patch.md §7.4      (enriched step invariance)
+--    docs/historical/development-docs/10-frontier.md §11.7 Phase F.2b
+--                                           (original development plan)
 -- ════════════════════════════════════════════════════════════════════
 
 enriched-step-invariant : (w : Bond → ℚ≥0) (b : Bond) (δ : ℚ≥0)
@@ -375,13 +421,34 @@ private
 --    enriched-step-invariant:  1 line (!)
 --
 --  The +-comm dependency is the ONLY piece of ℕ arithmetic lemma
---  infrastructure needed.  This validates the estimate from §11.5
---  of docs/10-frontier.md that Strategy A would require "50 lines
---  of ℕ reasoning" — the actual arithmetic is much simpler because
---  subadditivity is trivial and monotonicity needs only commutativity.
+--  infrastructure needed.  This validates the estimate from the
+--  original development plan (docs/historical/development-docs/
+--  10-frontier.md §11.5) that the parameterized arithmetic would
+--  require "50 lines of ℕ reasoning" — the actual arithmetic is
+--  much simpler because subadditivity is trivial and monotonicity
+--  needs only commutativity.
 --
---  This module satisfies exit criterion 3 (stretch) of §11.10:
+--  Relationship to other dynamics modules:
 --
---    "An analogous theorem for the enriched equivalence (including
---     subadditivity ↔ monotonicity conversion)."
+--    Bridge/StarStepInvariance.agda      — Theorem 9a: pointwise
+--                                          step-invariance (S ≡ L
+--                                          preserved under perturb)
+--    Bridge/StarDynamicsLoop.agda        — Theorem 9b: iterated loop
+--                                          (S ≡ L preserved under
+--                                          any finite sequence)
+--    Bridge/EnrichedStarStepInvariance.agda (this module)
+--                                        — Theorem 10: full enriched
+--                                          equivalence (subadd ↔ mono
+--                                          via +-comm) for any w
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 10    (theorem registry entry)
+--    docs/formal/10-dynamics.md §6          (enriched step invariance)
+--    docs/formal/03-holographic-bridge.md §4 (full enriched equiv)
+--    docs/formal/02-foundations.md §6        (scalar representation)
+--    docs/instances/star-patch.md §7        (dynamics on the star)
+--    docs/getting-started/architecture.md   (Bridge Layer)
+--    docs/reference/module-index.md         (module description)
+--    docs/historical/development-docs/10-frontier.md §11
+--                                           (original development plan)
 -- ════════════════════════════════════════════════════════════════════

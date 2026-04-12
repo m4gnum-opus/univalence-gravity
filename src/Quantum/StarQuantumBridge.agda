@@ -65,16 +65,39 @@ open import Quantum.QuantumBridge
 --  This is amplitude-polymorphic, gauge-configuration-agnostic, and
 --  topology-agnostic (via the generic quantum-bridge theorem).
 --
---  Exit criterion (§14.10.3 of docs/10-frontier.md):
---    "The instantiation star-quantum-bridge type-checks for the
---     6-tile star with Q₈ gauge group, consuming SL-param-pointwise
---     as the per-microstate bridge."
+--  Architectural role:
+--    This is the capstone of the Quantum layer, instantiating the
+--    generic quantum bridge theorem (Quantum/QuantumBridge.agda,
+--    Theorem 7 in the canonical theorem registry) for the concrete
+--    6-tile star patch with Q₈ gauge group and ℤ[i] amplitudes.
+--    It composes the gauge layer (Q₈ connections, holonomy), the
+--    capacity layer (dimension functor → starQ8Capacity), the
+--    parameterized bridge (SL-param-pointwise), and the quantum
+--    bridge theorem into a single verified instantiation.
+--    See docs/getting-started/architecture.md for the module
+--    dependency DAG.
 --
 --  Reference:
---    docs/10-frontier.md §14.5  (Quantum Bridge Theorem)
---    docs/10-frontier.md §14.6  (Architectural Orthogonality)
---    docs/10-frontier.md §14.9  (Module Plan)
---    docs/10-frontier.md §14.10 (Exit Criterion)
+--    docs/formal/07-quantum-superposition.md §6
+--                              (The Star Quantum Bridge — Concrete
+--                               Instantiation)
+--    docs/formal/07-quantum-superposition.md §2
+--                              (Amplitude Polymorphism — the key insight)
+--    docs/formal/01-theorems.md §Thm 7
+--                              (Quantum Superposition Bridge —
+--                               theorem registry entry)
+--    docs/formal/05-gauge-theory.md §8
+--                              (Representation Capacity and the
+--                               Dimension Functor)
+--    docs/instances/star-patch.md §9
+--                              (Quantum Superposition on the star patch)
+--    docs/reference/module-index.md
+--                              (module description)
+--    docs/getting-started/architecture.md
+--                              (Quantum layer — module dependency DAG)
+--    docs/historical/development-docs/10-frontier.md §14
+--                              (original development plan for the
+--                               quantum layer)
 -- ════════════════════════════════════════════════════════════════════
 
 star-quantum-bridge :
@@ -138,7 +161,11 @@ star-quantum-bridge-general alg cap ψ r =
 --  not of the specific gauge configuration.
 --
 --  Reference:
---    docs/10-frontier.md §14.10 (exit criterion, item 4 — stretch)
+--    docs/formal/07-quantum-superposition.md §6.3
+--                              (Concrete Superpositions with
+--                               Interference)
+--    docs/instances/star-patch.md §9
+--                              (Quantum Superposition on the star)
 -- ════════════════════════════════════════════════════════════════════
 
 ψ₂ : Superposition (GaugeConnection Q₈ Bond) ℤiAmplitude
@@ -257,6 +284,11 @@ bridge-regN0N1-is-refl = refl
 --  Yet ⟨S⟩ = ⟨L⟩ = (0+2i) — the holographic bridge holds
 --  THROUGH the interference, because it is a consequence of
 --  linearity, not of the specific amplitude values.
+--
+--  Reference:
+--    docs/formal/07-quantum-superposition.md §6.3
+--                              (Three-configuration superposition
+--                               with destructive interference)
 -- ════════════════════════════════════════════════════════════════════
 
 ψ₃ : Superposition (GaugeConnection Q₈ Bond) ℤiAmplitude
@@ -367,6 +399,11 @@ bridge-classical = star-quantum-bridge ℕAmplitude ψ-classical regN0
 --  The quantum bridge theorem does NOT divide by Z.  It proves
 --  the numerator equality  𝔼[ψ,S] ≡ 𝔼[ψ,L]  directly, so it
 --  remains valid even when Z = 0 (total destructive interference).
+--
+--  Reference:
+--    docs/formal/07-quantum-superposition.md §7
+--                              (The Partition Function and
+--                               Cancellation)
 -- ════════════════════════════════════════════════════════════════════
 
 check-partition-ψ₃ :
@@ -396,22 +433,22 @@ check-partition-ψ₃ = refl
 --    ψ₃  : 3-connection Q₈ superposition with partial interference
 --    ψ-classical : 2-connection Q₈ with ℕ amplitudes
 --
---  Exit criteria satisfaction (§14.10 of docs/10-frontier.md):
+--  Theorem registry satisfaction (docs/formal/01-theorems.md §Thm 7):
 --
---    Item 3: ✓  star-quantum-bridge type-checks for the 6-tile
---               star with Q₈ gauge group, consuming
---               SL-param-pointwise as the per-microstate bridge.
+--    ✓  star-quantum-bridge type-checks for the 6-tile star with
+--       Q₈ gauge group, consuming SL-param-pointwise as the
+--       per-microstate bridge.
 --
---    Item 4 (stretch): ✓  Concrete superpositions of 2–3 Q₈ gauge
---               connections with ℤ[i] amplitudes are constructed,
---               and the expected-value equality is verified by refl
---               on the closed normal forms:
---                 bridge-regN0-is-refl       = refl
---                 bridge-regN0N1-is-refl     = refl
---                 bridge-ψ₃-regN0-is-refl   = refl
---                 bridge-ψ₃-regN0N1-is-refl = refl
+--    ✓  (stretch)  Concrete superpositions of 2–3 Q₈ gauge
+--       connections with ℤ[i] amplitudes are constructed, and the
+--       expected-value equality is verified by refl on the closed
+--       normal forms:
+--         bridge-regN0-is-refl       = refl
+--         bridge-regN0N1-is-refl     = refl
+--         bridge-ψ₃-regN0-is-refl   = refl
+--         bridge-ψ₃-regN0N1-is-refl = refl
 --
---  Architecture (§14.6):
+--  Architecture (docs/getting-started/architecture.md):
 --
 --    Gauge/ (Q₈, Connection, Holonomy)
 --         │
@@ -450,7 +487,7 @@ check-partition-ψ₃ = refl
 --    layer, the capacity layer, the parameterized bridge, and the
 --    quantum bridge theorem without modifying any existing module.
 --
---  Research significance (§14.11 of docs/10-frontier.md):
+--  Research significance (docs/formal/07-quantum-superposition.md §8):
 --
 --    This is the first machine-checked proof that a holographic
 --    correspondence lifts from individual microstates to quantum
@@ -460,4 +497,29 @@ check-partition-ψ₃ = refl
 --    theorem, which itself is a 5-line structural induction on a
 --    list.  The constructive complex-number obstacle is irrelevant:
 --    the proof works for ℤ[i], ℕ, or any amplitude type.
+--
+--  Reference:
+--    docs/formal/07-quantum-superposition.md
+--                        (quantum superposition — full formal treatment)
+--    docs/formal/07-quantum-superposition.md §6
+--                        (The Star Quantum Bridge)
+--    docs/formal/07-quantum-superposition.md §8
+--                        (Architectural Significance)
+--    docs/formal/01-theorems.md §Thm 7
+--                        (Quantum Superposition Bridge — theorem registry)
+--    docs/formal/05-gauge-theory.md §8
+--                        (Representation Capacity — dim functor)
+--    docs/formal/05-gauge-theory.md §10
+--                        (The Three-Layer Gauge Architecture)
+--    docs/instances/star-patch.md §8–§9
+--                        (Gauge enrichment and Quantum superposition
+--                         on the star patch)
+--    docs/getting-started/architecture.md
+--                        (module dependency DAG — Quantum layer)
+--    docs/reference/module-index.md
+--                        (module description)
+--    docs/physics/holographic-dictionary.md §6
+--                        (quantum superposition Agda ↔ physics table)
+--    docs/historical/development-docs/10-frontier.md §14
+--                        (original development plan for the quantum layer)
 -- ════════════════════════════════════════════════════════════════════

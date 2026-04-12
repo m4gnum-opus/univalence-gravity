@@ -51,7 +51,9 @@ open import Cubical.Data.Empty using (⊥)
 --  data type, all axioms are verified by exhaustive case split on
 --  closed constructor terms, with every case holding by  refl .
 --  This requires zero smooth analysis and zero constructive ℂ —
---  exactly as described in §13.4 of docs/10-frontier.md.
+--  the finite subgroup replacement strategy described in
+--  docs/formal/05-gauge-theory.md §2 and
+--  docs/reference/assumptions.md §A9.
 --
 --  Downstream modules:
 --    src/Gauge/ZMod.agda          — ℤ/nℤ instances (n = 2, 3, ...)
@@ -61,13 +63,28 @@ open import Cubical.Data.Empty using (⊥)
 --    src/Gauge/ConjugacyClass.agda — particle species classification
 --    src/Gauge/RepCapacity.agda   — SpinLabel, dim functor
 --
+--  Architectural role:
+--    This is a Tier 1 (Specification Layer) standalone module with
+--    no internal dependencies beyond the cubical library.  It is
+--    the foundation for the entire Gauge/ directory.
+--    See docs/getting-started/architecture.md for the module
+--    dependency DAG.
+--
 --  Reference:
---    docs/10-frontier.md §13.1   (Goal)
---    docs/10-frontier.md §13.4   (finite subgroup replacement)
---    docs/10-frontier.md §13.7   (three-layer architecture)
---    docs/10-frontier.md §13.8   (module plan)
---    docs/10-frontier.md §13.9   (Phase M.0)
---    docs/10-frontier.md §13.12  (exit criterion, item 1)
+--    docs/formal/05-gauge-theory.md §2    (the constructive Lie
+--                                          group problem and its
+--                                          resolution via finite
+--                                          subgroup replacement)
+--    docs/formal/05-gauge-theory.md §3    (the FiniteGroup record)
+--    docs/formal/05-gauge-theory.md §10   (three-layer architecture)
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — downstream)
+--    docs/reference/assumptions.md §A9    (finite gauge groups
+--                                          replace continuous Lie
+--                                          groups)
+--    docs/reference/module-index.md       (module description)
+--    docs/historical/development-docs/10-frontier.md §13
+--                                         (original development plan)
 -- ════════════════════════════════════════════════════════════════════
 
 record FiniteGroup : Type₁ where
@@ -109,7 +126,8 @@ record FiniteGroup : Type₁ where
 --
 --  ℤ/2ℤ is the simplest nontrivial group and serves as the first
 --  gauge group instance:  it is the finite replacement for U(1)
---  with n = 2 (§13.4 of docs/10-frontier.md).
+--  with n = 2, as described in docs/formal/05-gauge-theory.md §2
+--  and docs/reference/assumptions.md §A9.
 --
 --  The group has 2 conjugacy classes (trivially, since it is
 --  abelian: each element is its own conjugacy class), giving a
@@ -194,7 +212,8 @@ isSetZ2 = Discrete→isSet discreteZ2
 --  judgmentally.
 --
 --  This is the "exhaustive case split on closed constructor terms"
---  proof strategy described in §13.4 of docs/10-frontier.md.
+--  proof strategy described in docs/formal/05-gauge-theory.md §2
+--  and docs/reference/assumptions.md §A9.
 --
 --  Case counts:
 --    ·-identityˡ:  0 cases (wildcard — e0 is left-absorbing)
@@ -269,16 +288,20 @@ Z2-assoc e1 e1 e1 = refl
 --  axiom fields are the refl-based proofs from §4.
 --
 --  This is the first concrete gauge group instance for the project.
---  Instantiation on the 6-tile star patch (Phase M.1) will assign
---  Z2 elements to each of the 5 bonds, and compute holonomies
---  around faces by folding _+Z2_ over the ordered boundary bonds.
+--  Instantiation on the 6-tile star patch assigns Z2 elements to
+--  each of the 5 bonds and computes holonomies around faces by
+--  folding _+Z2_ over the ordered boundary bonds
+--  (see Gauge/Holonomy.agda).
 --
---  Exit criterion (§13.12 of docs/10-frontier.md):
---    "A FiniteGroup record type-checks in Gauge/FiniteGroup.agda
---     with at least one concrete instance (ℤ/2ℤ or ℤ/3ℤ) where
---     all axioms hold by refl."
+--  This instance satisfies the exit criterion for the gauge layer:
+--  "A FiniteGroup record type-checks with at least one concrete
+--   instance (ℤ/2ℤ or ℤ/3ℤ) where all axioms hold by refl."
 --
---  This instance satisfies the criterion for ℤ/2ℤ.
+--  Reference:
+--    docs/formal/05-gauge-theory.md §4.1  (ℤ/2ℤ — the simplest
+--                                          gauge group)
+--    docs/instances/star-patch.md §8      (gauge enrichment on the
+--                                          star patch)
 -- ════════════════════════════════════════════════════════════════════
 
 ℤ/2 : FiniteGroup
@@ -362,7 +385,7 @@ private
 --
 --  Relationship to existing code:
 --
---    This module is the first file in the new  src/Gauge/  directory.
+--    This module is the first file in the  src/Gauge/  directory.
 --    It imports ONLY from:
 --      • Cubical.Foundations.Prelude     — PathP, ≡, refl, subst, sym
 --      • Cubical.Foundations.HLevels     — isSet
@@ -374,7 +397,7 @@ private
 --    with algebraic structure without modifying the existing bridge,
 --    curvature, causal, or dynamics infrastructure.
 --
---  Next steps (Phase M.0 → M.1):
+--  Next steps (downstream modules in Gauge/):
 --
 --    1. src/Gauge/ZMod.agda  — ℤ/nℤ instances for n = 3, 4, ...
 --       using a generic n-element cyclic type.  The ℤ/3ℤ instance
@@ -396,4 +419,28 @@ private
 --  Its design — decidable equality, set-level carrier, axioms
 --  by refl — ensures that all downstream constructions are
 --  computationally well-behaved in Cubical Agda.
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md       (gauge theory — full formal
+--                                          treatment)
+--    docs/formal/05-gauge-theory.md §3    (the FiniteGroup record)
+--    docs/formal/05-gauge-theory.md §4    (concrete group instances)
+--    docs/formal/05-gauge-theory.md §10   (the three-layer gauge
+--                                          architecture)
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — the downstream
+--                                          theorem that consumes
+--                                          FiniteGroup)
+--    docs/reference/assumptions.md §A9    (finite gauge groups
+--                                          replace continuous Lie
+--                                          groups — frozen assumption)
+--    docs/reference/module-index.md       (module description)
+--    docs/getting-started/architecture.md (Specification Layer —
+--                                          module dependency DAG)
+--    docs/physics/five-walls.md §Wall 3   (continuous gauge groups —
+--                                          the hard boundary that
+--                                          motivates finite replacements)
+--    docs/historical/development-docs/10-frontier.md §13
+--                                         (original development plan
+--                                          for the gauge layer)
 -- ════════════════════════════════════════════════════════════════════

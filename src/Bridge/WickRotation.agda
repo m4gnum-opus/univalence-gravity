@@ -12,21 +12,22 @@ open import Util.Rationals
 --  Discrete Wick Rotation — The dS / AdS Curvature-Agnostic Bridge
 -- ════════════════════════════════════════════════════════════════════
 --
---  This module is the "crown jewel" of Direction E (§7 of
---  docs/10-frontier.md).  It packages:
+--  This module is **Theorem 4** (Discrete Wick Rotation) in the
+--  canonical theorem registry (docs/formal/01-theorems.md).
+--  It packages:
 --
---    1. The shared holographic bridge (Theorem 3, produced by the
+--    1. The shared holographic bridge (Theorem 1, produced by the
 --       GENERIC bridge machinery from Bridge/GenericBridge.agda
 --       via Bridge/GenericValidation.agda) — the type equivalence
 --       between boundary and bulk observable packages, which
 --       depends ONLY on the 5-bond star flow-graph topology.
 --
---    2. The AdS Gauss–Bonnet witness (Theorem 1, from
+--    2. The AdS Gauss–Bonnet witness (Theorem 2, from
 --       Bulk/GaussBonnet.agda) — discrete Gauss–Bonnet for the
 --       {5,4} hyperbolic tiling, with negative interior curvature
 --       κ = −1/5 per vertex.
 --
---    3. The dS Gauss–Bonnet witness (dS Theorem 1, from
+--    3. The dS Gauss–Bonnet witness (dS Theorem 2, from
 --       Bulk/DeSitterGaussBonnet.agda) — discrete Gauss–Bonnet
 --       for the {5,3} spherical tiling (regular dodecahedron),
 --       with positive interior curvature κ = +1/10 per vertex.
@@ -67,10 +68,10 @@ open import Util.Rationals
 --    This module previously imported  full-witness : BridgeWitness
 --    from  Bridge/EnrichedStarEquiv.agda , creating a dependency on
 --    the hand-written, star-specific enriched bridge.  After the
---    Phase 0 architectural tightening (docs/repo-close.md §3), the
---    bridge witness is now imported from  Bridge/GenericValidation
---    as  star-generic-witness , which is produced by the generic
---    bridge machinery  (orbit-bridge-witness  from
+--    Phase 0 architectural tightening, the bridge witness is now
+--    imported from  Bridge/GenericValidation  as
+--    star-generic-witness , which is produced by the generic bridge
+--    machinery  (orbit-bridge-witness  from
 --    Bridge/GenericBridge.agda).
 --
 --    This makes it explicit that the shared holographic bridge is
@@ -83,21 +84,19 @@ open import Util.Rationals
 --    but is no longer on the critical path.
 --
 --  Reference:
---    §7 of docs/10-frontier.md  (Direction E)
---    §7.5.1 Components 1–3      (theorem structure)
---    §7.13                       (exit criterion)
---    docs/repo-close.md          (Architectural Rewiring §3)
+--    docs/formal/08-wick-rotation.md       (formal treatment)
+--    docs/formal/01-theorems.md §Thm 4     (theorem registry entry)
+--    docs/formal/04-discrete-geometry.md   (curvature and GB)
+--    docs/instances/desitter-patch.md      (dS instance data sheet)
+--    docs/instances/star-patch.md §10      (shared bridge)
 --    sim/prototyping/10_desitter_prototype.py  (numerical verification)
---
---  Exit criterion (§7.13 of docs/10-frontier.md):
---    "A WickRotationWitness record (analogous to BridgeWitness
---     from Bridge/EnrichedStarEquiv.agda) is fully instantiated
---     and type-checks."
+--    docs/historical/development-docs/10-frontier.md §7
+--                                          (original development plan)
 -- ════════════════════════════════════════════════════════════════════
 
 
 -- ════════════════════════════════════════════════════════════════════
---  Imports — AdS side (Theorem 1 for the {5,4} patch)
+--  Imports — AdS side (Theorem 2 for the {5,4} patch)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Bulk.PatchComplex using (vTiling)
@@ -109,7 +108,7 @@ open import Bulk.GaussBonnet
 
 
 -- ════════════════════════════════════════════════════════════════════
---  Imports — dS side (dS Theorem 1 for the {5,3} patch)
+--  Imports — dS side (dS Theorem 2 for the {5,3} patch)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Bulk.DeSitterPatchComplex using (dsTiling)
@@ -124,9 +123,8 @@ open import Bulk.DeSitterGaussBonnet
 --  Imports — Shared bridge (curvature-agnostic)
 -- ════════════════════════════════════════════════════════════════════
 --
---  BridgeWitness:  the record type, now imported from its canonical
---  leaf module  Bridge/BridgeWitness.agda  (factored out of
---  EnrichedStarEquiv during Phase 0, step 1).
+--  BridgeWitness:  the record type, imported from its canonical
+--  leaf module  Bridge/BridgeWitness.agda .
 --
 --  star-generic-witness:  the concrete BridgeWitness for the star
 --  patch, produced by the GENERIC bridge machinery:
@@ -146,6 +144,11 @@ open import Bulk.DeSitterGaussBonnet
 --  and downstream reference.  These reference concrete types from
 --  FullEnrichedStarObs (FullBdy, FullBulk) and do not conflict
 --  with the BridgeWitness import from the leaf module.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §6  (BridgeWitness record)
+--    docs/formal/11-generic-bridge.md         (generic bridge)
+--    docs/engineering/generic-bridge-pattern.md (one proof, N instances)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Bridge.BridgeWitness
@@ -175,6 +178,11 @@ open import Bridge.EnrichedStarEquiv
 --  theorems target: the curvature distributions are different
 --  (negative interior for AdS, positive interior for dS), but
 --  they sum to the same topological constant.
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §5  (AdS Gauss–Bonnet)
+--    docs/formal/04-discrete-geometry.md §6  (dS Gauss–Bonnet)
+--    docs/formal/08-wick-rotation.md §9      (what changes / doesn't)
 -- ════════════════════════════════════════════════════════════════════
 
 shared-euler : χ₁₀ ≡ dsχ₁₀
@@ -204,6 +212,11 @@ ds-euler-raw = refl
 --    q=3:  1 − 3/2 + 3/5 = +1/10
 --
 --  These are re-exported from the curvature modules.
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §4  (curvature formula)
+--    docs/formal/08-wick-rotation.md §4      (positive interior κ)
+--    docs/instances/desitter-patch.md §4     (curvature per class)
 -- ════════════════════════════════════════════════════════════════════
 
 -- AdS interior curvature is NEGATIVE:  negsuc 1 = −2/10 = −1/5
@@ -229,8 +242,8 @@ ds-κ-positive = dsκ-interior-positive
 --  §3.  The Curvature-Agnostic Bridge
 -- ════════════════════════════════════════════════════════════════════
 --
---  The holographic bridge (Theorem 3) depends only on the
---  5-bond star flow-graph topology, encoded in:
+--  The holographic bridge (Theorem 1: discrete Ryu–Takayanagi)
+--  depends only on the 5-bond star flow-graph topology, encoded in:
 --
 --    Common/StarSpec.agda    — Tile, Bond, Region types
 --    Boundary/StarCut.agda   — S-cut : Region → ℚ≥0
@@ -246,8 +259,7 @@ ds-κ-positive = dsκ-interior-positive
 --  Therefore the same enriched equivalence  EnrichedBdy ≃ EnrichedBulk
 --  and the same transport  theorem3  serve BOTH curvature regimes.
 --  The bridge is literally the same Agda term for both {5,4} and
---  {5,3} — it is the "curvature-free" observable layer from
---  §7.5.1 of docs/10-frontier.md:
+--  {5,3} — it is the "curvature-free" observable layer:
 --
 --    Obs∂^{5,4}  ≃  Obs_bulk^{5,4}  ≃  Obs_flow
 --                                    ≃  Obs_bulk^{5,3}  ≃  Obs∂^{5,3}
@@ -258,8 +270,7 @@ ds-κ-positive = dsκ-interior-positive
 --
 --  Architectural note:
 --
---    After Phase 0 rewiring, the bridge witness is produced by the
---    GENERIC machinery:
+--    The bridge witness is produced by the GENERIC machinery:
 --
 --      starPatchData : PatchData
 --        (RegionTy = Region, S∂ = star-S∂, LB = star-LB,
@@ -275,6 +286,12 @@ ds-κ-positive = dsκ-interior-positive
 --    inside the PatchData to see whether it came from a {5,4}
 --    or {5,3} tiling.  This structural fact IS the curvature-
 --    agnosticism of the holographic correspondence.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md   (holographic bridge)
+--    docs/formal/08-wick-rotation.md §6     (curvature-agnostic bridge)
+--    docs/formal/11-generic-bridge.md       (PatchData interface)
+--    docs/engineering/generic-bridge-pattern.md  (one proof, N instances)
 -- ════════════════════════════════════════════════════════════════════
 
 -- The bridge witness, imported from the GENERIC validation module.
@@ -303,6 +320,11 @@ the-bridge-theorem = theorem3
 --    dS  (3 classes): 5·(+1) + 5·(−1) + 5·(+2)                   = 10
 --
 --  Both reduce to  pos 10 = one₁₀ = χ₁₀ .
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §5  (AdS GB proof)
+--    docs/formal/04-discrete-geometry.md §6  (dS GB proof)
+--    docs/formal/08-wick-rotation.md §5      (dS GB in Wick context)
 -- ════════════════════════════════════════════════════════════════════
 
 -- Re-exported AdS Gauss–Bonnet
@@ -343,8 +365,10 @@ the-ds-theorem = ds-theorem1
 --
 --  The record lives in Type₁ because BridgeWitness stores types.
 --
---  This is Component 3 of the discrete Wick rotation theorem
---  (§7.5.1 of docs/10-frontier.md).
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 4      (theorem registry)
+--    docs/formal/08-wick-rotation.md §7      (WickRotationWitness)
+--    docs/instances/desitter-patch.md §8     (Theorem 4)
 -- ════════════════════════════════════════════════════════════════════
 
 record WickRotationWitness : Type₁ where
@@ -407,6 +431,9 @@ record WickRotationWitness : Type₁ where
 --  The euler-coherence field is  refl  because both  χ₁₀  and
 --  dsχ₁₀  are defined as  one₁₀ = pos 10  in their respective
 --  modules (Bulk/GaussBonnet.agda and Bulk/DeSitterGaussBonnet.agda).
+--
+--  Reference:
+--    docs/formal/08-wick-rotation.md §7  (the concrete witness)
 -- ════════════════════════════════════════════════════════════════════
 
 wick-rotation-witness : WickRotationWitness
@@ -503,6 +530,10 @@ ds-interior-is-positive = dsκ-interior-positive
 --  the physics: in AdS, the strong negative interior curvature is
 --  compensated by large boundary turning; in dS, the mild positive
 --  curvature distributes evenly.
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §5.3  (AdS decomposition)
+--    docs/formal/08-wick-rotation.md §5.3      (dS vs AdS decomp.)
 -- ════════════════════════════════════════════════════════════════════
 
 -- Both GB witnesses contain the same euler characteristic
@@ -540,7 +571,9 @@ ds-gb-proof = refl
 --  capture the mathematical content while being agnostic about
 --  the physical interpretation.
 --
---  Reference: §7.6 of docs/10-frontier.md
+--  Reference:
+--    docs/formal/08-wick-rotation.md §10     (boundary interpretation)
+--    docs/physics/holographic-dictionary.md   (Agda ↔ physics table)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -548,9 +581,8 @@ ds-gb-proof = refl
 --  §11.  End-to-End Architecture Summary
 -- ════════════════════════════════════════════════════════════════════
 --
---  The conceptual architecture from §7.15 of docs/10-frontier.md
---  is now fully realized, with the bridge produced by the GENERIC
---  machinery (Phase 0 rewiring):
+--  The conceptual architecture is now fully realized, with the
+--  bridge produced by the GENERIC machinery:
 --
 --                   ┌─────────────────────────┐
 --                   │  Common/StarSpec.agda   │
@@ -571,7 +603,7 @@ ds-gb-proof = refl
 --                │ Bridge/        │             │
 --                │ GenericBridge  │  ◄──────────┘
 --                │ + GenericVal.  │  (same bridge!)
---                │ (Theorem 3)   │
+--                │ (Theorem 1)    │
 --                └───────┬────────┘
 --                        │
 --          ┌─────────────┼─────────────┐
@@ -580,7 +612,7 @@ ds-gb-proof = refl
 --  │ Bulk/        │      │     │ Bulk/        │
 --  │ GaussBonnet  │      │     │ DeSitter     │
 --  │ (κ < 0)      │      │     │ GaussBonnet  │
---  │ Theorem 1    │      │     │ (κ > 0)      │
+--  │ Theorem 2    │      │     │ (κ > 0)      │
 --  │ [AdS]        │      │     │ [dS]         │
 --  └───────┬──────┘      │     └───────┬──────┘
 --          │             │             │
@@ -592,28 +624,29 @@ ds-gb-proof = refl
 --                │ (this module)  │
 --                │                │
 --                │ Witnesses:     │
---                │ • AdS GB      │
---                │ • dS GB       │
+--                │ • AdS GB       │
+--                │ • dS GB        │
 --                │ • Shared       │
 --                │   bridge       │
 --                │   (generic!)   │
 --                └────────────────┘
 --
 --  The bridge sits at the center, shared by both curvature regimes.
---  It is now produced by  GenericBridge.agda  (the generic theorem
+--  It is produced by  GenericBridge.agda  (the generic theorem
 --  proven once) and validated by  GenericValidation.agda  (the
 --  retroactive consistency test).  The two Gauss–Bonnet theorems
 --  attach independently to opposite sides.  This module witnesses
 --  their coherence.
 --
---  This completes Phase E.1 Step 5 of the dS/AdS translator
---  development plan (§7.11 of docs/10-frontier.md) and satisfies
---  the exit criterion from §7.13:
---
---    "A WickRotationWitness record is fully instantiated and
---     type-checks."
---
 --  The result is the type-theoretic content of the claim that
 --  the combinatorial structure of the holographic correspondence
 --  is independent of the sign of curvature.
+--
+--  Reference:
+--    docs/formal/08-wick-rotation.md §13     (conceptual architecture)
+--    docs/formal/01-theorems.md §Thm 4       (theorem registry)
+--    docs/getting-started/architecture.md    (module dependency DAG)
+--    docs/instances/desitter-patch.md §17    (architecture diagram)
+--    docs/historical/development-docs/10-frontier.md §7
+--                                            (original development plan)
 -- ════════════════════════════════════════════════════════════════════

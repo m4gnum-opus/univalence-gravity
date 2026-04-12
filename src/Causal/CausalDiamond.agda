@@ -35,8 +35,11 @@ open import Bridge.SchematicTower
 --  slice at depth n.
 --
 --  Reference:
---    docs/10-frontier.md §12.4  (New Types — CausalExtension)
---    docs/10-frontier.md §12.6  (Pachner Moves and Time Evolution)
+--    docs/formal/06-causal-structure.md §1  (Overview — tower
+--                                            concept mapping)
+--    docs/formal/06-causal-structure.md §6  (Causal Diamonds —
+--                                            CausalExtension type)
+--    docs/formal/11-generic-bridge.md §5    (TowerLevel, LayerStep)
 -- ════════════════════════════════════════════════════════════════════
 
 CausalExtension : TowerLevel → TowerLevel → Type₀
@@ -73,9 +76,13 @@ CausalExtension = LayerStep
 --  types (OrbitReducedPatch, BridgeWitness) as fields.
 --
 --  Reference:
---    docs/10-frontier.md §12.4  (New Types — CausalDiamond)
---    docs/10-frontier.md §12.6  (Pachner Moves and Time Evolution)
---    docs/10-frontier.md §12.12 (Phase H.0 — CausalDiamond packaging)
+--    docs/formal/06-causal-structure.md §6    (Causal Diamonds —
+--                                              the CausalDiamond
+--                                              data type)
+--    docs/formal/06-causal-structure.md §6.1  (The CausalDiamond
+--                                              Data Type)
+--    docs/formal/01-theorems.md               (Causal Diamond in
+--                                              the theorem registry)
 -- ════════════════════════════════════════════════════════════════════
 
 -- ── Forward declarations (mutual recursion) ────────────────────────
@@ -144,8 +151,12 @@ n-slices (extend d _ _)  = suc (n-slices d)
 --    proper-time d  =  n-slices d ∸ 1
 --
 --  Reference:
---    docs/10-frontier.md §12.7  (Proper Time as Chain Length)
---    docs/10-frontier.md §12.12 (Phase H.4 — Proper time verification)
+--    docs/formal/06-causal-structure.md §6.2  (Operations on
+--                                              Diamonds — proper
+--                                              time)
+--    docs/formal/06-causal-structure.md §4    (Causal Chains —
+--                                              chain length as
+--                                              proper time)
 -- ════════════════════════════════════════════════════════════════════
 
 proper-time : CausalDiamond → ℕ
@@ -204,8 +215,15 @@ private
 --  but the definition is correct for non-monotone diamonds too.
 --
 --  Reference:
---    docs/10-frontier.md §12.3  (The Lorentzian Inversion: Maximin)
---    docs/10-frontier.md §12.12 (Phase H.1 — Maximin computation)
+--    docs/formal/06-causal-structure.md §7    (Maximin — Covariant
+--                                              Holographic
+--                                              Entanglement Entropy)
+--    docs/formal/06-causal-structure.md §7.1  (Maximin Equals Top)
+--    docs/formal/01-theorems.md               (Causal Diamond —
+--                                              maximin verification)
+--    Wall, A. (2012). "Maximin Surfaces, and the Strong
+--      Subadditivity of the Covariant Holographic Entanglement
+--      Entropy."
 -- ════════════════════════════════════════════════════════════════════
 
 maximin : CausalDiamond → ℚ≥0
@@ -218,9 +236,9 @@ maximin (extend d hi _) = max-ℕ (maximin d) (TowerLevel.maxCut hi)
 -- ════════════════════════════════════════════════════════════════════
 --
 --  The {5,4} BFS-layer tower from Bridge/SchematicTower.agda,
---  repackaged as a CausalDiamond.  This is the discrete spacetime
---  of §12.2: 6 verified spatial slices connected by 5 future-
---  directed causal extensions.
+--  repackaged as a CausalDiamond.  This is the discrete spacetime:
+--  6 verified spatial slices connected by 5 future-directed causal
+--  extensions.
 --
 --  Each slice carries:
 --    • An OrbitReducedPatch (the spatial geometry at that depth)
@@ -240,8 +258,14 @@ maximin (extend d hi _) = max-ℕ (maximin d) (TowerLevel.maxCut hi)
 --  Each arrow is one Pachner move (one BFS expansion layer).
 --
 --  Reference:
---    docs/10-frontier.md §12.6  (Pachner Moves and Time Evolution)
---    docs/10-frontier.md §12.12 (Phase H.0, H.1, H.4)
+--    docs/formal/06-causal-structure.md §6.3  (Concrete
+--                                              Instantiations —
+--                                              layer tower diamond)
+--    docs/instances/layer-54-tower.md §5      (Tower Assembly —
+--                                              CausalDiamond
+--                                              packaging)
+--    docs/formal/11-generic-bridge.md §5      (SchematicTower —
+--                                              TowerLevel instances)
 -- ════════════════════════════════════════════════════════════════════
 
 layer54-diamond : CausalDiamond
@@ -280,7 +304,13 @@ layer54-diamond =
 --  judgmentally.
 --
 --  Reference:
---    docs/10-frontier.md §12.12 (Phase H.0, H.1, H.4)
+--    docs/formal/06-causal-structure.md §6.3  (Concrete
+--                                              Instantiations —
+--                                              dense diamond)
+--    docs/instances/dense-100.md §10          (The Resolution
+--                                              Tower Role)
+--    docs/instances/dense-200.md §9           (The Resolution
+--                                              Tower Role)
 -- ════════════════════════════════════════════════════════════════════
 
 dense-diamond : CausalDiamond
@@ -291,8 +321,8 @@ dense-diamond = extend (base d100-tower-level) d200-tower-level d100→d200
 --  §9.  Maximin Verification
 -- ════════════════════════════════════════════════════════════════════
 --
---  Phase H.1 (§12.12):  maximin type-checks and reduces to the
---  correct ℕ literal on each instantiated diamond.
+--  The maximin function type-checks and reduces to the correct ℕ
+--  literal on each instantiated diamond.
 --
 --  {5,4} tower:  all maxCuts are 2, so  max-ℕ 2 2 = 2  at every
 --  step.  maximin = 2.
@@ -316,9 +346,9 @@ maximin-dense = refl
 --  §10.  Proper Time Verification
 -- ════════════════════════════════════════════════════════════════════
 --
---  Phase H.4 (§12.12):  proper time through the {5,4} tower
---  diamond is 5 (= 6 slices − 1 = depths 7 − 2).  For the Dense
---  tower: proper time = 1 (one step, Dense-100 → Dense-200).
+--  Proper time through the {5,4} tower diamond is 5
+--  (= 6 slices − 1 = depths 7 − 2).  For the Dense tower:
+--  proper time = 1 (one step, Dense-100 → Dense-200).
 --
 --  Each proof is  refl  on closed ℕ terms because  proper-time
 --  counts  extend  constructors by structural recursion.
@@ -482,29 +512,29 @@ maximin-equals-top-dense = refl
 --  must connect the current top to the new level.  This is the
 --  type-level enforcement of the causal arrow of time.
 --
---  Exit criteria (§12.13 of docs/10-frontier.md):
---
---    1. ✓  A CausalDiamond record type-checks, instantiated for
---          the {5,4} layer tower (6 slices) and the Dense
---          resolution tower (2 slices).
---
---    2. ✓  The maximin function type-checks and reduces to the
---          correct ℕ literal on each instantiated diamond:
---            maximin layer54-diamond = 2
---            maximin dense-diamond   = 9
---
 --  Downstream modules:
 --
 --    src/Causal/NoCTC.agda     — Structural acyclicity proof
 --    src/Causal/LightCone.agda — FutureCone, spacelike-separation
 --
 --  Reference:
---    docs/10-frontier.md §12    (The Causal Light Cone)
---    docs/10-frontier.md §12.2  (The Tower IS the Spacetime)
---    docs/10-frontier.md §12.3  (Maximin)
---    docs/10-frontier.md §12.4  (New Types)
---    docs/10-frontier.md §12.7  (Proper Time as Chain Length)
---    docs/10-frontier.md §12.11 (New Module Plan)
---    docs/10-frontier.md §12.12 (Execution Plan)
---    docs/10-frontier.md §12.13 (Exit Criterion)
--- ════════════════════════════════════════════════════════════════════
+--    docs/formal/06-causal-structure.md       (The Causal Light Cone
+--                                              — full formal treatment)
+--    docs/formal/06-causal-structure.md §1    (Overview — the tower
+--                                              IS the spacetime)
+--    docs/formal/06-causal-structure.md §6    (Causal Diamonds)
+--    docs/formal/06-causal-structure.md §7    (Maximin)
+--    docs/formal/01-theorems.md               (Causal Diamond in
+--                                              the theorem registry)
+--    docs/formal/11-generic-bridge.md §5      (SchematicTower —
+--                                              TowerLevel, LayerStep)
+--    docs/instances/layer-54-tower.md         (Layer-54 tower
+--                                              instance data sheet)
+--    docs/instances/dense-100.md              (Dense-100 instance)
+--    docs/getting-started/architecture.md     (Module dependency DAG)
+--    docs/reference/module-index.md           (Module description)
+--    docs/historical/development-docs/10-frontier.md §12
+--                                             (Original development
+--                                              plan for the causal
+--                                              light cone)
+-- ══════════════════════════════════════════════════════════════════

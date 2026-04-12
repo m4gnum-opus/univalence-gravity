@@ -34,8 +34,8 @@ open import Boundary.StarCutParam using (S-param)
 --  Ryu–Takayanagi correspondence holds for the star.
 --
 --  The coincidence S-param = L-param (proven below as  SL-param )
---  is what makes the step-invariance theorem (§11.7 item 4 of
---  docs/10-frontier.md) trivial for the star topology:  any
+--  is what makes the step-invariance theorem (Theorem 9 in
+--  docs/formal/01-theorems.md) trivial for the star topology:  any
 --  perturbation of the weight function affects both observables
 --  identically.
 --
@@ -43,9 +43,20 @@ open import Boundary.StarCutParam using (S-param)
 --    src/Bridge/StarStepInvariance.agda   (step-invariance theorem)
 --    src/Bridge/StarDynamicsLoop.agda     (iterated loop)
 --
+--  Architectural role:
+--    This is a Tier 2 (Observable Layer) module providing the
+--    parameterized bulk observable consumed by the dynamics layer.
+--    The boundary-side counterpart is S-param in
+--    Boundary/StarCutParam.agda.  For the star topology, S-param
+--    and L-param are definitionally the same function — the
+--    structural content of the discrete RT correspondence for
+--    parameterized weights.
+--
 --  Reference:
---    docs/10-frontier.md §11.5  (Strategy A, Step 1)
---    docs/10-frontier.md §11.7  (item 3 — this module)
+--    docs/formal/10-dynamics.md §2        (parameterized observables)
+--    docs/formal/01-theorems.md §Thm 9    (step invariance statement)
+--    docs/instances/star-patch.md §7      (dynamics on the star patch)
+--    docs/reference/module-index.md       (module description)
 -- ════════════════════════════════════════════════════════════════════
 
 L-param : (Bond → ℚ≥0) → Region → ℚ≥0
@@ -88,6 +99,10 @@ L-param w regN4N0 = w bCN4 +ℚ w bCN0
 --  (star-pointwise in Bridge/StarObs.agda), ensuring that the
 --  new parameterized development is consistent with all existing
 --  refl-based proofs.
+--
+--  Reference:
+--    docs/formal/10-dynamics.md §2.5   (specification agreement)
+--    docs/formal/02-foundations.md §6.3 (shared-constants discipline)
 -- ════════════════════════════════════════════════════════════════════
 
 L-param-spec-pointwise :
@@ -139,8 +154,10 @@ L-param-spec = funExt L-param-spec-pointwise
 --  both sides are the same function applied to the same argument).
 --
 --  In the step-invariance proof (Bridge/StarStepInvariance.agda),
---  this is the "trivially true" case documented in §11.7 item 4
---  of docs/10-frontier.md.
+--  this is the "trivially true" case: the hypothesis "if S ≡ L
+--  at weight w" is redundant because S and L are the same function
+--  for ANY w on the star topology.  See docs/formal/10-dynamics.md
+--  §4 for the step-invariance theorem statement and proof.
 -- ════════════════════════════════════════════════════════════════════
 
 SL-param-pointwise :
@@ -236,13 +253,16 @@ private
 --      2.  Placing L-param in the Bulk layer mirrors the
 --          symmetric placement of S-param in the Boundary layer,
 --          maintaining the architectural separation.
+--          See docs/getting-started/architecture.md for the full
+--          module dependency DAG and layer diagram.
 --
 --      3.  For larger patches (e.g., the 11-tile filled patch),
 --          S-param and L-param would NOT coincide — the bulk
 --          observable might differ from the boundary one due to
---          boundary-leg effects (the N-singleton discrepancy of
---          §3.2 of docs/10-frontier.md).  Keeping them separate
---          now ensures the architecture generalizes.
+--          boundary-leg effects (the N-singleton discrepancy
+--          documented in docs/instances/filled-patch.md §4).
+--          Keeping them separate now ensures the architecture
+--          generalizes.
 --
 --  Design decisions:
 --
@@ -260,14 +280,13 @@ private
 --        at each constructor) must be available for downstream
 --        proofs to normalize.
 --
---  Conditions for advancement (§11.12 of docs/10-frontier.md):
---
---    "The  minCutFromWeights  function from  Bridge/StarRawEquiv.agda
---     has been validated as the correct parameterized observable for
---     both boundary and bulk sides."
---
---  This module satisfies that condition for the bulk side (the
---  boundary side was satisfied by Boundary/StarCutParam.agda).
---  The next step is  Bridge/StarStepInvariance.agda  (item 4
---  of §11.7).
+--  Reference:
+--    docs/formal/10-dynamics.md          (dynamics layer overview)
+--    docs/formal/10-dynamics.md §2       (parameterized observables)
+--    docs/formal/10-dynamics.md §4       (step invariance — consumes
+--                                         SL-param-pointwise)
+--    docs/formal/01-theorems.md §Thm 9   (theorem registry entry)
+--    docs/instances/star-patch.md §7     (dynamics on the star patch)
+--    docs/getting-started/architecture.md (Observable Layer)
+--    docs/reference/module-index.md      (module description)
 -- ════════════════════════════════════════════════════════════════════

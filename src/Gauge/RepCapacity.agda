@@ -37,9 +37,20 @@ open import Bridge.BridgeWitness
 --  are enumerated as constructors of a data type, and the dimension
 --  functor maps each irrep to its ℕ-valued dimension.
 --
+--  The finite subgroup replacement strategy (documented in
+--  docs/formal/05-gauge-theory.md §2) replaces each factor of the
+--  Standard Model gauge group with a well-studied finite subgroup:
+--
+--    U(1)  → ℤ/nℤ  (n irreps, all dim 1)
+--    SU(2) → Q₈    (5 irreps, dims 1,1,1,1,2)
+--
 --  Reference:
---    docs/10-frontier.md §13.4  (representation theory table)
---    docs/10-frontier.md §13.5  (the dimension functor)
+--    docs/formal/05-gauge-theory.md §2    (finite subgroup replacement
+--                                          table — representation theory)
+--    docs/formal/05-gauge-theory.md §8    (the dimension functor and
+--                                          capacity extraction)
+--    docs/reference/assumptions.md §A9    (finite gauge groups replace
+--                                          continuous Lie groups)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -90,8 +101,10 @@ dimZ3 z3-ω²  = 1
 --  SU(2) fundamental used in spin-network entanglement entropy.
 --
 --  Reference:
---    docs/10-frontier.md §13.4  (Q₈ row of the replacement table)
---    docs/10-frontier.md §13.5  (the dimension functor)
+--    docs/formal/05-gauge-theory.md §2    (Q₈ row of the finite
+--                                          subgroup replacement table)
+--    docs/formal/05-gauge-theory.md §8    (the dimension functor and
+--                                          capacity extraction)
 
 data Q8Rep : Type₀ where
   q8-triv q8-sgn-i q8-sgn-j q8-sgn-k q8-fund : Q8Rep
@@ -112,7 +125,8 @@ dimQ8 q8-fund  = 2
 --  of the network.  The capacity of each bond is the dimension of
 --  its assigned representation.
 --
---  In the Bekenstein–Hawking spin-network formulation (§13.3):
+--  In the Bekenstein–Hawking spin-network formulation
+--  (docs/formal/12-bekenstein-hawking.md):
 --
 --    S(γ) = Σ_{e ∈ γ} ln(dim(ρ_e))
 --
@@ -124,8 +138,15 @@ dimQ8 q8-fund  = 2
 --  which reduces to the min-cut on the dimension-weighted flow graph.
 --
 --  Reference:
---    docs/10-frontier.md §13.5  (the observable collapse resolution)
---    docs/10-frontier.md §13.7  (capacity layer)
+--    docs/formal/05-gauge-theory.md §8    (the observable collapse
+--                                          resolution via the
+--                                          dimension functor)
+--    docs/formal/05-gauge-theory.md §10   (the three-layer gauge
+--                                          architecture — capacity
+--                                          layer)
+--    docs/formal/12-bekenstein-hawking.md  (the discrete BH bound
+--                                          and the role of bond
+--                                          dimension)
 -- ════════════════════════════════════════════════════════════════════
 
 -- ── mkCapacity — Extract scalar capacity from a spin label ─────────
@@ -134,8 +155,16 @@ dimQ8 q8-fund  = 2
 --  label : BondTy → RepTy , the capacity of bond  b  is
 --  dim(label(b)) : ℕ = ℚ≥0 .
 --
---  This is the "dimension functor" from §13.5, connecting the
---  gauge layer (representations) to the capacity layer (scalars).
+--  This is the "dimension functor" connecting the gauge layer
+--  (representations) to the capacity layer (scalars).  The bridge
+--  layer (Bridge/GenericBridge.agda) operates on the scalar
+--  capacities and is completely unaware of the gauge group.
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §8.2  (mkCapacity — the
+--                                          dimension functor)
+--    docs/getting-started/architecture.md  (the three-layer gauge
+--                                          architecture diagram)
 
 mkCapacity : {BondTy RepTy : Type₀}
   → (RepTy → ℕ) → (BondTy → RepTy) → BondTy → ℚ≥0
@@ -151,8 +180,7 @@ mkCapacity dim label b = dim (label b)
 --
 --  This gives bond capacity  dim(q8-fund) = 2  for every bond,
 --  recovering the "all-fundamental-representation special case"
---  from §13.5 where  S = d · k  with  d = 2  and  k = number
---  of bonds cut.
+--  where  S = d · k  with  d = 2  and  k = number of bonds cut.
 --
 --  min-cut values:
 --    Singletons {N_i}:           cut 1 bond → S = 2
@@ -161,6 +189,11 @@ mkCapacity dim label b = dim (label b)
 --  Both are exactly 2× the unit-weight values (1 and 2),
 --  confirming that the existing bridge proofs for uniform-weight
 --  are a special case of the dimension-weighted framework.
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §8.3  (concrete spin label
+--                                          on the star patch)
+--    docs/instances/star-patch.md §8.2    (dimension-weighted bridge)
 -- ════════════════════════════════════════════════════════════════════
 
 -- All 5 star bonds carry the Q₈ fundamental (dim 2)
@@ -187,6 +220,11 @@ starQ8Capacity = mkCapacity dimQ8 starQ8Label
 --  has the property  S = L  for any uniform bond weight: the
 --  boundary min-cut and the bulk minimal chain always sever the
 --  same set of central bonds.
+--
+--  Reference:
+--    docs/instances/star-patch.md §4     (min-cut / observable
+--                                         agreement table)
+--    docs/formal/03-holographic-bridge.md (pointwise agreement path)
 -- ════════════════════════════════════════════════════════════════════
 
 S-cut-dim2 : Region → ℚ≥0
@@ -221,6 +259,10 @@ L-min-dim2 regN4N0 = 4
 --  The discrete Ryu–Takayanagi correspondence for the dimension-
 --  weighted star patch: both observables return the same ℕ literal
 --  on every region.  All 10 cases hold by  refl .
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §2 (pointwise agreement)
+--    docs/formal/11-generic-bridge.md §2     (PatchData interface)
 -- ════════════════════════════════════════════════════════════════════
 
 dim2-pointwise : (r : Region) → S-cut-dim2 r ≡ L-min-dim2 r
@@ -247,9 +289,10 @@ dim2-obs-path = funExt dim2-pointwise
 --  or spin labels — the capacity layer has already extracted the
 --  scalar weights.
 --
---  This demonstrates the architectural orthogonality from §13.7:
---  the bridge layer operates on scalar weights, completely unaware
---  of the gauge group.
+--  This demonstrates the architectural orthogonality described in
+--  docs/formal/05-gauge-theory.md §10 and
+--  docs/getting-started/architecture.md: the bridge layer operates
+--  on scalar weights, completely unaware of the gauge group.
 
 dimWeightedPatch : PatchData
 dimWeightedPatch .PatchData.RegionTy = Region
@@ -259,15 +302,13 @@ dimWeightedPatch .PatchData.obs-path = dim2-obs-path
 
 
 -- ════════════════════════════════════════════════════════════════════
---  §6.  BridgeWitness — The Exit Criterion Deliverable
+--  §6.  BridgeWitness — The Generic Bridge at Non-Unit Capacity
 -- ════════════════════════════════════════════════════════════════════
 --
---  ★ EXIT CRITERION §13.12 ITEM 3:
---
---    "A BridgeWitness is produced (via orbit-bridge-witness) for a
---     dimension-weighted patch where bond capacities are
---     representation dimensions > 1, confirming that the generic
---     bridge handles non-unit capacities."
+--  A BridgeWitness is produced (via GenericEnriched) for a
+--  dimension-weighted patch where bond capacities are
+--  representation dimensions > 1, confirming that the generic
+--  bridge handles non-unit capacities.
 --
 --  The generic bridge theorem (GenericEnriched from
 --  Bridge/GenericBridge.agda) is applied to  dimWeightedPatch ,
@@ -277,11 +318,19 @@ dimWeightedPatch .PatchData.obs-path = dim2-obs-path
 --  any other source — it operates on the abstract PatchData
 --  interface.
 --
---  This is the capacity-layer integration from §13.7: the gauge
---  group enriches bonds with algebraic structure, the dimension
---  functor extracts scalar weights, the generic bridge produces
---  BridgeWitness.  Three orthogonal layers, each independently
---  verified.
+--  This is the capacity-layer integration from the three-layer
+--  gauge architecture (docs/formal/05-gauge-theory.md §10):
+--  the gauge group enriches bonds with algebraic structure, the
+--  dimension functor extracts scalar weights, the generic bridge
+--  produces BridgeWitness.  Three orthogonal layers, each
+--  independently verified.
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §8    (dimension-weighted bridge)
+--    docs/formal/05-gauge-theory.md §10   (three-layer architecture)
+--    docs/formal/11-generic-bridge.md     (the generic bridge theorem)
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — theorem registry)
 -- ════════════════════════════════════════════════════════════════════
 
 module DimGeneric = GenericEnriched dimWeightedPatch
@@ -291,7 +340,7 @@ dimWeightedBridge = DimGeneric.abstract-bridge-witness
 
 
 -- ════════════════════════════════════════════════════════════════════
---  §7.  GaugedPatchWitness — The Stretch Goal (§13.12 Item 4)
+--  §7.  GaugedPatchWitness — Holographic Spacetime with Matter
 -- ════════════════════════════════════════════════════════════════════
 --
 --  A GaugedPatchWitness packages:
@@ -313,8 +362,15 @@ dimWeightedBridge = DimGeneric.abstract-bridge-witness
 --  all three components to the same algebraic structure.
 --
 --  Reference:
---    docs/10-frontier.md §13.9   (Phase M.4)
---    docs/10-frontier.md §13.12  (exit criterion, item 4)
+--    docs/formal/05-gauge-theory.md §9    (The GaugedPatchWitness —
+--                                          Holographic Spacetime
+--                                          with Matter)
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — theorem registry)
+--    docs/instances/star-patch.md §8.3    (GaugedPatchWitness on the
+--                                          star patch)
+--    docs/physics/holographic-dictionary.md §4  (gauge theory
+--                                          Agda ↔ physics table)
 -- ════════════════════════════════════════════════════════════════════
 
 record GaugedPatchWitness (G : FiniteGroup) : Type₁ where
@@ -345,12 +401,10 @@ record GaugedPatchWitness (G : FiniteGroup) : Type₁ where
 --  §8.  Concrete Instance: Q₈ on the Star Patch
 -- ════════════════════════════════════════════════════════════════════
 --
---  ★ EXIT CRITERION §13.12 ITEM 4 (STRETCH):
---
---    "A GaugedPatchWitness record packages the bridge, the
---     connection, the defect locations, and the flatness proofs
---     into a single inspectable artifact — the first machine-checked
---     holographic spacetime with matter."
+--  The concrete GaugedPatchWitness instance packages the bridge,
+--  the Q₈ connection, the defect locations, and the defect proof
+--  into a single inspectable artifact — the first machine-checked
+--  holographic spacetime with matter.
 --
 --  The concrete instance uses:
 --
@@ -366,6 +420,12 @@ record GaugedPatchWitness (G : FiniteGroup) : Type₁ where
 --    • The central pentagon has non-trivial holonomy (Wilson loop = i)
 --    • This is a "particle" — a topological defect in the gauge field
 --    • The holographic bridge (S = L) holds with capacity 2 per bond
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §9    (the GaugedPatchWitness)
+--    docs/formal/01-theorems.md §Thm 6    (theorem registry entry)
+--    docs/instances/star-patch.md §8      (gauge enrichment on the
+--                                          star patch)
 -- ════════════════════════════════════════════════════════════════════
 
 gauged-star-Q8 : GaugedPatchWitness Q₈
@@ -417,7 +477,6 @@ private
 
   -- ── (c) Non-unit capacity confirms dim > 1 ──────────────────
   --
-  --  The exit criterion requires bond capacities > 1.
   --  starQ8Capacity b = 2 for all b, and 2 > 1.
   --
   --  Witness:  1 ≤ℚ 2  via  (1 , refl)  because  1 + 1 = 2 .
@@ -487,38 +546,40 @@ private
 --    dim2-pointwise       : (r : Region) → S-cut-dim2 r ≡ L-min-dim2 r
 --    dim2-obs-path        : S-cut-dim2 ≡ L-min-dim2
 --
---    -- PatchData and BridgeWitness (EXIT CRITERION ITEM 3):
+--    -- PatchData and BridgeWitness:
 --    dimWeightedPatch     : PatchData
 --    dimWeightedBridge    : BridgeWitness
 --
---    -- GaugedPatchWitness (EXIT CRITERION ITEM 4, STRETCH):
+--    -- GaugedPatchWitness:
 --    GaugedPatchWitness   : FiniteGroup → Type₁
 --    gauged-star-Q8       : GaugedPatchWitness Q₈
 --
---  Architecture (the three-layer stack from §13.7):
+--  Architecture (the three-layer stack from
+--  docs/formal/05-gauge-theory.md §10 and
+--  docs/getting-started/architecture.md):
 --
---    ┌─────────────────────────────────────────────────────┐
---    │  GAUGE LAYER                                        │
+--    ┌────────────────────────────────────────────────────┐
+--    │  GAUGE LAYER                                       │
 --    │  Q₈, starQ8-i, defect-Q8-i                         │
---    │  (Gauge/FiniteGroup, Connection, Holonomy, Q8)      │
---    ├─────────────────────────────────────────────────────┤
---    │  CAPACITY LAYER  (this module)                      │
---    │  Q8Rep, dimQ8, starQ8Label, mkCapacity              │
---    │  → S-cut-dim2, L-min-dim2 → dimWeightedPatch        │
---    ├─────────────────────────────────────────────────────┤
---    │  BRIDGE LAYER                                       │
---    │  GenericEnriched dimWeightedPatch                    │
---    │  → dimWeightedBridge : BridgeWitness  (UNCHANGED!)  │
---    │  (Bridge/GenericBridge, BridgeWitness)               │
---    └─────────────────────────────────────────────────────┘
+--    │  (Gauge/FiniteGroup, Connection, Holonomy, Q8)     │
+--    ├────────────────────────────────────────────────────┤
+--    │  CAPACITY LAYER  (this module)                     │
+--    │  Q8Rep, dimQ8, starQ8Label, mkCapacity             │
+--    │  → S-cut-dim2, L-min-dim2 → dimWeightedPatch       │
+--    ├────────────────────────────────────────────────────┤
+--    │  BRIDGE LAYER                                      │
+--    │  GenericEnriched dimWeightedPatch                  │
+--    │  → dimWeightedBridge : BridgeWitness  (UNCHANGED!) │
+--    │  (Bridge/GenericBridge, BridgeWitness)             │
+--    └────────────────────────────────────────────────────┘
 --
 --  The capacity layer is the only new code.  The gauge layer
---  (Gauge/*) was built in Phases M.0–M.2.  The bridge layer
---  (Bridge/GenericBridge) was written once in Phase C.0 and is
+--  (Gauge/*) provides the algebraic structure on bonds.  The
+--  bridge layer (Bridge/GenericBridge) was written once and is
 --  instantiated here at the dimension-weighted PatchData without
 --  any modification.
 --
---  Exit criteria satisfaction (§13.12 of docs/10-frontier.md):
+--  Theorem registry satisfaction (docs/formal/01-theorems.md §Thm 6):
 --
 --    1. ✓  FiniteGroup record type-checks with ℤ/2, ℤ/3
 --          (Gauge/FiniteGroup.agda, Gauge/ZMod.agda)
@@ -550,6 +611,43 @@ private
 --      • Bridge/BridgeWitness.agda  — BridgeWitness
 --
 --    The gauge layer is purely additive.  Matter, like curvature
---    (§7) and causality (§12), is compatible with and orthogonal
---    to the holographic correspondence.
+--    (docs/formal/04-discrete-geometry.md) and causality
+--    (docs/formal/06-causal-structure.md), is compatible with
+--    and orthogonal to the holographic correspondence.
+--
+--  Architectural role:
+--
+--    This is a Tier 2 (Observable / Geometry Layer) module in the
+--    Gauge directory.  It is the capstone of the gauge layer,
+--    providing the capacity extraction that connects gauge-algebraic
+--    structure to the scalar-weight PatchData interface consumed by
+--    the bridge.  It is one of the six transitive-closure entry
+--    points for the full repository type-check
+--    (docs/getting-started/building.md).
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md       (gauge theory — full
+--                                          formal treatment)
+--    docs/formal/05-gauge-theory.md §8    (representation capacity
+--                                          and the dimension functor)
+--    docs/formal/05-gauge-theory.md §9    (the GaugedPatchWitness)
+--    docs/formal/05-gauge-theory.md §10   (the three-layer gauge
+--                                          architecture)
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — theorem registry)
+--    docs/formal/11-generic-bridge.md     (the generic bridge,
+--                                          PatchData interface)
+--    docs/getting-started/architecture.md (module dependency DAG,
+--                                          three-layer diagram)
+--    docs/instances/star-patch.md §8      (gauge enrichment on the
+--                                          star patch)
+--    docs/reference/module-index.md       (module description)
+--    docs/reference/assumptions.md §A9    (finite gauge groups
+--                                          replace continuous Lie
+--                                          groups)
+--    docs/physics/holographic-dictionary.md §4  (gauge theory
+--                                          Agda ↔ physics table)
+--    docs/historical/development-docs/10-frontier.md §13
+--                                         (original development plan
+--                                          for the gauge layer)
 -- ════════════════════════════════════════════════════════════════════

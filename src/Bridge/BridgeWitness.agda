@@ -11,9 +11,9 @@ open import Cubical.Foundations.Univalence
 -- ════════════════════════════════════════════════════════════════════
 --
 --  This record packages the data and proofs constituting a
---  Univalence bridge (Phase 3C) into a single inspectable artifact.
---  It is the counterpart of  GaussBonnetWitness
---  (Bulk/GaussBonnet.agda) for the bridge side of the project.
+--  Univalence bridge into a single inspectable artifact.  It is the
+--  counterpart of  GaussBonnetWitness  (Bulk/GaussBonnet.agda) for
+--  the bridge side of the project.
 --
 --  The record captures:
 --
@@ -23,8 +23,7 @@ open import Cubical.Foundations.Univalence
 --    • Verification that transport along the resulting  ua  path
 --      carries the boundary instance to the bulk instance
 --
---  This is the **Milestones 3–4 deliverable** from §6.9 of
---  docs/06-challenges.md:
+--  This is the Milestones 3–4 deliverable:
 --
 --    Milestone 3:  "A well-typed common source specification
 --    producing both boundary and bulk views.  Observable packages
@@ -81,10 +80,25 @@ open import Cubical.Foundations.Univalence
 --    This is the correct universe level:  Type₀  values inhabit
 --    Type₀ , but the types themselves are elements of  Type₁ .
 --
+--  Architectural role:
+--
+--    This is a Tier 1 (Specification Layer) leaf module with no
+--    internal dependencies beyond cubical library primitives.
+--    It is consumed by:
+--      • Bridge/GenericBridge.agda       (abstract-bridge-witness)
+--      • Bridge/SchematicTower.agda      (TowerLevel.bridge field)
+--      • Bridge/WickRotation.agda        (shared-bridge field)
+--      • Bridge/GenericValidation.agda   (6 retroactive witnesses)
+--      • Causal/CausalDiamond.agda       (tower levels carry bridges)
+--
 --  Reference:
---    docs/repo-close.md    (Architectural Rewiring Recommendation §1)
---    docs/10-frontier.md §5.4   (Step 2 — The Generic Bridge Theorem)
---    docs/10-frontier.md §5.6   (The Inductive Tower)
+--    docs/formal/03-holographic-bridge.md §6   (The BridgeWitness Record)
+--    docs/formal/11-generic-bridge.md §10      (BridgeWitness in the
+--                                               generic bridge context)
+--    docs/engineering/generic-bridge-pattern.md §9  (the record as
+--                                               interface contract)
+--    docs/getting-started/architecture.md      (Specification Layer)
+--    docs/reference/module-index.md            (module description)
 -- ════════════════════════════════════════════════════════════════════
 
 record BridgeWitness : Type₁ where

@@ -17,7 +17,8 @@ open import Gauge.FiniteGroup
 --
 --  This module collects the concrete cyclic group instances used as
 --  finite replacements for U(1) in the discrete Standard Model
---  gauge group (§13.4 of docs/10-frontier.md).
+--  gauge group (docs/formal/05-gauge-theory.md §2 — the finite
+--  subgroup replacement table).
 --
 --  The ℤ/2ℤ instance (carrier Z2, record ℤ/2 : FiniteGroup) is
 --  defined in  Gauge.FiniteGroup  and brought into scope by the
@@ -31,7 +32,7 @@ open import Gauge.FiniteGroup
 --  conjugacy class computation in  Gauge/ConjugacyClass.agda :
 --  for abelian groups, each element is its own conjugacy class.
 --
---  Representation theory (§13.4):
+--  Representation theory (docs/formal/05-gauge-theory.md §2):
 --
 --    ℤ/nℤ has n irreducible representations, all 1-dimensional.
 --    When used as the U(1) factor in the gauge group, the
@@ -46,11 +47,28 @@ open import Gauge.FiniteGroup
 --    src/Gauge/ConjugacyClass.agda — particle species classification
 --    src/Gauge/RepCapacity.agda   — SpinLabel, dim functor
 --
+--  Architectural role:
+--    This is a Tier 2 (Observable / Geometry Layer) module extending
+--    the gauge infrastructure from Gauge/FiniteGroup.agda with
+--    additional cyclic group instances and commutativity proofs.
+--    See docs/getting-started/architecture.md for the three-layer
+--    gauge architecture diagram.
+--
 --  Reference:
---    docs/10-frontier.md §13.4   (finite subgroup replacement table)
---    docs/10-frontier.md §13.6   (conjugacy classes and particle spectrum)
---    docs/10-frontier.md §13.9   (Phase M.0 — minimal gauge module)
---    docs/10-frontier.md §13.12  (exit criterion, item 1)
+--    docs/formal/05-gauge-theory.md §2    (finite subgroup replacement
+--                                          table — U(1) → ℤ/nℤ)
+--    docs/formal/05-gauge-theory.md §4    (concrete group instances)
+--    docs/formal/05-gauge-theory.md §7    (conjugacy classes and
+--                                          particle spectrum)
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — downstream)
+--    docs/reference/assumptions.md §A9    (finite gauge groups
+--                                          replace continuous Lie
+--                                          groups)
+--    docs/reference/module-index.md       (module description)
+--    docs/getting-started/architecture.md (module dependency DAG)
+--    docs/historical/development-docs/10-frontier.md §13
+--                                         (original development plan)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -299,13 +317,18 @@ Z3-assoc z2 z2 z2 = refl
 --  with n = 3 being the simplest choice exhibiting distinct
 --  charge types (vacuum, +1, −1).
 --
---  Particle spectrum (§13.6 of docs/10-frontier.md):
+--  Particle spectrum (docs/formal/05-gauge-theory.md §7):
 --    3 conjugacy classes → vacuum + 2 charge types
 --
 --  Representation theory:
 --    3 irreducible representations, all 1-dimensional.
 --    dim(ρ) = 1 for all irreps → bond capacity 1
 --    → recovers the current uniform-weight model.
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §2  (finite subgroup table)
+--    docs/formal/05-gauge-theory.md §4  (concrete instances)
+--    docs/formal/05-gauge-theory.md §7  (conjugacy classes)
 -- ════════════════════════════════════════════════════════════════════
 
 ℤ/3 : FiniteGroup
@@ -501,7 +524,7 @@ private
 --    The gauge layer is purely additive — no existing module is
 --    modified.
 --
---  Next steps (Phase M.0 → M.1):
+--  Next steps (downstream modules in Gauge/):
 --
 --    1. src/Gauge/Q8.agda    — Quaternion group Q₈ (8 elements,
 --       5 conjugacy classes, representation dimensions 1,1,1,1,2).
@@ -518,11 +541,31 @@ private
 --
 --  Exit criterion satisfaction:
 --
---    The exit criterion from §13.12 of docs/10-frontier.md states:
+--    The exit criterion from the gauge layer development plan
+--    (docs/historical/development-docs/10-frontier.md §13.12)
+--    states:
 --      "A FiniteGroup record type-checks with at least one concrete
 --       instance (ℤ/2ℤ or ℤ/3ℤ) where all axioms hold by refl."
 --
 --    This module provides ℤ/3 : FiniteGroup with all axioms by refl,
 --    in addition to the ℤ/2 instance already in Gauge.FiniteGroup.
 --    Both instances satisfy the criterion.
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md       (gauge theory — full formal
+--                                          treatment)
+--    docs/formal/05-gauge-theory.md §2    (finite subgroup replacement)
+--    docs/formal/05-gauge-theory.md §4    (concrete group instances)
+--    docs/formal/05-gauge-theory.md §7    (conjugacy classes)
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — downstream)
+--    docs/reference/assumptions.md §A9    (finite gauge groups
+--                                          replace continuous Lie
+--                                          groups)
+--    docs/reference/module-index.md       (module description)
+--    docs/getting-started/architecture.md (module dependency DAG)
+--    docs/physics/five-walls.md §Wall 3   (continuous gauge groups —
+--                                          the hard boundary)
+--    docs/historical/development-docs/10-frontier.md §13
+--                                         (original development plan)
 -- ════════════════════════════════════════════════════════════════════

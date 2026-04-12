@@ -60,7 +60,8 @@ open import Bridge.HalfBound
 --  of this resolution level.
 --
 --  Reference:
---    docs/10-frontier.md §5.6  (The Inductive Tower)
+--    docs/formal/11-generic-bridge.md §5  (The SchematicTower
+--                                          Infrastructure)
 -- ════════════════════════════════════════════════════════════════════
 
 record TowerLevel : Type₁ where
@@ -189,6 +190,10 @@ d100→d200-rich .RichLayerStep.area-law = record
 --  geometry: each layer ring adds ~2.6× more tiles than the
 --  previous one.  The orbit count stays at 2 (min-cut values
 --  are always 1 or 2 for BFS-grown {5,4} patches).
+--
+--  Reference:
+--    docs/instances/layer-54-tower.md   (instance data sheet)
+--    docs/engineering/oracle-pipeline.md (script 13)
 -- ════════════════════════════════════════════════════════════════════
 
 -- ── Depth 2 ────────────────────────────────────────────────────────
@@ -495,9 +500,13 @@ open import Bridge.Dense200Obs
 -- ════════════════════════════════════════════════════════════════════
 --  §16.  ResolutionStep
 -- ════════════════════════════════════════════════════════════════════
--- 
+--
 -- ════════════════════════════════════════════════════════════════════
 --  Imports — Dense-100 / Dense-200 Infrastructure for ResolutionStep
+--  (repeated from the block above for historical reasons — the
+--  duplicated open-imports are harmless in Agda 2.8.0 because
+--  the same names are brought into scope again with identical
+--  bindings.)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Common.Dense100Spec
@@ -532,7 +541,10 @@ open import Bridge.Dense200Obs
 --
 --  The record lives in  Type₁  because it stores types as fields.
 --
---  Reference: §10.3 of docs/10-frontier.md
+--  Reference:
+--    docs/formal/09-thermodynamics.md §4  (The Resolution Tower)
+--    docs/formal/11-generic-bridge.md §6  (Resolution Steps and
+--                                          Convergence Certificates)
 -- ════════════════════════════════════════════════════════════════════
 
 record ResolutionStep : Type₁ where
@@ -591,7 +603,10 @@ dense200-resolution-step .ResolutionStep.compat _     = refl
 --  base case holds a single step; each subsequent step extends the
 --  tower.  The index counts the number of  step  constructors used.
 --
---  Reference: §10.3 of docs/10-frontier.md
+--  Reference:
+--    docs/formal/09-thermodynamics.md §4  (The Resolution Tower)
+--    docs/formal/11-generic-bridge.md §6  (Resolution Steps and
+--                                          Convergence Certificates)
 -- ════════════════════════════════════════════════════════════════════
 
 data ResolutionTower : ℕ → Type₁ where
@@ -618,7 +633,9 @@ two-step-tower = step dense200-resolution-step single-step-tower
 --
 --  Each transition is a concrete inequality witnessed by (k , refl).
 --
---  Reference: §10.5 of docs/10-frontier.md
+--  Reference:
+--    docs/formal/09-thermodynamics.md §4  (Spectrum Monotonicity)
+--    docs/formal/11-generic-bridge.md §6  (Spectrum Monotonicity)
 -- ════════════════════════════════════════════════════════════════════
 
 spectrum-grows-50-100 : 7 ≤ℚ 8
@@ -641,7 +658,10 @@ spectrum-grows-100-200 = 1 , refl
 --  Type₁.  Compare with  AreaLawForPatch  (§4 above), which is
 --  tied to a specific  PatchData  and lives in Type₀.
 --
---  Reference: §10.6 of docs/10-frontier.md
+--  Reference:
+--    docs/formal/09-thermodynamics.md §3  (The Discrete Area Law)
+--    docs/formal/11-generic-bridge.md §6  (AreaLawLevel and
+--                                          HalfBoundLevel)
 -- ════════════════════════════════════════════════════════════════════
 
 record AreaLawLevel : Type₁ where
@@ -673,7 +693,11 @@ dense200-area-law-level .AreaLawLevel.area-bound = D200AL.area-law
 --  for backward compatibility; the 3-level one extends it with
 --  Dense-200.
 --
---  Reference: §10.9 / §10.10 of docs/10-frontier.md
+--  Reference:
+--    docs/formal/09-thermodynamics.md §4  (Resolution Tower and
+--                                          Convergence Certificates)
+--    docs/formal/11-generic-bridge.md §6  (The 3-Level Convergence
+--                                          Certificate)
 -- ════════════════════════════════════════════════════════════════════
 
 -- ── 2-level certificate (Dense-50 → Dense-100) ────────────────────
@@ -731,7 +755,12 @@ convergence-certificate-3L .ConvergenceCertificate3L.area-law-200     = dense200
 --
 --    7 ≤ 8 ≤ 9
 --
---  Reference: §10.14 of docs/10-frontier.md
+--  Reference:
+--    docs/formal/09-thermodynamics.md §5
+--      (The Discrete Bekenstein–Hawking Half-Bound — tower
+--       integration supersedes this weaker type alias)
+--    docs/formal/11-generic-bridge.md §7
+--      (The Discrete Bekenstein–Hawking Capstone)
 -- ════════════════════════════════════════════════════════════════════
 
 ContinuumLimitEvidence : Type₁
@@ -874,12 +903,20 @@ private
 --      0     Dense-50     139      —       7      —          —
 --      1     Dense-100    717      8       8    (1,refl)   717 cases
 --      2     Dense-200   1246      9       9    (1,refl)  1246 cases
+--
+--  Reference:
+--    docs/formal/09-thermodynamics.md  (area law, coarse-graining,
+--                                       resolution tower)
+--    docs/formal/11-generic-bridge.md  (SchematicTower infrastructure,
+--                                       convergence certificates)
+--    docs/formal/12-bekenstein-hawking.md  (half-bound, tower form)
+--    docs/formal/01-theorems.md §Thm 3    (Discrete Bekenstein–Hawking)
 -- ════════════════════════════════════════════════════════════════════
 
 -- ════════════════════════════════════════════════════════════════════
 -- ════════════════════════════════════════════════════════════════════
 --
---  §25.  HALFBOUND INTEGRATION (Phase B from §15.11)
+--  §25.  HALFBOUND INTEGRATION
 --
 --  The discrete Bekenstein–Hawking bound  S(A) ≤ area(A)/2  is
 --  stronger than the area law  S(A) ≤ area(A)  from §20.  It is
@@ -894,12 +931,20 @@ private
 --    (c) A ConvergenceCertificate3L-HB extending the 3-level
 --        certificate with half-bounds at each verified level
 --
---  The key architectural consequence (§15.11 of docs/10-frontier.md):
+--  The key architectural consequence (docs/formal/12-bekenstein-hawking.md):
 --  the old  ConvergenceWitness  (which required constructive reals
 --  and Cauchy completeness for the η_N limit) is REPLACED by the
 --  sharp half-bound at each level (which requires only ℕ arithmetic
 --  and refl).  This eliminates the constructive-reals wall for the
 --  entropy-area relationship.
+--
+--  Reference:
+--    docs/formal/12-bekenstein-hawking.md  (formal treatment of the
+--      discrete Bekenstein–Hawking bound, from-two-cuts, tower form)
+--    docs/physics/discrete-bekenstein-hawking.md  (physics
+--      interpretation of the sharp 1/2 bound)
+--    docs/physics/five-walls.md  (constructive-reals wall — now
+--      partially bypassed for the entropy-area relationship)
 --
 -- ════════════════════════════════════════════════════════════════════
 -- ════════════════════════════════════════════════════════════════════
@@ -1032,7 +1077,7 @@ dense200-half-bound-level .HalfBoundLevel.tight      = d200-tight
 --  AreaLawLevel  (S ≤ area);  this one carries  HalfBoundLevel
 --  (2·S ≤ area, with a tight achiever).
 --
---  The key consequence (§15.11 of docs/10-frontier.md):
+--  The key consequence (docs/formal/12-bekenstein-hawking.md):
 --
 --    OLD:  EntropicConvergence = Σ[family] Σ[bridges] Σ[areas]
 --            Σ[mono] ConvergenceWitness
@@ -1045,6 +1090,12 @@ dense200-half-bound-level .HalfBoundLevel.tight      = d200-tight
 --  level (requiring only ℕ arithmetic and refl).  The discrete
 --  Newton's constant is exactly 1/2 in bond-dimension-1 units,
 --  verified by refl on closed ℕ terms at every resolution level.
+--
+--  Reference:
+--    docs/formal/12-bekenstein-hawking.md §5
+--      (Tower Integration — HalfBoundLevel, ConvergenceCertificate3L-HB)
+--    docs/physics/discrete-bekenstein-hawking.md
+--      (the sharp 1/2 bound and its significance)
 -- ════════════════════════════════════════════════════════════════════
 
 record ConvergenceCertificate3L-HB : Type₁ where
@@ -1097,11 +1148,13 @@ convergence-certificate-3L-HB .ConvergenceCertificate3L-HB.half-bound-200
 --  The old type required a ConvergenceWitness (constructive reals).
 --  The new type carries only half-bounds (ℕ arithmetic + refl).
 --
---  Reference: §15.11 of docs/10-frontier.md
---    "the ConvergenceWitness (which required constructive reals
---     and Cauchy completeness) is replaced by HalfBoundWitness
---     at each level (which requires only ℕ arithmetic and refl).
---     This eliminates the constructive-reals wall."
+--  Reference:
+--    docs/formal/12-bekenstein-hawking.md §5
+--      (DiscreteBekensteinHawking — The Capstone Type Alias)
+--    docs/formal/01-theorems.md §Thm 3
+--      (Discrete Bekenstein–Hawking — tower form)
+--    docs/physics/discrete-bekenstein-hawking.md §7
+--      (the machine-checked formalization)
 -- ════════════════════════════════════════════════════════════════════
 
 DiscreteBekensteinHawking : Type₁
@@ -1157,4 +1210,10 @@ private
 --  need for constructive reals in the entropy-area relationship:
 --  the discrete Newton's constant  1/(4G) = 1/2  is verified by
 --  refl on closed ℕ terms, not by a limit argument.
+--
+--  Reference:
+--    docs/formal/11-generic-bridge.md   (SchematicTower architecture)
+--    docs/formal/12-bekenstein-hawking.md (half-bound, tower form)
+--    docs/formal/01-theorems.md §Thm 3  (theorem registry entry)
+--    docs/reference/module-index.md     (module description)
 -- ════════════════════════════════════════════════════════════════════

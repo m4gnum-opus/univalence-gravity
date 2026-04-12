@@ -60,17 +60,42 @@ open import Quantum.Superposition
 --    • Topology-agnostic:     works for any Config type
 --    • Gauge-group-agnostic:  works for any per-microstate bridge
 --
---  Reference:
---    docs/10-frontier.md §14.5  (Quantum Bridge Theorem)
---    docs/10-frontier.md §14.2  (Amplitude Polymorphism)
---    docs/10-frontier.md §14.6  (Architectural Orthogonality)
---    docs/10-frontier.md §14.10 (Exit Criterion, item 2)
+--  This is **Theorem 7** (Quantum Superposition Bridge) in the
+--  canonical theorem registry (docs/formal/01-theorems.md).
 --
---  Exit criterion (§14.10 of docs/10-frontier.md):
---    "A quantum-bridge theorem type-checks in
---     Quantum/QuantumBridge.agda, proving 𝔼[ψ, S] ≡ 𝔼[ψ, L]
---     for any superposition ψ and any amplitude algebra, given
---     the pointwise bridge as a hypothesis."
+--  Architectural role:
+--    This is a Tier 2 module in the Quantum layer.  The quantum
+--    layer is purely additive — it adds a single thin inductive
+--    lemma on top of the full existing infrastructure without
+--    modifying any existing module.  The quantum bridge consumes
+--    per-microstate agreement (e.g., SL-param-pointwise from
+--    Bulk/StarChainParam.agda) as a hypothesis and lifts it across
+--    any finite superposition.
+--    See docs/getting-started/architecture.md for the module
+--    dependency DAG.
+--
+--  Reference:
+--    docs/formal/07-quantum-superposition.md §5
+--                              (Quantum Bridge Theorem — statement,
+--                               proof, and what it uses)
+--    docs/formal/07-quantum-superposition.md §2
+--                              (Amplitude Polymorphism — why no
+--                               ring axioms are needed)
+--    docs/formal/07-quantum-superposition.md §8
+--                              (Architectural Significance —
+--                               orthogonality with other layers)
+--    docs/formal/01-theorems.md §Thm 7
+--                              (Quantum Superposition Bridge —
+--                               theorem registry entry)
+--    docs/formal/02-foundations.md §2.4
+--                              (cong and cong₂ in Cubical Agda)
+--    docs/getting-started/architecture.md
+--                              (module dependency DAG)
+--    docs/reference/module-index.md
+--                              (module description)
+--    docs/historical/development-docs/10-frontier.md §14
+--                              (original development plan for
+--                               the quantum layer)
 -- ════════════════════════════════════════════════════════════════════
 
 quantum-bridge :
@@ -108,6 +133,10 @@ quantum-bridge alg ((ω , α) ∷ ψ) S L eq =
 --  The following variant makes this pattern explicit: given a
 --  region type and per-microstate pointwise bridge for all regions,
 --  produce the superposition-level bridge for each region.
+--
+--  Reference:
+--    docs/formal/07-quantum-superposition.md §5.4
+--                              (Region-Fixed Variant)
 -- ════════════════════════════════════════════════════════════════════
 
 quantum-bridge-region :
@@ -312,8 +341,8 @@ private
 --
 --    The where-clause  `open AmplitudeAlg alg`  brings the record
 --    fields (_+A_, _·A_, embedℕ) into scope for the inductive case,
---    making the proof term match the pseudocode from §14.5 of
---    docs/10-frontier.md almost verbatim.
+--    making the proof term match the pseudocode from
+--    docs/formal/07-quantum-superposition.md §5.2 almost verbatim.
 --
 --  Relationship to existing code:
 --
@@ -336,15 +365,17 @@ private
 --        consumes  SL-param-pointwise  from  Bulk/StarChainParam.agda
 --        as the per-microstate bridge, and applies quantum-bridge
 --        to a concrete superposition of Q₈ gauge connections.
+--        Verified with 2- and 3-configuration superpositions
+--        exhibiting destructive interference (ℤ[i] amplitudes).
 --
---  Exit criterion satisfaction (§14.10 of docs/10-frontier.md):
+--  Theorem registry (docs/formal/01-theorems.md §Thm 7):
 --
---    Item 2: ✓  quantum-bridge type-checks, proving
---               𝔼[ψ, S] ≡ 𝔼[ψ, L]  for any superposition  ψ
---               and any amplitude algebra, given the pointwise
---               bridge as a hypothesis.
+--    ✓  quantum-bridge type-checks, proving
+--       𝔼[ψ, S] ≡ 𝔼[ψ, L]  for any superposition  ψ
+--       and any amplitude algebra, given the pointwise
+--       bridge as a hypothesis.
 --
---  Research significance (§14.11 of docs/10-frontier.md):
+--  Research significance (docs/formal/07-quantum-superposition.md §8):
 --
 --    1. First machine-checked proof that a holographic correspondence
 --       lifts from individual microstates to quantum superpositions.
@@ -360,4 +391,20 @@ private
 --    is algebraically trivial: it is a consequence of the linearity
 --    of finite sums (cong₂ on _+A_), composed with the per-microstate
 --    bridge that the repository already proves.
+--
+--  Reference:
+--    docs/formal/07-quantum-superposition.md
+--                        (quantum superposition — full formal treatment)
+--    docs/formal/01-theorems.md §Thm 7
+--                        (Quantum Superposition Bridge — theorem registry)
+--    docs/formal/02-foundations.md §2.4
+--                        (cong and cong₂ in Cubical Agda)
+--    docs/getting-started/architecture.md
+--                        (module dependency DAG — Quantum layer)
+--    docs/reference/module-index.md
+--                        (module description)
+--    docs/physics/holographic-dictionary.md §6
+--                        (quantum superposition Agda ↔ physics table)
+--    docs/historical/development-docs/10-frontier.md §14
+--                        (original development plan for the quantum layer)
 -- ════════════════════════════════════════════════════════════════════

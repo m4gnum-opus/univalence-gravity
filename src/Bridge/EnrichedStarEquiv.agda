@@ -503,18 +503,18 @@ package-path-coherence = refl
 --  The complete Phase 3 pipeline for the 6-tile star, at the full
 --  structural-property level:
 --
---    ┌──────────────────────────────────────────────────────────┐
---    │  BOUNDARY SIDE                                          │
---    │                                                         │
---    │  starSpec  →  π∂  →  S-cut  →  S∂                       │
---    │                                  │                      │
---    │                                  ├── S∂-subadd          │
---    │                                  │     (Boundary/       │
---    │                                  │      StarSubadd.)    │
---    │                                  │                      │
---    │                          full-bdy : FullBdy             │
---    │                          (S∂, refl, S∂-subadd)          │
---    └──────────────┬───────────────────────────────────────────┘
+--    ┌───────────────────────────────────────────────────────┐
+--    │  BOUNDARY SIDE                                        │
+--    │                                                       │
+--    │  starSpec  →  π∂  →  S-cut  →  S∂                     │
+--    │                                  │                    │
+--    │                                  ├── S∂-subadd        │
+--    │                                  │     (Boundary/     │
+--    │                                  │      StarSubadd.)  │
+--    │                                  │                    │
+--    │                          full-bdy : FullBdy           │
+--    │                          (S∂, refl, S∂-subadd)        │
+--    └──────────────┬────────────────────────────────────────┘
 --                   │
 --                   │   star-obs-path : S∂ ≡ LB
 --                   │   (Bridge/StarEquiv.agda)
@@ -531,18 +531,18 @@ package-path-coherence = refl
 --                   │     transport (sym full-ua-path) full-bulk ≡ full-bdy
 --                   │   (this module, §5)
 --                   │
---    ┌──────────────┴───────────────────────────────────────────┐
---    │  BULK SIDE                                              │
---    │                                                         │
---    │  starSpec  →  πbulk  →  L-min  →  LB                    │
---    │                                    │                    │
---    │                                    ├── LB-mono          │
---    │                                    │     (Bulk/         │
---    │                                    │      StarMono.)    │
---    │                                    │                    │
---    │                          full-bulk : FullBulk            │
---    │                          (LB, refl, LB-mono)            │
---    └──────────────────────────────────────────────────────────┘
+--    ┌──────────────┴─────────────────────────────────────────┐
+--    │  BULK SIDE                                             │
+--    │                                                        │
+--    │  starSpec  →  πbulk  →  L-min  →  LB                   │
+--    │                                    │                   │
+--    │                                    ├── LB-mono         │
+--    │                                    │     (Bulk/        │
+--    │                                    │      StarMono.)   │
+--    │                                    │                   │
+--    │                          full-bulk : FullBulk          │
+--    │                          (LB, refl, LB-mono)           │
+--    └────────────────────────────────────────────────────────┘
 --
 --  Every step is machine-checked by the Cubical Agda type-checker.
 --  Transport is computable: it reduces via  uaβ  to the forward map

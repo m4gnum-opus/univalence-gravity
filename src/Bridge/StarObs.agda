@@ -13,28 +13,40 @@ open import Bulk.StarChain
 --  ObsPackage — imported from Common.ObsPackage
 -- ════════════════════════════════════════════════════════════════════
 --
---  The minimal observable-package record  ObsPackage  is defined in
---  Bridge.TreeObs and parameterized by a region index type  R .
---  It has a single field  obs : R → ℚ≥0 .
---
---  We import it here via a selective  using  clause so that the
---  star bridge shares the same packaging interface as the tree
---  bridge, without pulling in tree-specific definitions (TreeSpec,
---  tree-pointwise, etc.) into this module's namespace.
---
---  A future refactor should factor  ObsPackage  into a shared
---  module (e.g. Common/ObsPackage.agda) so that neither bridge
---  module depends on the other.  For now, the selective import
---  avoids duplication and satisfies the design constraint from
---  §15.1 of docs/09-happy-instance.md: the tree proofs remain
---  untouched, and the star modules are purely additive.
 --  The minimal observable-package record  ObsPackage  is defined
 --  in  Common.ObsPackage  and parameterized by a region index
 --  type  R .  It has a single field  obs : R → ℚ≥0 .
 --
 --  Importing from the shared  Common.ObsPackage  module ensures
---  that neither bridge module depends on the other, satisfying
---  the design constraint from §15.1 of docs/09-happy-instance.md.
+--  that all patch instances (Tree, Star, Filled, Honeycomb,
+--  Dense-50 through Dense-200, and the {5,4} layer tower) share
+--  the same type signature, without any cross-dependency between
+--  bridge modules.
+--
+--  Proof-carrying fields (subadditivity, monotonicity witnesses)
+--  are intentionally omitted from this minimal record — they are
+--  added in the enriched types  FullBdy / FullBulk  defined in
+--  Bridge/FullEnrichedStarObs.agda, keeping the minimal packaging
+--  separate from the structural property layer.
+--
+--  Because the record has a single field, package equality reduces
+--  directly to observable-function equality via a record path
+--  whose sole component is the obs-field path.  This is exploited
+--  in  star-package-path  (Bridge/StarEquiv.agda) and every
+--  analogous  *-package-path  across the Bridge modules.
+--
+--  Architectural role:
+--    This is a Tier 3 (Bridge Layer) module assembling observable
+--    packages from the boundary and bulk views defined in Tier 2.
+--    It is the star patch's bridge test — the second calibration
+--    object after the tree pilot.
+--
+--  Reference:
+--    docs/instances/star-patch.md §6        (bridge construction)
+--    docs/instances/tree-pilot.md §5        (first use of ObsPackage)
+--    docs/formal/03-holographic-bridge.md   (observable packages)
+--    docs/getting-started/architecture.md   (Bridge Layer)
+--    docs/reference/module-index.md         (module description)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Common.ObsPackage
@@ -54,6 +66,10 @@ open import Common.ObsPackage
 --  Because  S-cut  ignores its  BoundaryView  argument and returns
 --  canonical constants from  Util.Scalars , this unfolds further to
 --  1q  or  2q  depending on the region  r .
+--
+--  Reference:
+--    docs/instances/star-patch.md §6        (bridge construction)
+--    docs/formal/03-holographic-bridge.md §2 (pointwise agreement)
 -- ════════════════════════════════════════════════════════════════════
 
 Obs∂ : StarSpec → ObsPackage Region
@@ -74,6 +90,10 @@ Obs∂ c .ObsPackage.obs = S-cut (π∂ c)
 --  Because  L-min  ignores its  BulkView  argument and returns
 --  canonical constants from  Util.Scalars , this unfolds further to
 --  1q  or  2q  depending on the region  r .
+--
+--  Reference:
+--    docs/instances/star-patch.md §6        (bridge construction)
+--    docs/formal/03-holographic-bridge.md §2 (pointwise agreement)
 -- ════════════════════════════════════════════════════════════════════
 
 ObsBulk : StarSpec → ObsPackage Region
@@ -102,15 +122,16 @@ ObsBulk c .ObsPackage.obs = L-min (πbulk c)
 --    3. The constants are defined once in  Util.Scalars  and
 --       imported by both  Boundary.StarCut  and  Bulk.StarChain ,
 --       so the normal forms on both sides are judgmentally
---       identical (§15.5 of docs/09-happy-instance.md).
+--       identical.  This is the shared-constants discipline
+--       documented in docs/formal/02-foundations.md §6.3.
 --
 --  This proof is the content of the discrete Ryu–Takayanagi
 --  correspondence for the 6-tile star: boundary entanglement
 --  (min-cut) equals bulk geometry (minimal chain length) on every
 --  admissible region.
 --
---  Mathematical justification per region (see §10.1 of
---  docs/09-happy-instance.md):
+--  Mathematical justification per region
+--  (see docs/instances/star-patch.md §4):
 --
 --    regN0    :  S = 1  (cut {C–N0})         =  L = 1  (chain {C–N0})
 --    regN1    :  S = 1  (cut {C–N1})         =  L = 1  (chain {C–N1})
@@ -124,10 +145,24 @@ ObsBulk c .ObsPackage.obs = L-min (πbulk c)
 --    regN4N0  :  S = 2  (cut {C–N4, C–N0})   =  L = 2  (chain {C–N4, C–N0})
 --
 --  All 10 values verified numerically by
---  sim/prototyping/01_happy_patch_cuts.py (§3.1 of
---  docs/09-happy-instance.md): geodesic equality  S = L  holds for
---  all 20 regions (including triples and quadruples by complement
---  symmetry  S(A) = S(Ā) ).
+--  sim/prototyping/01_happy_patch_cuts.py: geodesic equality
+--  S = L holds for all 20 regions (including triples and
+--  quadruples by complement symmetry  S(A) = S(Ā) ).
+--
+--  After this proof succeeds, the function path
+--  star-obs-path = funExt star-pointwise  is assembled in
+--  Bridge/StarEquiv.agda, and the generic bridge from
+--  Bridge/GenericBridge.agda produces the full BridgeWitness
+--  automatically via Bridge/GenericValidation.agda.
+--
+--  Reference:
+--    docs/instances/star-patch.md §4         (min-cut / observable agreement)
+--    docs/instances/star-patch.md §6         (bridge construction)
+--    docs/formal/02-foundations.md §6.3      (shared-constants discipline)
+--    docs/formal/03-holographic-bridge.md §2 (pointwise agreement path)
+--    docs/formal/11-generic-bridge.md        (PatchData interface)
+--    docs/reference/module-index.md          (module description)
+--    sim/prototyping/01_happy_patch_cuts.py  (numerical verification)
 -- ════════════════════════════════════════════════════════════════════
 
 star-pointwise :

@@ -32,8 +32,44 @@ open import Gauge.FiniteGroup
 --    {1}, {−1}, {i,−i}, {j,−j}, {k,−k}
 --
 --  5 irreducible representations with dimensions 1,1,1,1,2.
---  This is the finite replacement for SU(2) in the discrete
---  Standard Model gauge group (§13.4 of docs/10-frontier.md).
+--  Q₈ is the finite replacement for SU(2) in the discrete
+--  Standard Model gauge group:
+--
+--    G_discrete = Δ(27) × Q₈ × ℤ/nℤ
+--
+--  This follows the finite subgroup replacement strategy
+--  documented in docs/formal/05-gauge-theory.md §2 and
+--  docs/reference/assumptions.md §A9.
+--
+--  Architectural role:
+--    This is a Tier 2 (Observable / Geometry Layer) module
+--    providing the quaternion group Q₈ — the first non-abelian
+--    gauge group in the repository and the finite replacement
+--    for SU(2).  It extends the gauge infrastructure from
+--    Gauge/FiniteGroup.agda and Gauge/ZMod.agda.
+--    See docs/getting-started/architecture.md for the three-layer
+--    gauge architecture diagram.
+--
+--  Downstream modules:
+--    src/Gauge/Connection.agda    — GaugeConnection Q₈ Bond
+--    src/Gauge/Holonomy.agda      — holonomy, ParticleDefect
+--    src/Gauge/ConjugacyClass.agda — 5 conjugacy classes
+--    src/Gauge/RepCapacity.agda   — Q8Rep, dimQ8, GaugedPatchWitness
+--    src/Quantum/StarQuantumBridge.agda — quantum superposition
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §2    (finite subgroup replacement
+--                                          table — SU(2) → Q₈)
+--    docs/formal/05-gauge-theory.md §4.3  (Q₈ — the quaternion group)
+--    docs/formal/05-gauge-theory.md §7    (conjugacy classes and
+--                                          particle spectrum)
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — downstream)
+--    docs/reference/assumptions.md §A9    (finite gauge groups
+--                                          replace continuous Lie
+--                                          groups)
+--    docs/reference/module-index.md       (module description)
+--    docs/getting-started/architecture.md (module dependency DAG)
 -- ════════════════════════════════════════════════════════════════════
 
 data Q8 : Type₀ where
@@ -277,6 +313,23 @@ isSetQ8 = Discrete→isSet discreteQ8
 -- ════════════════════════════════════════════════════════════════════
 --  §6.  Group axioms — all by refl
 -- ════════════════════════════════════════════════════════════════════
+--
+--  Every axiom is proved by exhaustive case split on the Q8
+--  arguments, with each case holding by  refl  because pattern
+--  matching on closed constructor terms reduces judgmentally.
+--
+--  This is the "exhaustive case split on closed constructor terms"
+--  proof strategy described in docs/formal/05-gauge-theory.md §2
+--  and docs/reference/assumptions.md §A9.
+--
+--  Case counts:
+--    Q8-identityˡ:   0 cases (wildcard — q1 is left-absorbing)
+--    Q8-identityʳ:   8 cases
+--    Q8-inverseˡ:    8 cases
+--    Q8-inverseʳ:    8 cases
+--    Q8-assoc:     400 cases (1 wildcard + 7 wildcard + 392 explicit)
+--    Total:        424 cases, all refl.
+-- ════════════════════════════════════════════════════════════════════
 
 -- ── §6a.  Left identity:  q1 * x ≡ x ─────────────────────────
 Q8-identityˡ : (x : Q8) → q1 *Q8 x ≡ x
@@ -324,6 +377,11 @@ Q8-inverseʳ qnk = refl
 --
 --  Each case holds by refl because all three arguments are
 --  concrete constructors, and _*Q8_ reduces by pattern matching.
+--
+--  This is the largest single exhaustive verification in the
+--  repository (400 cases).  See docs/engineering/scaling-report.md
+--  for expected parse and type-check times (~5–10s parse,
+--  ~10–30s check, ~1.5 GB peak RAM).
 
 Q8-assoc : (x y z : Q8) → (x *Q8 y) *Q8 z ≡ x *Q8 (y *Q8 z)
 -- ── x = q1 ─────────────────────────────────────────────────────
@@ -547,16 +605,28 @@ Q8-assoc qnk qnk qk  = refl ; Q8-assoc qnk qnk qnk = refl
 --
 --  Q₈ is the first non-abelian gauge group in the repository.
 --  It is the finite replacement for SU(2) in the discrete
---  Standard Model (§13.4):
+--  Standard Model gauge group
+--  (docs/formal/05-gauge-theory.md §2):
 --
 --    G_discrete = Δ(27) × Q₈ × ℤ/nℤ
 --
 --  Particle spectrum:  5 conjugacy classes → vacuum + 4 species
+--  (docs/formal/05-gauge-theory.md §7)
 --
 --  Representation theory:
 --    5 irreps of dimensions  1, 1, 1, 1, 2
---    The 2-dimensional irrep gives bond capacity 2 when used
---    as a spin label (§13.5 — the dimension functor).
+--    The 2-dimensional irrep (the fundamental representation)
+--    gives bond capacity 2 when used as a spin label, via the
+--    dimension functor  dim : Rep G → ℕ  (Gauge/RepCapacity.agda).
+--    See docs/formal/05-gauge-theory.md §8 for the capacity
+--    extraction and the gauge-enriched bridge.
+--
+--  This instance is consumed by:
+--    • Gauge/Connection.agda  — starQ8-i, starQ8-ij, starQ8-ji
+--    • Gauge/Holonomy.agda    — defect-Q8-i, noncommutative-holonomy
+--    • Gauge/ConjugacyClass.agda — 5 Q₈ conjugacy classes
+--    • Gauge/RepCapacity.agda — dimWeightedBridge, gauged-star-Q8
+--    • Quantum/StarQuantumBridge.agda — quantum superposition bridge
 -- ════════════════════════════════════════════════════════════════════
 
 Q₈ : FiniteGroup
@@ -576,6 +646,12 @@ Q₈ .FiniteGroup.·-assoc      = Q8-assoc
 -- ════════════════════════════════════════════════════════════════════
 --  §8.  Regression tests
 -- ════════════════════════════════════════════════════════════════════
+--
+--  These verify that the Q₈ multiplication table, inverse map, and
+--  record field access reduce to the expected values on closed
+--  constructor terms.  They serve as regression tests: if any
+--  definition is accidentally changed, these proofs will fail at
+--  type-check time.
 
 private
   -- Fundamental quaternion relations
@@ -633,6 +709,18 @@ private
 --
 --  Q₈ is the first non-abelian group in the repository.
 --  ij = k ≠ −k = ji demonstrates non-commutativity.
+--
+--  The proof uses the Dqk discriminator (from §5) which maps
+--  qk to an inhabited type and qnk to ⊥, then  subst  along
+--  the hypothetical path  qk ≡ qnk  to derive ⊥.
+--
+--  This witness is consumed by Gauge/Holonomy.agda to construct
+--  noncommutative-holonomy: swapping two Q₈ bond assignments
+--  changes the Wilson loop from k to −k.
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §4.3  (Q₈ non-commutativity)
+--    docs/formal/05-gauge-theory.md §6    (non-commutative holonomy)
 
 Q8-noncomm : (qi *Q8 qj ≡ qj *Q8 qi) → ⊥
 Q8-noncomm p = subst Dqk p qk

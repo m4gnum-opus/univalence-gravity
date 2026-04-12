@@ -16,7 +16,7 @@ open import Cubical.Data.Int
 -- ════════════════════════════════════════════════════════════════════
 --
 --  A minimal record capturing the operations needed by the quantum
---  bridge theorem (§14.5 of docs/10-frontier.md):
+--  bridge theorem (Theorem 7 in docs/formal/01-theorems.md):
 --
 --    _+A_    : accumulation  (fold step of the expected value)
 --    _·A_    : scaling       (α · ι(O(ω)) in the Boltzmann weight)
@@ -37,12 +37,30 @@ open import Cubical.Data.Int
 --
 --  The record lives in Type₁ because it stores A : Type₀ as a field.
 --
+--  Architectural role:
+--    This is a Tier 1 (Specification Layer) standalone module with
+--    no internal dependencies beyond the cubical library.  It defines
+--    the amplitude-polymorphic interface consumed by
+--    Quantum/Superposition.agda (the 𝔼 functional) and
+--    Quantum/QuantumBridge.agda (the 5-line proof).  It is orthogonal
+--    to and independent of all Bridge, Boundary, Bulk, Gauge, and
+--    Causal modules.
+--    See docs/getting-started/architecture.md for the module
+--    dependency DAG.
+--
 --  Reference:
---    docs/10-frontier.md §14.2  (amplitude polymorphism)
---    docs/10-frontier.md §14.4  (expected value as list fold)
---    docs/10-frontier.md §14.5  (quantum bridge theorem)
---    docs/10-frontier.md §14.9  (module plan)
---    docs/10-frontier.md §14.10 (exit criterion, item 1)
+--    docs/formal/07-quantum-superposition.md §2
+--                                (amplitude polymorphism — the key insight)
+--    docs/formal/07-quantum-superposition.md §4
+--                                (expected value as list fold — uses embedℕ)
+--    docs/formal/07-quantum-superposition.md §5
+--                                (quantum bridge theorem — consumes AmplitudeAlg)
+--    docs/formal/01-theorems.md §Thm 7
+--                                (Quantum Superposition Bridge — theorem registry)
+--    docs/reference/module-index.md
+--                                (module description)
+--    docs/getting-started/architecture.md
+--                                (Specification Layer — module dependency DAG)
 -- ════════════════════════════════════════════════════════════════════
 
 record AmplitudeAlg : Type₁ where
@@ -79,7 +97,13 @@ record AmplitudeAlg : Type₁ where
 --  choice — it works for any AmplitudeAlg instance.
 --
 --  Reference:
---    docs/10-frontier.md §14.3  (constructive amplitude representation)
+--    docs/formal/07-quantum-superposition.md §3
+--                                (constructive amplitude representation)
+--    docs/physics/five-walls.md §Wall 2
+--                                (infinite-dimensional path integrals —
+--                                 the quantum bridge works for finite
+--                                 sums only; ℤ[i] is the discrete
+--                                 amplitude type that avoids Wall 2)
 -- ════════════════════════════════════════════════════════════════════
 
 record ℤ[i] : Type₀ where
@@ -206,9 +230,18 @@ negiℤi = mkℤi (pos 0) (negsuc 0)
 --  allowing cancellation (destructive interference) when
 --  amplitudes have opposite signs.
 --
---  Exit criterion (§14.10 of docs/10-frontier.md):
---    "An AmplitudeAlg record type-checks in Quantum/AmplitudeAlg.agda
---     with at least one concrete instance (ℤ[i] or ℕ)."
+--  This is the first of two concrete AmplitudeAlg instances
+--  provided in this module.  The second (ℕAmplitude, §7) is the
+--  classical counting instance with no interference.  Both are
+--  consumed by the quantum bridge theorem
+--  (Quantum/QuantumBridge.agda, Theorem 7 in
+--  docs/formal/01-theorems.md).
+--
+--  Reference:
+--    docs/formal/07-quantum-superposition.md §2.3
+--                                (concrete instances)
+--    docs/formal/01-theorems.md §Thm 7
+--                                (Quantum Superposition Bridge)
 -- ════════════════════════════════════════════════════════════════════
 
 ℤiAmplitude : AmplitudeAlg
@@ -381,16 +414,16 @@ private
 --    AmplitudeAlg   : Type₁
 --                     (record with fields A, _+A_, _·A_, 0A, embedℕ)
 --
---    ℤ[i]          : Type₀
+--    ℤ[i]           : Type₀
 --                     (record with fields re, im : ℤ ; constructor mkℤi)
---    _+ℤi_         : ℤ[i] → ℤ[i] → ℤ[i]    (Gaussian addition)
---    _·ℤi_         : ℤ[i] → ℤ[i] → ℤ[i]    (Gaussian multiplication)
+--    _+ℤi_          : ℤ[i] → ℤ[i] → ℤ[i]    (Gaussian addition)
+--    _·ℤi_          : ℤ[i] → ℤ[i] → ℤ[i]    (Gaussian multiplication)
 --    0ℤi            : ℤ[i]                    (zero: 0 + 0i)
 --    1ℤi            : ℤ[i]                    (one:  1 + 0i)
 --    neg1ℤi         : ℤ[i]                    (−1 + 0i)
 --    iℤi            : ℤ[i]                    (0 + 1i)
 --    negiℤi         : ℤ[i]                    (0 − 1i)
---    embedℕ-ℤi     : ℕ → ℤ[i]                (n ↦ n + 0i)
+--    embedℕ-ℤi      : ℕ → ℤ[i]                (n ↦ n + 0i)
 --
 --    ℤiAmplitude    : AmplitudeAlg             (ℤ[i] instance)
 --    ℕAmplitude     : AmplitudeAlg             (ℕ instance)
@@ -399,11 +432,12 @@ private
 --
 --    1.  The AmplitudeAlg record contains NO ring axioms — only
 --        operations.  This is deliberate: the quantum bridge
---        theorem (§14.5) uses only  cong  and  cong₂ , which are
---        automatic congruence properties of functions in Cubical
---        Agda.  No commutativity, associativity, or distributivity
---        is needed.  The proof is "parametric in the amplitude
---        type" — it works for any type with the four operations.
+--        theorem (Theorem 7, docs/formal/01-theorems.md) uses
+--        only  cong  and  cong₂ , which are automatic congruence
+--        properties of functions in Cubical Agda.  No commutativity,
+--        associativity, or distributivity is needed.  The proof is
+--        "parametric in the amplitude type" — it works for any type
+--        with the four operations.
 --
 --    2.  ℤ multiplication _·ℤ_ is defined locally (private) by
 --        a 4-clause sign-based case split rather than imported
@@ -442,15 +476,21 @@ private
 --    src/Quantum/QuantumBridge.agda      — quantum-bridge theorem (5 lines)
 --    src/Quantum/StarQuantumBridge.agda  — instantiation for 6-tile star + Q₈
 --
---  Exit criterion satisfaction (§14.10 of docs/10-frontier.md):
---
---    Item 1: ✓  AmplitudeAlg record type-checks with two concrete
---               instances: ℤiAmplitude (Gaussian integers) and
---               ℕAmplitude (natural numbers).
---
---    Item 4 (stretch, partial): the regression tests verify that
---    concrete Gaussian integer arithmetic reduces by  refl  on
---    closed terms (i² = −1, (1+i)(1−i) = 2, scaling i · 2 = 2i).
---    Full verification of 𝔼-equality by  refl  requires the
---    Superposition type from Quantum/Superposition.agda.
+--  Reference:
+--    docs/formal/07-quantum-superposition.md
+--                    (quantum superposition — full formal treatment)
+--    docs/formal/07-quantum-superposition.md §2
+--                    (amplitude polymorphism — the AmplitudeAlg interface)
+--    docs/formal/07-quantum-superposition.md §3
+--                    (the Gaussian integers ℤ[i])
+--    docs/formal/01-theorems.md §Thm 7
+--                    (Quantum Superposition Bridge — theorem registry)
+--    docs/physics/holographic-dictionary.md §6
+--                    (quantum superposition Agda ↔ physics table)
+--    docs/reference/module-index.md
+--                    (module description)
+--    docs/getting-started/architecture.md
+--                    (Specification Layer — module dependency DAG)
+--    docs/historical/development-docs/10-frontier.md §14
+--                    (original development plan for the quantum layer)
 -- ════════════════════════════════════════════════════════════════════

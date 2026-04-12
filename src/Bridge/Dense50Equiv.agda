@@ -25,6 +25,14 @@ open import Bridge.Dense50Obs
 --  Dense-50 Enriched Observable-Package Equivalence
 -- ════════════════════════════════════════════════════════════════════
 --
+--  STATUS: DEAD CODE — architecturally superseded by the generic
+--  bridge theorem (Bridge/GenericBridge.agda).  The Dense-50
+--  BridgeWitness is now produced automatically by GenericEnriched
+--  via Bridge/GenericValidation.agda (d50-generic-witness).  This
+--  module remains valid and type-checks but is not on the critical
+--  path.  It is retained as a historical artifact from the initial
+--  Dense-50 development.
+--
 --  This module constructs the enriched type equivalence for the
 --  Dense-50 patch of the {4,3,5} hyperbolic honeycomb, mirroring
 --  Bridge/Honeycomb3DEquiv.agda and Bridge/FilledEquiv.agda.
@@ -48,8 +56,23 @@ open import Bridge.Dense50Obs
 --  discrete Ryu–Takayanagi correspondence, verified by 139 cases
 --  of refl).
 --
---  Phase:  D.1b (Dense-50 enriched bridge and transport)
---  Reference:  §6 of docs/10-frontier.md
+--  Architectural role:
+--    This is a Tier 3 (Bridge Layer) module, now superseded by
+--    the generic bridge (Bridge/GenericBridge.agda).  The Dense-50
+--    BridgeWitness is produced by:
+--      d50-generic-witness = GenericEnriched.abstract-bridge-witness
+--                              d50PatchData
+--    in Bridge/GenericValidation.agda.  See
+--    docs/formal/11-generic-bridge.md for the generic bridge
+--    architecture that subsumes all per-instance equiv modules.
+--
+--  Reference:
+--    docs/instances/dense-50.md              (instance data sheet)
+--    docs/formal/03-holographic-bridge.md    (enriched equivalence)
+--    docs/formal/11-generic-bridge.md        (generic bridge — subsumes this)
+--    docs/engineering/generic-bridge-pattern.md (one proof, N instances)
+--    docs/reference/module-index.md          (module status: DEAD CODE)
+--    sim/prototyping/08_generate_dense50.py  (Python oracle)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -65,6 +88,9 @@ open import Bridge.Dense50Obs
 --  in a set, paths between elements are propositional (isProp),
 --  which means the specification-agreement fields are propositional,
 --  which means round-trip homotopies are automatic.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §1  (h-levels and truncation)
 -- ════════════════════════════════════════════════════════════════════
 
 isSetD50Obs : isSet (D50Region → ℚ≥0)
@@ -92,6 +118,10 @@ isSetD50Obs = isOfHLevelΠ 2 (λ _ → isSetℚ≥0)
 --  specification.  The boundary certification references 3D min-cut
 --  entropy (minimal separating surface area); the bulk certification
 --  references 3D minimal separating-surface area.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §3.1  (specification-agreement types)
+--    docs/instances/dense-50.md §3              (boundary regions)
 -- ════════════════════════════════════════════════════════════════════
 
 D50EnrichedBdy : Type₀
@@ -141,6 +171,16 @@ d50-bulk-instance = LBD50 , refl
 --  Bridge/EnrichedStarObs.agda, Bridge/FilledEquiv.agda, and
 --  Bridge/Honeycomb3DEquiv.agda, using d50-obs-path in place of
 --  star-obs-path, filled-obs-path, or h3-obs-path.
+--
+--  NOTE: The generic bridge theorem (Bridge/GenericBridge.agda)
+--  proves this same construction once for any PatchData, making
+--  this per-instance module redundant.  See
+--  docs/formal/11-generic-bridge.md §5.3 for the parameterized
+--  proof that subsumes all concrete enriched equivalences.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §3.2  (the Iso construction)
+--    docs/formal/02-foundations.md §4           (equivalences)
 -- ════════════════════════════════════════════════════════════════════
 
 d50-enriched-iso : Iso D50EnrichedBdy D50EnrichedBulk
@@ -169,6 +209,9 @@ d50-enriched-iso = iso fwd bwd fwd-bwd bwd-fwd
 --
 --  Promoting the Iso to a full coherent equivalence (with
 --  contractible fibers).  This is required for  ua  application.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §4  (equivalences and isoToEquiv)
 -- ════════════════════════════════════════════════════════════════════
 
 d50-enriched-equiv : D50EnrichedBdy ≃ D50EnrichedBulk
@@ -193,6 +236,11 @@ d50-enriched-equiv = isoToEquiv d50-enriched-iso
 --  min-cuts are 1, the Dense-50 patch witnesses genuine holographic
 --  depth: the RT surfaces are multi-face separating surfaces
 --  cutting through a multiply-connected 3D bulk.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5  (the Univalence axiom)
+--    docs/formal/03-holographic-bridge.md §3.3  (Univalence application)
+--    docs/instances/dense-50.md §4    (min-cut / observable agreement)
 -- ════════════════════════════════════════════════════════════════════
 
 d50-enriched-ua-path : D50EnrichedBdy ≡ D50EnrichedBulk
@@ -224,7 +272,11 @@ d50-enriched-ua-path = ua d50-enriched-equiv
 --  agreement witness.  This is the "Dense-50 compilation step":
 --  a computable transport between exactly equivalent 3D observable
 --  packages on a densely-connected hyperbolic cell complex with
---  multi-face RT separating surfaces (min-cut values 2–7).
+--  multi-face RT separating surfaces (min-cut values 1–7).
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5.1         (ua and uaβ)
+--    docs/formal/03-holographic-bridge.md §3.4  (verified transport)
 -- ════════════════════════════════════════════════════════════════════
 
 -- Step 1:  uaβ reduces transport to the forward map
@@ -275,6 +327,10 @@ d50-enriched-transport = d50-transport-computes ∙ d50-fwd-eq-bulk
 --    Honeycomb (26 regions, 3D BFS star patch, min-cut all 1)
 --  to:
 --    Dense-50  (139 regions, 3D dense patch, min-cut 1–7)
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 1        (Discrete RT)
+--    docs/instances/dense-50.md §6             (bridge construction)
 -- ════════════════════════════════════════════════════════════════════
 
 d50-enriched-transport-obs :
@@ -365,7 +421,22 @@ d50-roundtrip-bulk =
 --  following the BridgeWitness / FilledBridgeWitness /
 --  H3BridgeWitness pattern from the earlier bridge modules.
 --
+--  NOTE: This record is superseded by the BridgeWitness from
+--  Bridge/BridgeWitness.agda, produced automatically by
+--  GenericEnriched in Bridge/GenericBridge.agda.  The Dense-50
+--  bridge witness is now:
+--    d50-generic-witness : BridgeWitness
+--    d50-generic-witness = GenericEnriched.abstract-bridge-witness
+--                            d50PatchData
+--  in Bridge/GenericValidation.agda.
+--
+--  This local record is retained for backward compatibility.
+--
 --  This record lives in  Type₁  because it stores types as fields.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §6  (BridgeWitness record)
+--    docs/formal/11-generic-bridge.md §10     (the universal record)
 -- ════════════════════════════════════════════════════════════════════
 
 record D50BridgeWitness : Type₁ where
@@ -421,8 +492,15 @@ d50-bridge-witness .D50BridgeWitness.transport-verified = d50-enriched-transport
 --    2D bdy / 3D bulk  (honeycomb BFS, 26 regions, min-cut 1)
 --    2D bdy / 3D bulk  (Dense-50, 139 regions, min-cut 1–7)  ← this
 --
---  Phase:  D.1b (Dense-50 enriched bridge and transport)
---  Reference:  §6 of docs/10-frontier.md
+--  NOTE: This theorem is now subsumed by the generic bridge
+--  theorem (Theorem 1 in docs/formal/01-theorems.md), which
+--  proves the enriched equivalence once for any PatchData.
+--  See docs/formal/11-generic-bridge.md for the factorization.
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 1  (Discrete RT — generic)
+--    docs/instances/dense-50.md          (instance data sheet)
+--    docs/formal/11-generic-bridge.md    (generic bridge — subsumes this)
 -- ════════════════════════════════════════════════════════════════════
 
 D50Theorem3 : Type₀
@@ -451,6 +529,9 @@ d50-theorem3 = d50-enriched-transport
 --    S = 3  (pairs and some singletons)
 --    S = 5  (multi-cell regions near the core)
 --    S = 7  (5-cell regions deep in the bulk)
+--
+--  Reference:
+--    docs/instances/dense-50.md §4  (min-cut / observable agreement)
 -- ════════════════════════════════════════════════════════════════════
 
 -- S = 1:  {c20}  — leaf cell, min-cut severs 1 internal face
@@ -506,10 +587,10 @@ d50-package-coherence = refl
 --
 --  The complete Dense-50 pipeline for the {4,3,5} honeycomb:
 --
---    07_honeycomb_3d_multiStrategy.py      (Phase D.0: feasibility)
+--    07_honeycomb_3d_multiStrategy.py      (feasibility & strategy)
 --      │  Dense growth strategy identified as optimal
 --      ▼
---    08_generate_dense50.py                (Phase D.1b: code gen)
+--    08_generate_dense50.py                (code generation)
 --      │
 --      ├──▶ Common/Dense50Spec.agda        (139-ctor D50Region)
 --      ├──▶ Boundary/Dense50Cut.agda       (139 S-cut clauses, S=1–7)
@@ -521,7 +602,7 @@ d50-package-coherence = refl
 --         d50-obs-path : S∂D50 ≡ LBD50    (Bridge/Dense50Obs)
 --              │
 --              ▼
---         d50-enriched-equiv :             (this module)
+--         d50-enriched-equiv :             (this module — DEAD CODE)
 --           D50EnrichedBdy ≃ D50EnrichedBulk
 --              │
 --              ▼
@@ -535,6 +616,13 @@ d50-package-coherence = refl
 --              ▼
 --         d50-enriched-transport-obs :
 --           fst (transport ... d50-bdy-instance) ≡ LBD50
+--
+--  SUPERSEDED BY (the generic bridge pipeline):
+--
+--    Bridge/GenericBridge.agda   →  GenericEnriched d50PatchData
+--      │                             (proven ONCE for ANY PatchData)
+--      ▼
+--    Bridge/GenericValidation.agda  →  d50-generic-witness : BridgeWitness
 --
 --  Every step is machine-checked.  Transport is computable: it
 --  reduces via uaβ to the forward map of the equivalence.  The
@@ -550,4 +638,12 @@ d50-package-coherence = refl
 --  numbers of internal faces to be severed — the combinatorial
 --  analogue of the Ryu–Takayanagi surface growing in area as
 --  the boundary region reaches deeper into the bulk.
+--
+--  Reference:
+--    docs/instances/dense-50.md               (instance data sheet)
+--    docs/formal/03-holographic-bridge.md     (enriched equivalence)
+--    docs/formal/11-generic-bridge.md         (generic bridge — subsumes this)
+--    docs/engineering/oracle-pipeline.md      (Python-to-Agda pipeline)
+--    docs/engineering/generic-bridge-pattern.md (one proof, N instances)
+--    docs/getting-started/architecture.md     (module dependency DAG)
 -- ════════════════════════════════════════════════════════════════════

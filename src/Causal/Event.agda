@@ -20,9 +20,20 @@ open import Cubical.Data.Nat using (ℕ ; zero ; suc ; _+_)
 --  coordinate; each TowerLevel IS a spatial slice (antichain) in
 --  the discrete causal poset.
 --
+--  Architectural role:
+--    This is a Tier 1 (Specification Layer) standalone type with
+--    no internal dependencies beyond Cubical.Foundations.Prelude
+--    and Cubical.Data.Nat.  It is consumed by:
+--      • Causal/CausalDiamond.agda  (CausalDiamond, maximin, proper-time)
+--      • Causal/NoCTC.agda          (structural acyclicity proof)
+--      • Causal/LightCone.agda      (FutureCone, spacelike separation)
+--
 --  Reference:
---    docs/10-frontier.md §12.4   (New Types — Event)
---    docs/10-frontier.md §12.2   (The Tower IS the Spacetime)
+--    docs/formal/06-causal-structure.md §2   (Events — Spacetime Atoms)
+--    docs/formal/06-causal-structure.md §1   (The Tower IS the Spacetime)
+--    docs/formal/01-theorems.md §Thm 5       (No Closed Timelike Curves)
+--    docs/getting-started/architecture.md    (Specification Layer)
+--    docs/reference/module-index.md          (module description)
 -- ════════════════════════════════════════════════════════════════════
 
 record Event (CellAt : ℕ → Type₀) : Type₀ where
@@ -52,6 +63,10 @@ record Event (CellAt : ℕ → Type₀) : Type₀ where
 --  The irreflexivity of  _<ℕ_  (the impossibility of  n <ℕ n)
 --  is the structural guarantee that no closed timelike curve can
 --  exist.  It is formalized in  Causal/NoCTC.agda .
+--
+--  Reference:
+--    docs/formal/06-causal-structure.md §2.2  (Strict Ordering on ℕ)
+--    docs/formal/06-causal-structure.md §5    (No Closed Timelike Curves)
 -- ════════════════════════════════════════════════════════════════════
 
 infix 4 _<ℕ_
@@ -75,7 +90,8 @@ m <ℕ n = Σ[ k ∈ ℕ ] (suc k + m ≡ n)
 --      times.  In concrete instances, this encodes whether a cell
 --      at time n is "connected to" (reachable from) a cell at
 --      time suc n through the BFS expansion.  The Python oracle
---      (13_generate_layerN.py) computes these adjacencies.
+--      (sim/prototyping/13_generate_layerN.py) computes these
+--      adjacencies.
 --
 --  Fields:
 --
@@ -98,12 +114,13 @@ m <ℕ n = Σ[ k ∈ ℕ ] (suc k + m ≡ n)
 --    so the transport vanishes and the adjacent field reduces to
 --    Adj n c₁ c₂  directly.
 --
---  Comparison with §12.4 of docs/10-frontier.md:
+--  Design note (single-step vs general strict ordering):
 --
---    The doc specifies  time-step : Event.time e₁ < Event.time e₂
---    (a general strict ordering).  This implementation strengthens
---    the field to  time-suc : suc (time e₁) ≡ time e₂  (single-
---    step), which:
+--    The formal documentation (docs/formal/06-causal-structure.md §3)
+--    notes that a general strict ordering  time e₁ < time e₂  could
+--    be used for the time-step field.  This implementation
+--    strengthens the field to  time-suc : suc (time e₁) ≡ time e₂
+--    (single step), which:
 --
 --      (a) makes the  adjacent  field well-typed without needing
 --          a multi-step adjacency relation;
@@ -114,8 +131,10 @@ m <ℕ n = Σ[ k ∈ ℕ ] (suc k + m ≡ n)
 --          (§4), so the NoCTC argument is preserved.
 --
 --  Reference:
---    docs/10-frontier.md §12.4  (New Types — CausalLink)
---    docs/10-frontier.md §12.5  (Acyclicity: No Closed Timelike Curves)
+--    docs/formal/06-causal-structure.md §3    (Causal Links)
+--    docs/formal/06-causal-structure.md §3.1  (The CausalLink Record)
+--    docs/formal/06-causal-structure.md §5    (Acyclicity: No CTCs)
+--    docs/formal/01-theorems.md §Thm 5        (No Closed Timelike Curves)
 -- ════════════════════════════════════════════════════════════════════
 
 record CausalLink
@@ -144,13 +163,16 @@ record CausalLink
 --      = suc (Event.time e₁)          (by 0 + n = n)
 --      ≡ Event.time e₂                (by time-suc)
 --
---  This derivation is the formal content of §12.5: the type
---  signature of CausalLink prevents time travel because a
---  CTC would require  Event.time e <ℕ Event.time e  for some
---  event e, contradicting the irreflexivity of  _<ℕ_  on ℕ.
+--  This derivation is the formal content of the acyclicity
+--  guarantee: the type signature of CausalLink prevents time
+--  travel because a CTC would require  Event.time e <ℕ Event.time e
+--  for some event e, contradicting the irreflexivity of  _<ℕ_  on ℕ.
+--  The irreflexivity proof is in  Causal/NoCTC.agda .
 --
 --  Reference:
---    docs/10-frontier.md §12.5  (Acyclicity: No CTCs)
+--    docs/formal/06-causal-structure.md §3.2  (Links Imply Strict
+--                                              Time Ordering)
+--    docs/formal/06-causal-structure.md §5    (No Closed Timelike Curves)
 -- ════════════════════════════════════════════════════════════════════
 
 causal-link-< :
@@ -168,14 +190,14 @@ causal-link-< cl = 0 , CausalLink.time-suc cl
 --
 --  A CausalChain from  e₁  to  e₂  is a finite sequence of
 --  CausalLinks composing to a directed path in the causal poset.
---  Its length is the proper time between the endpoints (§12.7).
+--  Its length is the proper time between the endpoints.
 --
 --  Constructors:
 --
 --    done :  the trivial chain from an event to itself (length 0).
 --            This represents zero proper time and is needed for
 --            the reflexive case of the future light cone:
---            J⁺(e) includes e itself (§12.8: m ≥ n).
+--            J⁺(e) includes e itself.
 --
 --    step :  extend a chain by one CausalLink at the end.
 --            If we have a chain from e₁ to e₂ and a link from
@@ -197,8 +219,9 @@ causal-link-< cl = 0 , CausalLink.time-suc cl
 --      in the other's future light cone.
 --
 --  Reference:
---    docs/10-frontier.md §12.7  (Proper Time as Chain Length)
---    docs/10-frontier.md §12.8  (The Discrete Light Cone)
+--    docs/formal/06-causal-structure.md §4   (Causal Chains)
+--    docs/formal/06-causal-structure.md §6   (Causal Diamonds)
+--    docs/formal/06-causal-structure.md §8   (The Discrete Light Cone)
 -- ════════════════════════════════════════════════════════════════════
 
 data CausalChain
@@ -230,7 +253,11 @@ data CausalChain
 --  computed structurally from the chain itself.
 --
 --  Reference:
---    docs/10-frontier.md §12.7  (Proper Time as Chain Length)
+--    docs/formal/06-causal-structure.md §4   (Causal Chains —
+--                                             chain length as
+--                                             proper time)
+--    docs/formal/06-causal-structure.md §6   (Causal Diamonds —
+--                                             proper time)
 -- ════════════════════════════════════════════════════════════════════
 
 chain-length :
@@ -417,11 +444,22 @@ private
 --        judgmental computation of ℕ addition.
 --
 --  Reference:
---    docs/10-frontier.md §12    (The Causal Light Cone)
---    docs/10-frontier.md §12.2  (The Tower IS the Spacetime)
---    docs/10-frontier.md §12.4  (New Types)
---    docs/10-frontier.md §12.5  (Acyclicity: No CTCs)
---    docs/10-frontier.md §12.7  (Proper Time as Chain Length)
---    docs/10-frontier.md §12.8  (The Discrete Light Cone)
---    docs/10-frontier.md §12.11 (New Module Plan)
+--    docs/formal/06-causal-structure.md       (The Causal Light Cone —
+--                                              full formal treatment)
+--    docs/formal/06-causal-structure.md §1    (Overview — the tower IS
+--                                              the spacetime)
+--    docs/formal/06-causal-structure.md §2    (Events)
+--    docs/formal/06-causal-structure.md §3    (Causal Links)
+--    docs/formal/06-causal-structure.md §4    (Causal Chains)
+--    docs/formal/06-causal-structure.md §5    (No Closed Timelike Curves)
+--    docs/formal/06-causal-structure.md §8    (The Discrete Light Cone)
+--    docs/formal/01-theorems.md §Thm 5        (NoCTC theorem registry)
+--    docs/formal/11-generic-bridge.md §5      (SchematicTower —
+--                                              TowerLevel, LayerStep)
+--    docs/getting-started/architecture.md     (module dependency DAG)
+--    docs/reference/module-index.md           (module description)
+--    docs/physics/holographic-dictionary.md §5 (causal structure
+--                                              Agda ↔ physics table)
+--    docs/historical/development-docs/10-frontier.md §12
+--                                             (original development plan)
 -- ════════════════════════════════════════════════════════════════════

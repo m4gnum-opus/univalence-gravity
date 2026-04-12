@@ -30,9 +30,8 @@ open import Bridge.StarStepInvariance
 --  guarantees that the holographic correspondence is maintained
 --  at every tick, for any number of ticks.
 --
---  This is item 5 of the §11.7 implementation plan in
---  docs/10-frontier.md (Phase F.2a — Parameterized Star Bridge,
---  Strategy A: Weight-Perturbation Invariance).
+--  This is **Theorem 9b** (Dynamics Loop) in the canonical theorem
+--  registry (docs/formal/01-theorems.md §Thm 9).
 --
 --  Module dependencies:
 --
@@ -42,17 +41,22 @@ open import Bridge.StarStepInvariance
 --    Bulk/StarChainParam.agda           — L-param, SL-param-pointwise
 --    Bridge/StarStepInvariance.agda     — perturb, step-invariant
 --
---  Reference:
---    docs/10-frontier.md §11.5   (Strategy A — weight perturbation)
---    docs/10-frontier.md §11.7   (item 5 — this module)
---    docs/10-frontier.md §11.10  (exit criterion, item 2)
---    docs/10-frontier.md §11.11  (what success looks like)
+--  Architectural role:
+--    This is a Tier 3 (Bridge Layer) module providing the iterated
+--    dynamics loop, consumed by downstream testing and by the
+--    enriched step-invariance module
+--    (Bridge/EnrichedStarStepInvariance.agda).
+--    See docs/getting-started/architecture.md for the module
+--    dependency DAG.
 --
---  Exit criterion (§11.10 of docs/10-frontier.md):
---    "A  loop-invariant  theorem type-checks in
---     Bridge/StarDynamicsLoop.agda, proving preservation under
---     arbitrary finite sequences of perturbations (by induction
---     on the list of steps)."
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 9  (Step Invariance & Dynamics Loop)
+--    docs/formal/10-dynamics.md §5       (the dynamics loop)
+--    docs/formal/10-dynamics.md §3       (bond-weight perturbation)
+--    docs/instances/star-patch.md §7     (dynamics on the star patch)
+--    docs/reference/module-index.md      (module description)
+--    docs/historical/development-docs/10-frontier.md §11
+--                                        (original development plan)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -127,8 +131,9 @@ weight-sequence w₀ ((b , δ) ∷ s) = perturb (weight-sequence w₀ s) b δ
 --  holographic correspondence.
 --
 --  Reference:
---    docs/10-frontier.md §11.7  (item 5)
---    docs/10-frontier.md §11.11 (what success looks like)
+--    docs/formal/01-theorems.md §Thm 9   (theorem registry entry)
+--    docs/formal/10-dynamics.md §5        (the dynamics loop)
+--    docs/instances/star-patch.md §7.3    (dynamics loop on star)
 -- ════════════════════════════════════════════════════════════════════
 
 loop-invariant :
@@ -156,7 +161,7 @@ loop-invariant w₀ base (s ∷ ss)   =
 --  S-param w r ≡ L-param w r  for any  w  and  r  by refl.
 --
 --  The conditional formulation (§2) is retained because it matches
---  the target theorem from §11.3 of docs/10-frontier.md and
+--  the target theorem from docs/formal/10-dynamics.md §5 and
 --  generalizes to non-star topologies where the hypothesis would
 --  be genuinely needed.
 -- ════════════════════════════════════════════════════════════════════
@@ -336,8 +341,8 @@ private
 --
 --  Proof structure:
 --
---    The loop-invariant proof has exactly the shape predicted in
---    §11.7 item 5 of docs/10-frontier.md:
+--    The loop-invariant proof has the expected shape from
+--    docs/formal/10-dynamics.md §5.2:
 --
 --      loop-invariant w₀ base []       = base
 --      loop-invariant w₀ base (s ∷ ss) =
@@ -366,18 +371,18 @@ private
 --    long sequences of ticks maintain the holographic
 --    correspondence.
 --
---  Relationship to §9 (Snapshot Dynamics):
+--  Relationship to snapshot dynamics (Bridge/SchematicTower.agda):
 --
---    Section 9 packages pre-verified snapshots as
---    DynamicsWitness records.  Each snapshot requires an
---    independently verified bridge.  This module provides the
---    STRONGER claim:  given one verified bridge at an initial
---    configuration, ALL subsequent configurations obtained by
---    perturbation are automatically verified.  No additional
---    Python oracle invocations or Agda type-checking runs are
---    needed for new snapshots.
+--    The SchematicTower packages pre-verified snapshots as
+--    TowerLevel records.  Each snapshot requires an independently
+--    verified bridge.  This module provides the STRONGER claim:
+--    given one verified bridge at an initial configuration, ALL
+--    subsequent configurations obtained by perturbation are
+--    automatically verified.  No additional Python oracle
+--    invocations or Agda type-checking runs are needed for new
+--    snapshots.
 --
---    | Aspect         | §9 Snapshots    | §11 Loop         |
+--    | Aspect         | Snapshots       | Loop             |
 --    |────────────────|─────────────────|──────────────────|
 --    | # proofs       | one per snap    | one for all      |
 --    | new-snap cost  | re-verify       | zero (automatic) |
@@ -390,17 +395,27 @@ private
 --    S-param and L-param coincide.  For the 11-tile filled patch
 --    (where they may differ due to boundary-leg effects), the
 --    step-invariant proof would require genuine graph-theoretic
---    reasoning.  See §11.8 of docs/10-frontier.md.
+--    reasoning.  See docs/formal/10-dynamics.md §9 for the hard
+--    boundary discussion.
 --
---  Exit criterion satisfaction:
+--  Architectural role:
 --
---    This module satisfies exit criterion 2 of §11.10:
+--    This is a Tier 3 (Bridge Layer) module.  Together with
+--    Bridge/StarStepInvariance.agda (Theorem 9a), it establishes
+--    Theorem 9 (Step Invariance & Dynamics Loop) from the
+--    canonical theorem registry.  The enriched version (including
+--    subadditivity ↔ monotonicity conversion) is in
+--    Bridge/EnrichedStarStepInvariance.agda (Theorem 10).
+--    See docs/getting-started/architecture.md for the module
+--    dependency DAG.
 --
---      "A  loop-invariant  theorem type-checks in
---       Bridge/StarDynamicsLoop.agda, proving preservation under
---       arbitrary finite sequences of perturbations (by induction
---       on the list of steps)."
---
---    Together with  Bridge/StarStepInvariance.agda  (exit
---    criterion 1), the "while(true) loop" route is complete.
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 9   (theorem registry entry)
+--    docs/formal/10-dynamics.md §5        (the dynamics loop)
+--    docs/formal/10-dynamics.md §7        (architectural significance)
+--    docs/instances/star-patch.md §7      (dynamics on the star patch)
+--    docs/getting-started/architecture.md (Bridge Layer)
+--    docs/reference/module-index.md       (module description)
+--    docs/historical/development-docs/10-frontier.md §11
+--                                         (original development plan)
 -- ════════════════════════════════════════════════════════════════════

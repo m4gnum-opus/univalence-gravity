@@ -11,9 +11,8 @@ open import Util.Scalars
 --  ℚ≥0 ordering and addition
 -- ════════════════════════════════════════════════════════════════════
 --
---  These definitions extend the Util/Scalars interface with the
---  ordering and addition required for subadditivity.  They should
---  eventually be migrated into Util/Scalars.agda itself.
+--  _+ℚ_ and _≤ℚ_ are now defined in Util/Scalars.agda and brought
+--  into scope by the  open import Util.Scalars  above.
 --
 --  Since  ℚ≥0 = ℕ  (Util/Scalars.agda), both are inherited
 --  directly from the natural numbers.
@@ -29,55 +28,24 @@ open import Util.Scalars
 --  makes the entire subadditivity proof computable by refl.
 -- ════════════════════════════════════════════════════════════════════
 
-infixl 6 _+ℚ_
-infix  4 _≤ℚ_
-
-_+ℚ_ : ℚ≥0 → ℚ≥0 → ℚ≥0
-_+ℚ_ = _+_
-
-_≤ℚ_ : ℚ≥0 → ℚ≥0 → Type₀
-m ≤ℚ n = Σ ℕ (λ k → k + m ≡ n)
-
 -- ════════════════════════════════════════════════════════════════════
 --  Verification: refl satisfies ≤ℚ for every concrete case
 -- ════════════════════════════════════════════════════════════════════
 --
 --  The subadditivity proof below uses exactly 4 distinct (k , refl)
---  witnesses.  We verify each one in isolation before the main proof.
+--  witnesses.  The verification witnesses (≤-check-2≤2, etc.) are
+--  now defined in Util/Scalars.agda and brought into scope by the
+--  open import above.
 --
---  ┌────────────────────────────────────────────────────────────────┐
---  │  Inequality    │  Witness      │  Computation                 │
---  ├────────────────┼──────────────┼──────────────────────────────┤
---  │  2 ≤ 1+1 = 2  │  (0 , refl)  │  0 + 2 = 2   judgmentally   │
---  │  2 ≤ 1+2 = 3  │  (1 , refl)  │  1 + 2 = 3   judgmentally   │
---  │  1 ≤ 1+2 = 3  │  (2 , refl)  │  2 + 1 = 3   judgmentally   │
---  │  1 ≤ 2+2 = 4  │  (3 , refl)  │  3 + 1 = 4   judgmentally   │
---  └────────────────────────────────────────────────────────────────┘
+--  ┌────────────────────────────────────────────────────────────┐
+--  │  Inequality    │  Witness     │  Computation               │
+--  ├────────────────┼──────────────┼────────────────────────────┤
+--  │  2 ≤ 1+1 = 2   │  (0 , refl)  │  0 + 2 = 2   judgmentally  │
+--  │  2 ≤ 1+2 = 3   │  (1 , refl)  │  1 + 2 = 3   judgmentally  │
+--  │  1 ≤ 1+2 = 3   │  (2 , refl)  │  2 + 1 = 3   judgmentally  │
+--  │  1 ≤ 2+2 = 4   │  (3 , refl)  │  3 + 1 = 4   judgmentally  │
+--  └────────────────────────────────────────────────────────────┘
 -- ════════════════════════════════════════════════════════════════════
-
--- 2 ≤ 1 + 1 = 2   (singleton ∪ singleton → pair)
-≤-check-2≤2 : 2q ≤ℚ (1q +ℚ 1q)
-≤-check-2≤2 = 0 , refl
-
--- 2 ≤ 1 + 2 = 3   (singleton ∪ pair → triple)
-≤-check-2≤3a : 2q ≤ℚ (1q +ℚ 2q)
-≤-check-2≤3a = 1 , refl
-
--- 2 ≤ 2 + 1 = 3   (pair ∪ singleton → triple)
-≤-check-2≤3b : 2q ≤ℚ (2q +ℚ 1q)
-≤-check-2≤3b = 1 , refl
-
--- 1 ≤ 1 + 2 = 3   (singleton ∪ triple → quadruple)
-≤-check-1≤3a : 1q ≤ℚ (1q +ℚ 2q)
-≤-check-1≤3a = 2 , refl
-
--- 1 ≤ 2 + 1 = 3   (triple ∪ singleton → quadruple)
-≤-check-1≤3b : 1q ≤ℚ (2q +ℚ 1q)
-≤-check-1≤3b = 2 , refl
-
--- 1 ≤ 2 + 2 = 4   (pair ∪ pair → quadruple)
-≤-check-1≤4 : 1q ≤ℚ (2q +ℚ 2q)
-≤-check-1≤4 = 3 , refl
 
 
 -- ════════════════════════════════════════════════════════════════════

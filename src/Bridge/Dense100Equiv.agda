@@ -25,6 +25,14 @@ open import Bridge.Dense100Obs
 --  Dense-100 Enriched Observable-Package Equivalence
 -- ════════════════════════════════════════════════════════════════════
 --
+--  NOTE: This module is DEAD CODE — architecturally superseded by
+--  the generic bridge theorem (Bridge/GenericBridge.agda).  The
+--  Dense-100 BridgeWitness is now produced automatically by
+--  orbit-bridge-witness via Bridge/GenericValidation.agda.  This
+--  module remains valid and type-checks, but no downstream module
+--  depends on it.  It is retained as a historical artifact from
+--  the initial Dense-100 development.
+--
 --  This module constructs the enriched type equivalence for the
 --  Dense-100 patch of the {4,3,5} hyperbolic honeycomb, mirroring
 --  Bridge/Dense50Equiv.agda and Bridge/Honeycomb3DEquiv.agda.
@@ -49,9 +57,20 @@ open import Bridge.Dense100Obs
 --  3D discrete Ryu–Takayanagi correspondence, verified by 8
 --  orbit-representative cases of refl, lifted to 717 regions).
 --
---  Phase:  D.1c (Dense-100 enriched bridge and transport)
---  Reference:  §6 of docs/10-frontier.md
---              §6.5 (orbit reduction strategy)
+--  Architectural role:
+--    This is a Tier 3 (Bridge Layer) module, now superseded by
+--    Bridge/GenericBridge.agda which proves the same construction
+--    once for any PatchData.  The Dense-100 BridgeWitness is
+--    produced by  orbit-bridge-witness d100OrbitPatch  in
+--    Bridge/GenericValidation.agda.
+--
+--  Reference:
+--    docs/instances/dense-100.md            (instance data sheet)
+--    docs/formal/03-holographic-bridge.md   (enriched equivalence)
+--    docs/formal/11-generic-bridge.md       (generic bridge — subsumes this)
+--    docs/engineering/orbit-reduction.md    (orbit reduction strategy)
+--    docs/reference/module-index.md         (module listed as DEAD CODE)
+--    sim/prototyping/09_generate_dense100.py (Python oracle)
 
 
 -- ════════════════════════════════════════════════════════════════════
@@ -66,6 +85,9 @@ open import Bridge.Dense100Obs
 --  in a set, paths between elements are propositional (isProp),
 --  which means the specification-agreement fields are propositional,
 --  which means round-trip homotopies are automatic.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §1  (h-levels and truncation)
 -- ════════════════════════════════════════════════════════════════════
 
 isSetD100Obs : isSet (D100Region → ℚ≥0)
@@ -93,6 +115,10 @@ isSetD100Obs = isOfHLevelΠ 2 (λ _ → isSetℚ≥0)
 --  specification.  The boundary certification references 3D min-cut
 --  entropy (minimal separating surface area); the bulk certification
 --  references 3D minimal separating-surface area.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §3  (specification-agreement types)
+--    docs/instances/dense-100.md §8           (bridge construction)
 -- ════════════════════════════════════════════════════════════════════
 
 D100EnrichedBdy : Type₀
@@ -147,6 +173,11 @@ d100-bulk-instance = LBD100 , refl
 --  d100-obs-path was constructed from 8 orbit-representative
 --  refl proofs + 1-line lifting in Bridge/Dense100Obs.agda,
 --  but here it is consumed as a single path  S∂D100 ≡ LBD100 .
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §3.2  (the Iso construction)
+--    docs/formal/02-foundations.md §4           (equivalences and Iso)
+--    docs/engineering/orbit-reduction.md        (orbit reduction strategy)
 -- ════════════════════════════════════════════════════════════════════
 
 d100-enriched-iso : Iso D100EnrichedBdy D100EnrichedBulk
@@ -175,6 +206,9 @@ d100-enriched-iso = iso fwd bwd fwd-bwd bwd-fwd
 --
 --  Promoting the Iso to a full coherent equivalence (with
 --  contractible fibers).  This is required for  ua  application.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §4  (equivalences and isoToEquiv)
 -- ════════════════════════════════════════════════════════════════════
 
 d100-enriched-equiv : D100EnrichedBdy ≃ D100EnrichedBulk
@@ -197,6 +231,11 @@ d100-enriched-equiv = isoToEquiv d100-enriched-iso
 --  types utilizing the orbit reduction strategy: 717 regions are
 --  handled by 8 orbit-representative proofs, yet the resulting
 --  ua path identifies the full 717-region observable packages.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5         (the Univalence axiom)
+--    docs/formal/03-holographic-bridge.md §3.3  (Univalence application)
+--    docs/engineering/orbit-reduction.md      (orbit reduction)
 -- ════════════════════════════════════════════════════════════════════
 
 d100-enriched-ua-path : D100EnrichedBdy ≡ D100EnrichedBulk
@@ -230,6 +269,11 @@ d100-enriched-ua-path = ua d100-enriched-equiv
 --  packages on a densely-connected hyperbolic cell complex with
 --  multi-face RT separating surfaces (min-cut values 1–8),
 --  managed by the orbit reduction architecture.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5.1         (ua and uaβ)
+--    docs/formal/03-holographic-bridge.md §3.4  (verified transport)
+--    docs/instances/dense-100.md §8             (bridge construction)
 -- ════════════════════════════════════════════════════════════════════
 
 -- Step 1:  uaβ reduces transport to the forward map
@@ -282,6 +326,10 @@ d100-enriched-transport = d100-transport-computes ∙ d100-fwd-eq-bulk
 --  to:
 --    Dense-100 (717 regions, 3D dense patch, min-cut 1–8,
 --               orbit-reduced to 8 representative proofs)
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 1  (Discrete Ryu–Takayanagi)
+--    docs/instances/dense-100.md §5     (min-cut / observable agreement)
 -- ════════════════════════════════════════════════════════════════════
 
 d100-enriched-transport-obs :
@@ -374,7 +422,17 @@ d100-roundtrip-bulk =
 --  H3BridgeWitness / D50BridgeWitness pattern from the earlier
 --  bridge modules.
 --
+--  NOTE: This is superseded by  d100-generic-witness : BridgeWitness
+--  from Bridge/GenericValidation.agda, which produces a BridgeWitness
+--  using the generic bridge theorem (Bridge/GenericBridge.agda) via
+--  orbit-bridge-witness.  The generic version is the one consumed by
+--  Bridge/SchematicTower.agda and Bridge/WickRotation.agda.
+--
 --  This record lives in  Type₁  because it stores types as fields.
+--
+--  Reference:
+--    docs/formal/11-generic-bridge.md §4  (retroactive validation)
+--    docs/formal/03-holographic-bridge.md §6  (BridgeWitness record)
 -- ════════════════════════════════════════════════════════════════════
 
 record D100BridgeWitness : Type₁ where
@@ -433,9 +491,11 @@ d100-bridge-witness .D100BridgeWitness.transport-verified = d100-enriched-transp
 --    2D bdy / 3D bulk  (Dense-100, 717 regions → 8 orbits,
 --                        min-cut 1–8)  ← this
 --
---  Phase:  D.1c (Dense-100 enriched bridge and transport)
---  Reference:  §6 of docs/10-frontier.md
---              §6.5 (orbit reduction strategy)
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 1     (Discrete Ryu–Takayanagi)
+--    docs/instances/dense-100.md           (instance data sheet)
+--    docs/engineering/orbit-reduction.md   (orbit reduction strategy)
+--    docs/engineering/scaling-report.md    (region counts, timings)
 -- ════════════════════════════════════════════════════════════════════
 
 D100Theorem3 : Type₀
@@ -459,9 +519,13 @@ d100-theorem3 = d100-enriched-transport
 --  the 8-clause function), yielding the ℕ literal judgmentally.
 --
 --  The Dense-100 patch achieves min-cut values up to 8, the
---  highest in the repository, confirming that boundary regions
---  at different "depths" into the holographic bulk require
---  genuinely different numbers of internal faces to be severed.
+--  highest in the repository at this resolution level, confirming
+--  that boundary regions at different "depths" into the holographic
+--  bulk require genuinely different numbers of internal faces to
+--  be severed.
+--
+--  Reference:
+--    docs/instances/dense-100.md §5  (min-cut / observable agreement)
 -- ════════════════════════════════════════════════════════════════════
 
 -- S = 1:  d100r0 is a singleton cell with min-cut 1
@@ -522,10 +586,10 @@ d100-package-coherence = refl
 --
 --  The complete Dense-100 pipeline for the {4,3,5} honeycomb:
 --
---    07_honeycomb_3d_multiStrategy.py      (Phase D.0: feasibility)
+--    07_honeycomb_3d_multiStrategy.py      (feasibility prototype)
 --      │  Dense growth strategy identified as optimal
 --      ▼
---    09_generate_dense100.py               (Phase D.1c: code gen)
+--    09_generate_dense100.py               (Agda code generator)
 --      │  Orbit reduction: 717 regions → 8 orbit representatives
 --      │
 --      ├──▶ Common/Dense100Spec.agda       (717-ctor D100Region,
@@ -563,10 +627,29 @@ d100-package-coherence = refl
 --  d100-pointwise-rep, lifted to 717 regions by
 --  d100-pointwise r = d100-pointwise-rep (classify100 r).
 --
---  This module demonstrates that the orbit reduction strategy
---  from §6.5 of docs/10-frontier.md successfully scales the
---  holographic formalization architecture past the ~500-region
---  threshold.  The pattern generalizes: adding more cells to the
---  patch only grows the classify function (a flat lookup), not
---  the proof obligations (which remain on the compact orbit type).
+--  NOTE: This per-instance pipeline is superseded by the generic
+--  bridge architecture (Bridge/GenericBridge.agda), which proves
+--  the enriched equivalence ONCE for any PatchData and produces
+--  the BridgeWitness automatically via orbit-bridge-witness.  The
+--  Dense-100 instance is retroactively validated as a GenericBridge
+--  instantiation in Bridge/GenericValidation.agda.  See
+--  docs/formal/11-generic-bridge.md for the generic architecture
+--  and docs/engineering/generic-bridge-pattern.md for the
+--  engineering pattern it embodies.
+--
+--  The orbit reduction strategy demonstrated here — factoring
+--  proofs through a small orbit type while the classification
+--  function absorbs the large case analysis — generalizes to
+--  arbitrary patch sizes.  Adding more cells to the patch only
+--  grows the classify function (a flat lookup), not the proof
+--  obligations (which remain on the compact orbit type).
+--
+--  Reference:
+--    docs/formal/11-generic-bridge.md        (generic bridge — subsumes this)
+--    docs/engineering/generic-bridge-pattern.md (one proof, N instances)
+--    docs/engineering/orbit-reduction.md      (orbit reduction scaling)
+--    docs/engineering/oracle-pipeline.md      (Python-to-Agda generation)
+--    docs/instances/dense-100.md              (instance data sheet)
+--    docs/getting-started/architecture.md     (module dependency DAG)
+--    docs/reference/module-index.md           (module listed as DEAD CODE)
 -- ════════════════════════════════════════════════════════════════════

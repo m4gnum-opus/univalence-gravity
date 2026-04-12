@@ -36,6 +36,10 @@ open import Bridge.StarEquiv using (star-obs-path)
 --  below genuinely different types in the universe, and the
 --  propositional equality is what makes them equivalent.  Together
 --  these enable a nontrivial  ua  path and computable transport.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §3  (enriched equivalence)
+--    docs/instances/star-patch.md §6          (bridge construction)
 -- ════════════════════════════════════════════════════════════════════
 
 S∂ : Region → ℚ≥0
@@ -56,6 +60,9 @@ LB = L-min (πbulk starSpec)
 --  in a set, paths between elements are propositional (isProp),
 --  which means the specification-agreement fields are propositional,
 --  which means round-trip homotopies are automatic.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §1  (h-levels and truncation)
 -- ════════════════════════════════════════════════════════════════════
 
 isSetObs : isSet (Region → ℚ≥0)
@@ -81,9 +88,15 @@ isSetObs = isOfHLevelΠ 2 (λ _ → isSetℚ≥0)
 --  boundary certification references min-cut entropy; the bulk
 --  certification references minimal chain length.
 --
---  This is the enriched-package architecture from §12.3 of
---  docs/09-happy-instance.md, where the "asymmetric proof-carrying
---  fields" are the specification-agreement witnesses.
+--  This is the enriched-package architecture from
+--  docs/formal/03-holographic-bridge.md §3, where the
+--  "asymmetric proof-carrying fields" are the specification-
+--  agreement witnesses.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §3.1  (specification-agreement types)
+--    docs/formal/02-foundations.md §7           (the generic bridge pattern)
+--    docs/instances/star-patch.md §6.2          (enriched bridge)
 -- ════════════════════════════════════════════════════════════════════
 
 EnrichedBdy : Type₀
@@ -138,6 +151,10 @@ bulk-instance = LB , refl
 --  The definition uses the  iso  constructor (rather than copattern
 --  matching on the Iso record fields) for compatibility with the
 --  no-eta-equality declaration on Iso.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §3.2  (the Iso construction)
+--    docs/formal/02-foundations.md §4           (equivalences)
 -- ════════════════════════════════════════════════════════════════════
 
 enriched-iso : Iso EnrichedBdy EnrichedBulk
@@ -164,6 +181,9 @@ enriched-iso = iso fwd bwd fwd-bwd bwd-fwd
 --
 --  Promoting the Iso to a full coherent equivalence (with
 --  contractible fibers).  This is required for  ua  application.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §4  (equivalences and isoToEquiv)
 -- ════════════════════════════════════════════════════════════════════
 
 enriched-equiv : EnrichedBdy ≃ EnrichedBulk
@@ -183,10 +203,14 @@ enriched-equiv = isoToEquiv enriched-iso
 --  specification functions S∂ and LB), and the path carries the
 --  nontrivial content of  star-obs-path  through the Glue type.
 --
---  This is the "Univalence bridge" of Phase 3C: a path in the
---  universe that identifies boundary-certified and bulk-certified
---  observable packages as equal types, enabled by the discrete
---  Ryu–Takayanagi correspondence.
+--  This is the "Univalence bridge": a path in the universe that
+--  identifies boundary-certified and bulk-certified observable
+--  packages as equal types, enabled by the discrete Ryu–Takayanagi
+--  correspondence.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5           (the Univalence axiom)
+--    docs/formal/03-holographic-bridge.md §3.3  (Univalence application)
 -- ════════════════════════════════════════════════════════════════════
 
 enriched-ua-path : EnrichedBdy ≡ EnrichedBulk
@@ -214,8 +238,12 @@ enriched-ua-path = ua enriched-equiv
 --  The computation step (uaβ) is the key:  transport does not get
 --  stuck on an opaque postulate — it reduces to the concrete forward
 --  map, which appends  star-obs-path  to the agreement witness.
---  This is the "compilation step" from §3C of docs/05-roadmap.md:
---  a computable transport between exactly equivalent packaged types.
+--  This is the "compilation step": a computable transport between
+--  exactly equivalent packaged types.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5.1  (ua and uaβ in Cubical Agda)
+--    docs/formal/03-holographic-bridge.md §3.4  (verified transport)
 -- ════════════════════════════════════════════════════════════════════
 
 -- ────────────────────────────────────────────────────────────────
@@ -272,12 +300,18 @@ enriched-transport = transport-computes ∙ fwd-eq-bulk
 --  the bulk specification — and that function is exactly the bulk
 --  minimal-chain-length functional LB.
 --
---  This is **Theorem 3** from §3.0 of docs/03-architecture.md:
---  the boundary cut-entropy observable package and the bulk
+--  This is the discrete Ryu–Takayanagi correspondence (Theorem 1
+--  in docs/formal/01-theorems.md) instantiated for the 6-tile
+--  star: the boundary cut-entropy observable package and the bulk
 --  minimal-chain-length observable package are connected by an
 --  exact type equivalence, and transport along the resulting
 --  Univalence path carries the boundary functional to the bulk
 --  functional.
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 1          (Discrete Ryu–Takayanagi)
+--    docs/formal/03-holographic-bridge.md §3.4  (verified transport)
+--    docs/instances/star-patch.md §6            (star bridge construction)
 -- ════════════════════════════════════════════════════════════════════
 
 enriched-transport-obs :
@@ -336,8 +370,7 @@ fwd-snd-is-star-obs-path = refl
 --  §12.  Type family and universe-level transport
 -- ════════════════════════════════════════════════════════════════════
 --
---  Phase 3C of the roadmap specifies defining a type family Φ over
---  the universe and computing:
+--  A type family Φ over the universe allows computing:
 --
 --    transport^Φ(p)(ρ∂)  :  Φ(EnrichedBulk)
 --
@@ -352,6 +385,9 @@ fwd-snd-is-star-obs-path = refl
 --  EnrichedBulk by precomposing with the inverse of the equivalence.
 --  This exercises the contravariant computational behavior of
 --  transport in function types.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §3  (transport)
 -- ════════════════════════════════════════════════════════════════════
 
 -- Type family Φ : Type₀ → Type₀
@@ -403,18 +439,19 @@ sample-bdy-value = refl
 --    • A bulk bundle (f, f≡LB, mono-f)            — where mono-f
 --      is derived from f≡LB and the monotonicity of LB
 --
---  This is the full enriched-package architecture envisioned in
---  §12.3 of docs/09-happy-instance.md.  The structural property
---  witnesses are NOT independent data: they are determined by the
---  specification-agreement field plus the externally proven
---  properties of S∂ and LB.  The equivalence preserves them
---  automatically because transport in propositions is trivial.
+--  This is the full enriched-package architecture described in
+--  docs/formal/03-holographic-bridge.md §4.  The structural
+--  property witnesses are NOT independent data: they are
+--  determined by the specification-agreement field plus the
+--  externally proven properties of S∂ and LB.  The equivalence
+--  preserves them automatically because transport in propositions
+--  is trivial.
 --
---  Future work:  define full record types with explicit subadd/mono
---  fields, construct their equivalence using this module's
---  enriched-equiv as the foundation, and verify that transport
+--  The full record types with explicit subadd/mono fields are
+--  defined in Bridge/FullEnrichedStarObs.agda, where transport
 --  converts a subadditivity witness into a monotonicity witness.
---  The proof would compose:
+--
+--  The proof composes:
 --
 --    subadd-S∂ ──[transport along p]──▶ subadd-f
 --                                           ║
@@ -424,6 +461,11 @@ sample-bdy-value = refl
 --
 --  where the two paths meet because  f  is identified with both
 --  S∂ and LB through the enriched equivalence.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §4     (full enriched equivalence)
+--    docs/formal/01-theorems.md §Thm 8           (subadditivity & monotonicity)
+--    docs/instances/star-patch.md §5             (structural properties)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -431,20 +473,20 @@ sample-bdy-value = refl
 --  §14.  End-to-end pipeline summary
 -- ════════════════════════════════════════════════════════════════════
 --
---  The complete Phase 3 pipeline for the 6-tile star, now with a
---  nontrivial Univalence step:
+--  The complete pipeline for the 6-tile star, with a nontrivial
+--  Univalence step:
 --
---    starSpec                                       (Common/StarSpec)
+--    starSpec                                         (Common/StarSpec)
 --      │
---      ├── π∂ ──▶ BoundaryView ──▶ S-cut            (Boundary/StarCut)
+--      ├── π∂ ──▶ BoundaryView ──▶ S-cut             (Boundary/StarCut)
 --      │
---      └── πbulk ──▶ BulkView ──▶ L-min             (Bulk/StarChain)
+--      └── πbulk ──▶ BulkView ──▶ L-min              (Bulk/StarChain)
 --             │
 --             ▼
---         star-pointwise : S∂ r ≡ LB r  ∀ r         (Bridge/StarObs)
+--         star-pointwise : S∂ r ≡ LB r  ∀ r           (Bridge/StarObs)
 --             │
 --             ▼
---         star-obs-path : S∂ ≡ LB                    (Bridge/StarEquiv)
+--         star-obs-path : S∂ ≡ LB                     (Bridge/StarEquiv)
 --             │
 --             ▼
 --         enriched-equiv : EnrichedBdy ≃ EnrichedBulk (this module)
@@ -465,15 +507,20 @@ sample-bdy-value = refl
 --  forward map of the equivalence, which rewires the agreement
 --  witness through the discrete Ryu–Takayanagi correspondence.
 --
---  This completes Phase 3C and satisfies Milestones 3 and 4 of
---  §6.9 of docs/06-challenges.md:
+--  This module is the hand-written enriched bridge for the star
+--  patch.  The generic bridge theorem (Bridge/GenericBridge.agda)
+--  proves the same construction once for any PatchData, and
+--  star-generic-witness (from Bridge/GenericValidation.agda)
+--  subsumes this module's results.  This module is retained as
+--  the historical first nontrivial Univalence bridge and as the
+--  foundation for the full structural-property conversion in
+--  Bridge/FullEnrichedStarObs.agda.
 --
---    Milestone 3: "A well-typed common source specification producing
---    both boundary and bulk views.  Observable packages extracted as
---    record types from the common source."
---
---    Milestone 4: "An exact equivalence between boundary and bulk
---    observable packages for at least one concrete instance.
---    Transport along the Univalence path producing a verified
---    translator."
+--  Reference:
+--    docs/formal/03-holographic-bridge.md   (holographic bridge overview)
+--    docs/formal/11-generic-bridge.md       (generic bridge — subsumes this)
+--    docs/formal/01-theorems.md §Thm 1      (Discrete Ryu–Takayanagi)
+--    docs/instances/star-patch.md §6        (star bridge construction)
+--    docs/getting-started/architecture.md   (module dependency DAG)
+--    docs/reference/module-index.md         (module description)
 -- ════════════════════════════════════════════════════════════════════

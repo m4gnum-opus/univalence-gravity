@@ -17,7 +17,8 @@ open import Bulk.DeSitterPatchComplex
 --  the 6-face star patch of the {5,3} spherical tiling (regular
 --  dodecahedron), encoded in  Bulk/DeSitterPatchComplex.agda .  It is
 --  the primary curvature formalization for the de Sitter (dS) side
---  of the discrete Wick rotation (Phase E.1, Step 3).
+--  of the discrete Wick rotation (Theorem 4 in the canonical
+--  theorem registry, docs/formal/01-theorems.md).
 --
 --  The combinatorial curvature formula is:
 --
@@ -33,14 +34,27 @@ open import Bulk.DeSitterPatchComplex
 --  values for the {5,3} tiling have denominators dividing 10, so
 --  this representation is exact and supports judgmental computation.
 --
---  Mathematical reference:
---    §7.4.4 of docs/10-frontier.md  (curvature comparison)
---    sim/prototyping/10_desitter_prototype.py  (Python prototype)
---    10_desitter_prototype_OUTPUT.txt §5–§8
+--  Architectural role:
+--    This is a Tier 2 (Observable / Geometry Layer) module providing
+--    the dS-side curvature function consumed by
+--    Bulk/DeSitterGaussBonnet.agda (the dS Gauss–Bonnet theorem)
+--    and Bridge/WickRotation.agda (the curvature-agnostic coherence
+--    record).  It has no dependencies on any Bridge or Boundary
+--    module.
+--
+--  Numerical verification:
+--    sim/prototyping/10_desitter_prototype.py  (§5–§8 of output)
 --
 --  Downstream modules:
 --    src/Bulk/DeSitterGaussBonnet.agda  — Σ κ(v) ≡ χ(K)
 --    src/Bridge/WickRotation.agda       — coherence record
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §6  (the {5,3} dS patch)
+--    docs/formal/08-wick-rotation.md §4      (positive interior curvature)
+--    docs/instances/desitter-patch.md §4     (curvature per vertex class)
+--    docs/formal/01-theorems.md §Thm 4      (Discrete Wick Rotation)
+--    docs/reference/module-index.md          (module description)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -69,6 +83,11 @@ open import Bulk.DeSitterPatchComplex
 --
 --  The curvature sign flip is the combinatorial analogue of the
 --  cosmological constant sign flip  Λ_AdS < 0  →  Λ_dS > 0 .
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §6.2  (positive interior curvature)
+--    docs/formal/08-wick-rotation.md §4.2      (curvature per class)
+--    docs/instances/desitter-patch.md §4       (curvature comparison table)
 -- ════════════════════════════════════════════════════════════════════
 
 dsκ-class : DSVClass → ℚ₁₀
@@ -118,6 +137,10 @@ dsκ w = dsκ-class (dsClassify w)
 --    dsTiling:   10 − 5·3 + 2·3 = 10 − 15 + 6  =  1  = pos1/10  ✓
 --    dsSharedW:  10 − 5·3 + 2·2 = 10 − 15 + 4  = −1  = neg1/10  ✓
 --    dsOuterB:   10 − 5·2 + 2·1 = 10 − 10 + 2  =  2  = pos1/5   ✓
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §4.1  (the curvature formula)
+--    sim/prototyping/10_desitter_prototype.py   (numerical verification)
 -- ════════════════════════════════════════════════════════════════════
 
 dsκ-formula : DSVClass → ℚ₁₀
@@ -277,8 +300,19 @@ dsContrib-outerB = refl
 --
 --    • Both sum to χ(K) = 1, but the interior/boundary split
 --      distributes differently:
---        dS:   (+1/2) + (+1/2) = 1
---        AdS:  (−1)   + (2)    = 1
+--        dS:   (+1/2) + (+1/2) = 1    (symmetric)
+--        AdS:  (−1)   + (2)    = 1    (asymmetric)
+--
+--  The symmetric dS decomposition reflects the even distribution
+--  of positive cosmological curvature in spherical geometry.  The
+--  asymmetric AdS decomposition reflects the strong interior
+--  deficit compensated by large boundary turning in hyperbolic
+--  geometry.
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §6.3  (dS symmetric decomposition)
+--    docs/formal/08-wick-rotation.md §5.3      (dS vs AdS decomposition)
+--    docs/instances/desitter-patch.md §5       (Gauss–Bonnet)
 -- ════════════════════════════════════════════════════════════════════
 
 dsInteriorCurvature : ℚ₁₀
@@ -324,6 +358,10 @@ dsInterior+boundary≡χ = refl
 --  Comparison with AdS ({5,4}):
 --    AdS interior:  κ = negsuc 1  (= −2 in tenths = −1/5)  NEGATIVE
 --    dS  interior:  κ = pos 1     (= +1 in tenths = +1/10) POSITIVE
+--
+--  Reference:
+--    docs/formal/08-wick-rotation.md §4.3  (curvature comparison table)
+--    docs/instances/desitter-patch.md §4   (curvature per vertex class)
 -- ════════════════════════════════════════════════════════════════════
 
 -- Interior curvature is POSITIVE:  κ(v_i) = pos 1  (i.e., +1 in tenths)
@@ -367,7 +405,10 @@ dsκ-outer-positive = refl
 --  q (from 4 to 3), not a complex rotation.  No complex numbers,
 --  no analytic continuation, no Lorentzian geometry.
 --
---  Reference: §7.4.4 of docs/10-frontier.md
+--  Reference:
+--    docs/formal/08-wick-rotation.md §4.3  (curvature comparison)
+--    docs/formal/08-wick-rotation.md §9    (what changes / what doesn't)
+--    docs/instances/desitter-patch.md §15  (comparison table)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -405,7 +446,8 @@ dsκ-outer-positive = refl
 --    3.  All named constants (pos1/10, neg1/10, pos1/5, one₁₀) are
 --        imported from Util/Rationals.agda and NEVER reconstructed
 --        locally.  This maintains the judgmental stability guarantee
---        required for refl-based proofs.
+--        required for refl-based proofs — the shared-constants
+--        discipline documented in docs/formal/02-foundations.md §6.3.
 --
 --    4.  The interior curvature is POSITIVE (pos 1 = +1/10), in
 --        direct contrast to the {5,4} patch (negsuc 1 = −2/10 = −1/5).
@@ -415,10 +457,24 @@ dsκ-outer-positive = refl
 --    5.  The module does NOT import or modify any existing curvature
 --        or bridge modules.  It is purely additive: the {5,4}
 --        curvature formalization in Bulk/Curvature.agda and the
---        shared bridge in Bridge/EnrichedStarEquiv.agda remain
+--        shared bridge in Bridge/GenericValidation.agda remain
 --        untouched.
 --
 --  Numerical verification:
 --    sim/prototyping/10_desitter_prototype.py  §5–§8
 --    All curvature values and the Gauss–Bonnet sum verified.
+--
+--  Architectural role:
+--    This is a Tier 2 (Observable / Geometry Layer) module.  It
+--    provides the dS-side curvature function consumed by
+--    Bulk/DeSitterGaussBonnet.agda and Bridge/WickRotation.agda.
+--    See docs/getting-started/architecture.md for the full module
+--    dependency DAG.
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §6  (the {5,3} dS patch)
+--    docs/formal/08-wick-rotation.md §4      (positive curvature)
+--    docs/formal/01-theorems.md §Thm 4      (Discrete Wick Rotation)
+--    docs/instances/desitter-patch.md        (instance data sheet)
+--    docs/reference/module-index.md          (module description)
 -- ════════════════════════════════════════════════════════════════════

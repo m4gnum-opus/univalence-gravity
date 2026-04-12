@@ -28,14 +28,23 @@ open import Bridge.StarObs
 --  Region → ℚ≥0 that interpolates between the boundary min-cut
 --  functional and the bulk minimal-chain-length functional.
 --
---  This corresponds to Step 6 of the proof order in §12.1 of
---  docs/09-happy-instance.md, and to §11.4 of the same document.
---
 --  The 10 pointwise equalities (5 singletons + 5 pairs) encode the
 --  discrete Ryu–Takayanagi correspondence for the 6-tile star:
 --    S_cut(A) = L_min(A)   for all tile-aligned contiguous regions A
---  verified numerically by sim/prototyping/01_happy_patch_cuts.py
---  (§3.1 of docs/09-happy-instance.md).
+--  verified numerically by sim/prototyping/01_happy_patch_cuts.py.
+--
+--  This is the discrete Ryu–Takayanagi correspondence (Theorem 1
+--  in docs/formal/01-theorems.md) for the 6-tile star instance,
+--  assembling the pointwise agreement from Bridge/StarObs.agda
+--  into a single function-level path via funExt.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §2  (pointwise agreement)
+--    docs/formal/02-foundations.md §2.3       (funExt in Cubical Agda)
+--    docs/instances/star-patch.md §4          (min-cut / observable
+--                                              agreement table)
+--    docs/instances/star-patch.md §6          (bridge construction)
+--    sim/prototyping/01_happy_patch_cuts.py   (numerical verification)
 -- ════════════════════════════════════════════════════════════════════
 
 star-obs-path :
@@ -58,9 +67,8 @@ star-obs-path = funExt star-pointwise
 --  S-cut (π∂ starSpec)  (the boundary observable), and at i = i1
 --  it is  L-min (πbulk starSpec)  (the bulk observable).
 --
---  This is Step 7 of the proof order in §12.1 of
---  docs/09-happy-instance.md, and it completes the minimal bridge
---  for the 6-tile star instance.  The end-to-end pipeline is:
+--  This completes the minimal bridge for the 6-tile star instance.
+--  The end-to-end pipeline is:
 --
 --    starSpec  →  π∂ / πbulk  →  Obs∂ / ObsBulk  →  star-package-path
 --
@@ -71,6 +79,11 @@ star-obs-path = funExt star-pointwise
 --  Bridge/TreeEquiv.agda), confirming that the observable-package
 --  architecture scales from 1D trees to genuine 2D tilings from
 --  the holographic literature.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §2  (pointwise agreement)
+--    docs/instances/star-patch.md §6          (bridge construction)
+--    docs/instances/tree-pilot.md §6          (tree pilot bridge)
 -- ════════════════════════════════════════════════════════════════════
 
 star-package-path : Obs∂ starSpec ≡ ObsBulk starSpec
@@ -95,13 +108,23 @@ star-package-path i .ObsPackage.obs = star-obs-path i
 --
 --  A nontrivial  ua  step requires enriched packages with
 --  asymmetric proof-carrying fields — e.g. a subadditivity witness
---  on the boundary side (as partially formalized in
---  Boundary/StarSubadditivity.agda) and a monotonicity or
---  triangle-inequality witness on the bulk side.  See §12.3 of
---  docs/09-happy-instance.md for the design of this enrichment.
+--  on the boundary side (as formalized in
+--  Boundary/StarSubadditivity.agda) and a monotonicity witness on
+--  the bulk side (as formalized in Bulk/StarMonotonicity.agda).
+--  The full enriched equivalence converting subadditivity into
+--  monotonicity via transport is constructed in
+--  Bridge/FullEnrichedStarObs.agda.
 --
---  See also §9.5 of docs/08-tree-instance.md and
---  Bridge/TreeEquiv.agda for the tree-pilot analogue.
+--  See also Bridge/TreeEquiv.agda for the tree-pilot analogue
+--  and docs/formal/03-holographic-bridge.md §3–§4 for the
+--  enriched type equivalence construction.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §3  (enriched types)
+--    docs/formal/03-holographic-bridge.md §4  (full enriched equiv)
+--    docs/formal/02-foundations.md §5         (ua and uaβ)
+--    docs/instances/tree-pilot.md §10         (what tree does NOT exercise)
+--    docs/instances/star-patch.md §6          (bridge construction)
 -- ════════════════════════════════════════════════════════════════════
 
 -- ────────────────────────────────────────────────────────────────
@@ -109,9 +132,9 @@ star-package-path i .ObsPackage.obs = star-obs-path i
 --  a common source specification.  For the star instance, both
 --  sides produce  Region → ℚ≥0 .
 --
---  In a HaPPY-derived instance with enriched packages, the
---  boundary type family might produce a record with a
---  subadditivity field and the bulk type family a record with a
+--  In the enriched-package architecture (Bridge/FullEnrichedStarObs.agda),
+--  the boundary type family produces a record with a subadditivity
+--  field and the bulk type family produces a record with a
 --  monotonicity field — making these two families genuinely
 --  different and the resulting equivalence nontrivial.
 -- ────────────────────────────────────────────────────────────────
@@ -127,10 +150,11 @@ ObsBulk-Ty _ = Region → ℚ≥0
 -- ────────────────────────────────────────────────────────────────
 --
 --  Since both type families produce the same type, the equivalence
---  is the identity equivalence on  Region → ℚ≥0 .  In a future
---  enriched-package instance where the boundary and bulk sides
---  carry different record structure or different proof fields,
---  this equivalence would require genuine construction work
+--  is the identity equivalence on  Region → ℚ≥0 .  In the enriched
+--  bridge (Bridge/EnrichedStarObs.agda, Bridge/FullEnrichedStarObs.agda)
+--  where the boundary and bulk sides carry different record
+--  structure (specification-agreement fields, structural property
+--  witnesses), this equivalence requires genuine construction work
 --  (forward/inverse maps + coherent round-trip homotopies).
 -- ────────────────────────────────────────────────────────────────
 
@@ -159,6 +183,9 @@ star-ua-path = ua star-type-equiv
 --  The cubical library provides  uaIdEquiv : ua (idEquiv A) ≡ refl .
 --  This confirms that the Univalence path we constructed adds no
 --  nontrivial content for the star instance, as expected.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5.1  (ua and uaβ)
 -- ────────────────────────────────────────────────────────────────
 
 star-ua-trivial : star-ua-path ≡ refl
@@ -175,6 +202,9 @@ star-ua-trivial = uaIdEquiv
 --
 --  Since  equivFun (idEquiv A) x  reduces judgmentally to  x ,
 --  the result is  transport star-ua-path f ≡ f .
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5.1  (uaβ computation rule)
 -- ────────────────────────────────────────────────────────────────
 
 star-transport-id :
@@ -204,13 +234,23 @@ star-transport-id f = uaβ star-type-equiv f
 --  now validated on a genuine 2D tiling from the holographic
 --  literature rather than a 1D tree.
 --
---  The analogous proof for an enriched-package HaPPY instance
---  will replace  idEquiv  with a genuine equivalence between
---  structurally different observable record types (e.g. a
---  boundary package carrying a subadditivity witness and a bulk
---  package carrying a monotonicity witness), making the transport
---  a nontrivial verified translator between boundary and bulk
---  observable bundles.
+--  The nontrivial enriched equivalence — where transport converts
+--  a subadditivity witness into a monotonicity witness — is
+--  constructed in Bridge/EnrichedStarObs.agda (specification-
+--  agreement equivalence) and Bridge/FullEnrichedStarObs.agda
+--  (full structural-property conversion).  The generic bridge
+--  from Bridge/GenericBridge.agda subsumes both constructions
+--  for all twelve verified patch instances.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §3  (enriched equiv)
+--    docs/formal/03-holographic-bridge.md §4  (full enriched equiv)
+--    docs/formal/03-holographic-bridge.md §5  (generic bridge)
+--    docs/formal/02-foundations.md §3         (transport)
+--    docs/formal/02-foundations.md §5         (ua and uaβ)
+--    docs/instances/star-patch.md §6          (bridge construction)
+--    docs/instances/tree-pilot.md §6          (tree pilot bridge)
+--    docs/formal/11-generic-bridge.md         (PatchData → BridgeWitness)
 -- ────────────────────────────────────────────────────────────────
 
 star-transport-obs :

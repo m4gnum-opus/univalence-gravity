@@ -43,6 +43,12 @@ open import Bulk.StarMonotonicity
 --  This is the foundational h-level lemma that makes both
 --  Subadditive and Monotone propositional, enabling the round-trip
 --  homotopies in the full enriched equivalence.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §1  (h-levels and truncation)
+--    docs/formal/03-holographic-bridge.md §4  (full enriched equiv)
+--    docs/engineering/abstract-barrier.md §3  (why propositionality
+--                                              makes abstract safe)
 -- ════════════════════════════════════════════════════════════════════
 
 private
@@ -96,6 +102,10 @@ isProp≤ℚ {m} {n} (k₁ , p₁) (k₂ , p₂) =
 --  type is already proven in Boundary/StarSubadditivity.agda.  The
 --  restriction here serves only to stay within the  Region  type
 --  used by the enriched types in EnrichedStarObs.
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 8  (subadditivity & monotonicity)
+--    docs/instances/star-patch.md §5     (structural properties)
 -- ════════════════════════════════════════════════════════════════════
 
 data _∪R_≡R_ : Region → Region → Region → Type₀ where
@@ -129,6 +139,10 @@ data _∪R_≡R_ : Region → Region → Region → Type₀ where
 --      entropies of its parts.
 --    • Monotonicity is the bulk property: a larger boundary region
 --      is separated by a longer (or equal) minimal chain.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §4.1  (enriched record types)
+--    docs/physics/holographic-dictionary.md §7   (thermodynamics)
 -- ════════════════════════════════════════════════════════════════════
 
 Subadditive : (Region → ℚ≥0) → Type₀
@@ -151,6 +165,10 @@ Monotone f =
 --  Bulk/StarMonotonicity.agda, adapting from implicit to explicit
 --  region arguments.  All 10 cases reduce to  1 ≤ 2 ,  witnessed
 --  by  (1 , refl)  because  1 + 1 ≡ 2  judgmentally.
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 8  (theorem registry entry)
+--    docs/instances/star-patch.md §5     (structural properties)
 -- ════════════════════════════════════════════════════════════════════
 
 S∂-subadd : Subadditive S∂
@@ -177,6 +195,13 @@ LB-mono _ _ inc = monotonicity inc
 --  fields are propositional, any two inhabitants are equal, and we
 --  don't need to track how the properties are transported — only
 --  that SOME inhabitant exists on each side.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §1  (h-levels: propositions)
+--    docs/formal/03-holographic-bridge.md §4.2  (derivation, not
+--                                                preservation)
+--    docs/engineering/abstract-barrier.md §3    (propositionality
+--                                                makes abstract safe)
 -- ════════════════════════════════════════════════════════════════════
 
 isPropSubadditive : (f : Region → ℚ≥0) → isProp (Subadditive f)
@@ -209,6 +234,11 @@ isPropMonotone f =
 --  But they are genuinely different types in the universe because
 --  they reference different specification functions and different
 --  structural properties.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §4.1  (enriched record types)
+--    docs/formal/01-theorems.md §Thm 8          (theorem registry)
+--    docs/instances/star-patch.md §6.2           (enriched bridge)
 -- ════════════════════════════════════════════════════════════════════
 
 record FullBdy : Type₀ where
@@ -259,10 +289,15 @@ full-bulk .FullBulk.mono = LB-mono
 --  derive-mono:  given  f ≡ LB , transport LB's monotonicity
 --  along  sym q  to obtain monotonicity of  f .
 --
---  These are the arrows in the transport diagram from §13:
+--  These are the arrows in the transport diagram:
 --
 --    subadd-S∂ ──[subst Subadditive (sym p)]──▶ subadd-f
 --    mono-LB   ──[subst Monotone   (sym q)]──▶ mono-f
+--
+--  Reference:
+--    docs/formal/02-foundations.md §3.1  (subst)
+--    docs/formal/03-holographic-bridge.md §4.2  (derivation, not
+--                                                preservation)
 -- ════════════════════════════════════════════════════════════════════
 
 derive-subadd : (f : Region → ℚ≥0) → f ≡ S∂ → Subadditive f
@@ -302,6 +337,11 @@ derive-mono f q = subst Monotone (sym q) LB-mono
 --  (isSetObs), so any two paths  f ≡ S∂  (or  f ≡ LB) are equal.
 --  The structural-property fields agree because they are
 --  propositional (isPropSubadditive, isPropMonotone).
+--
+--  Reference:
+--    docs/formal/02-foundations.md §4    (equivalences and Iso)
+--    docs/formal/03-holographic-bridge.md §4.2  (derivation, not
+--                                                preservation)
 -- ════════════════════════════════════════════════════════════════════
 
 full-iso : Iso FullBdy FullBulk
@@ -359,6 +399,10 @@ full-iso = iso fwd bwd fwd-bwd bwd-fwd
 --  specification functions (S∂ vs LB) and different structural
 --  properties (Subadditive vs Monotone).  The path threads through
 --  star-obs-path  via the Glue type.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5  (the Univalence axiom)
+--    docs/formal/03-holographic-bridge.md §3.3  (Univalence application)
 -- ════════════════════════════════════════════════════════════════════
 
 full-equiv : FullBdy ≃ FullBulk
@@ -388,10 +432,17 @@ full-ua-path = ua full-equiv
 --  the second components by  isSetObs , and the third components by
 --  isPropMonotone .
 --
---  This is the "compilation step" from §3C of docs/05-roadmap.md:
---  a computable transport that converts a boundary observable bundle
---  carrying a subadditivity witness into a bulk observable bundle
---  carrying a monotonicity witness.
+--  This is the "compilation step": a computable transport that
+--  converts a boundary observable bundle carrying a subadditivity
+--  witness into a bulk observable bundle carrying a monotonicity
+--  witness.
+--
+--  Reference:
+--    docs/formal/02-foundations.md §5.1         (ua and uaβ — transport
+--                                                computes)
+--    docs/formal/03-holographic-bridge.md §4.3  (transport converts
+--                                                properties)
+--    docs/formal/01-theorems.md §Thm 8          (theorem registry)
 -- ════════════════════════════════════════════════════════════════════
 
 -- Step 1:  uaβ reduces transport to the forward map
@@ -443,6 +494,10 @@ full-transport = transport-computes ∙ fwd-eq-bulk
 --  bundled with a subadditivity witness, transport produces a
 --  function bundled with a monotonicity witness — and that function
 --  is exactly the bulk minimal-chain-length functional LB.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §4.3  (transport converts
+--                                                properties)
 -- ════════════════════════════════════════════════════════════════════
 
 full-transport-obs :
@@ -472,6 +527,12 @@ full-transport-obs = cong FullBulk.obs full-transport
 --  star-obs-path.  This replacement is the type-theoretic content
 --  of the holographic duality: boundary structural properties
 --  become bulk structural properties through the bridge.
+--
+--  Reference:
+--    docs/formal/03-holographic-bridge.md §4.2  (derivation, not
+--                                                preservation)
+--    docs/formal/03-holographic-bridge.md §4.3  (transport converts
+--                                                properties)
 -- ════════════════════════════════════════════════════════════════════
 
 full-transport-mono :
@@ -524,10 +585,10 @@ transported-mono-witness =
 --  §16.  End-to-end pipeline summary
 -- ════════════════════════════════════════════════════════════════════
 --
---  The complete Phase 3 pipeline for the 6-tile star, with full
---  structural property conversion:
+--  The complete pipeline for the 6-tile star, with full structural
+--  property conversion:
 --
---    starSpec                                   (Common/StarSpec)
+--    starSpec                                    (Common/StarSpec)
 --      │
 --      ├── π∂ ──▶ S-cut ──▶ S∂                  (Boundary/StarCut)
 --      │                     │
@@ -537,7 +598,7 @@ transported-mono-witness =
 --                              │
 --                              ├── LB-mono       (Bulk/StarMonotonicity)
 --                              │
---    star-pointwise : S∂ r ≡ LB r  ∀ r          (Bridge/StarObs)
+--    star-pointwise : S∂ r ≡ LB r  ∀ r           (Bridge/StarObs)
 --             │
 --    star-obs-path : S∂ ≡ LB                     (Bridge/StarEquiv)
 --             │
@@ -545,14 +606,14 @@ transported-mono-witness =
 --             │
 --    full-ua-path : FullBdy ≡ FullBulk           (this module, §10)
 --             │
---    full-transport :                             (this module, §11)
+--    full-transport :                            (this module, §11)
 --      transport full-ua-path full-bdy ≡ full-bulk
 --             │
---    full-transport-obs :                         (this module, §12)
+--    full-transport-obs :                        (this module, §12)
 --      obs (transport ... full-bdy) ≡ LB
 --             │
---    full-transport-mono :                        (this module, §13)
---      mono (transport ... full-bdy) ≡ LB-mono  (over PathP)
+--    full-transport-mono :                       (this module, §13)
+--      mono (transport ... full-bdy) ≡ LB-mono   (over PathP)
 --
 --  The subadditivity witness in  full-bdy  is consumed by the
 --  forward map of the equivalence and replaced by a monotonicity
@@ -565,8 +626,27 @@ transported-mono-witness =
 --  correspondence.
 --
 --  This module completes the future work outlined in §13 of
---  Bridge/EnrichedStarObs.agda and strengthens the Phase 3C
---  result: not only does transport carry boundary observables to
---  bulk observables, it carries boundary STRUCTURAL PROPERTIES
---  to bulk STRUCTURAL PROPERTIES.
+--  Bridge/EnrichedStarObs.agda and strengthens the enriched
+--  bridge result: not only does transport carry boundary
+--  observables to bulk observables, it carries boundary
+--  STRUCTURAL PROPERTIES to bulk STRUCTURAL PROPERTIES.
+--
+--  Architectural role:
+--    This is a Tier 3 (Bridge Layer) module.  It is the hand-written
+--    enriched bridge for the 6-tile star patch carrying full
+--    structural-property conversion.  It is consumed by:
+--      • Bridge/EnrichedStarEquiv.agda  (Theorem3 alias)
+--      • Bridge/EnrichedStarStepInvariance.agda  (parameterized version)
+--    The generic bridge (Bridge/GenericBridge.agda) subsumes the
+--    specification-agreement equivalence but NOT the structural-
+--    property conversion, which is specific to this module.
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 8          (theorem registry)
+--    docs/formal/03-holographic-bridge.md §4    (full enriched equiv)
+--    docs/formal/02-foundations.md §5           (Univalence and transport)
+--    docs/instances/star-patch.md §5–§6         (structural properties
+--                                                 and bridge construction)
+--    docs/getting-started/architecture.md       (Bridge Layer)
+--    docs/reference/module-index.md             (module description)
 -- ════════════════════════════════════════════════════════════════════

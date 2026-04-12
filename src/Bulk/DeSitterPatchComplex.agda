@@ -11,10 +11,10 @@ open import Cubical.Data.Sigma using (_×_)
 -- ════════════════════════════════════════════════════════════════════
 --
 --  This module encodes the polygon complex for the 6-face star
---  patch of the {5,3} tiling (regular dodecahedron) as specified
---  in §7.4.3 of docs/10-frontier.md.  It is the primary curvature /
---  Gauss–Bonnet formalization target for the de Sitter (dS) side
---  of the discrete Wick rotation.
+--  patch of the {5,3} tiling (regular dodecahedron).  It is the
+--  primary curvature / Gauss–Bonnet formalization target for the
+--  de Sitter (dS) side of the discrete Wick rotation (Theorem 4
+--  in docs/formal/01-theorems.md).
 --
 --  Patch composition:
 --    • 1  central pentagon  C
@@ -49,9 +49,12 @@ open import Cubical.Data.Sigma using (_×_)
 --    Interior curvature    −1/5           +1/10
 --    Euler characteristic  1              1
 --
---  The encoding uses Strategy A from §13.2 of docs/09-happy-instance.md:
---  vertices are grouped into 3 classes, and combinatorial curvature
---  is constant within each class.
+--  The encoding uses Strategy A (vertex classification): vertices
+--  are grouped into 3 classes, and combinatorial curvature is
+--  constant within each class.  This follows the same pattern as
+--  the 5-class encoding in Bulk/PatchComplex.agda for the {5,4}
+--  tiling, but with fewer classes because no gap-filler tiles are
+--  needed in {5,3}.
 --
 --  Numerical verification:
 --    sim/prototyping/10_desitter_prototype.py
@@ -61,6 +64,22 @@ open import Cubical.Data.Sigma using (_×_)
 --    src/Bulk/DeSitterCurvature.agda    — κ : DSVClass → ℚ₁₀
 --    src/Bulk/DeSitterGaussBonnet.agda  — Σ κ(v) ≡ χ(K)
 --    src/Bridge/WickRotation.agda       — coherence record
+--
+--  Architectural role:
+--    This is a Tier 1 (Specification Layer) module providing the
+--    dS-side polygon complex data consumed by the curvature and
+--    Gauss–Bonnet modules.  It has no dependencies on any Bridge
+--    or Boundary module.  The flow-graph topology (Tile, Bond,
+--    Region) is imported unchanged from Common/StarSpec.agda,
+--    shared with the {5,4} star patch — the curvature enrichment
+--    is the only new structure.
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §6  (the {5,3} dS patch)
+--    docs/formal/08-wick-rotation.md §3      (dS polygon complex)
+--    docs/instances/desitter-patch.md §3     (vertex classification)
+--    docs/getting-started/architecture.md    (Specification Layer)
+--    docs/reference/module-index.md          (module description)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -123,6 +142,10 @@ dsFaceSides = 5
 --    • Interior valence is 3 (not 4) → κ is POSITIVE (+1/10)
 --    • The positive interior curvature reflects the spherical
 --      (de Sitter) geometry of the {5,3} tiling
+--
+--  Reference:
+--    docs/formal/08-wick-rotation.md §3.1  (vertex classification)
+--    docs/instances/desitter-patch.md §3   (3-class structure)
 -- ════════════════════════════════════════════════════════════════════
 
 data DSVClass : Type₀ where
@@ -248,15 +271,9 @@ dsClassify dsb₄ = dsOuterB
 --    Nᵢ₋₁ ∩ Nᵢ:    edge (vᵢ , wᵢ)              5 edges
 --                                          total: 10 internal edges
 --
---  The remaining 10 edges are boundary edges (each in exactly one face):
---    Nᵢ:  edges (vᵢ₊₁, wᵢ₊₁), ... wait, actually:
---    Nᵢ has edges: (vᵢ,vᵢ₊₁) shared with C
---                  (vᵢ₊₁,wᵢ₊₁) — shared with Nᵢ₊₁ via wᵢ₊₁ and vᵢ₊₁
---
---  Correction: the shared edges between N tiles are:
---    N_{i-1} ∩ N_i:  edge (v_i, w_i)
---  And the boundary edges of N_i are:
---    (w_{i+1}, b_i)  and  (b_i, w_i)
+--  The remaining 10 edges are boundary edges (each in exactly
+--  one face).  The boundary edges of N_i are:
+--    (wᵢ₊₁, bᵢ)  and  (bᵢ, wᵢ)
 --  giving 2 boundary edges per N tile, 10 total.
 -- ════════════════════════════════════════════════════════════════════
 
@@ -319,6 +336,14 @@ dsBoundaryE = 10
 --  All proofs in this section hold by refl because both sides of
 --  each identity normalize to the same ℕ term under the judgmental
 --  computation rules for _+_ and _·_.
+--
+--  These proofs serve three purposes:
+--
+--    1. Machine-checked sanity tests on the polygon complex data.
+--    2. Exportable lemmas for the dS Gauss–Bonnet proof
+--       (Bulk/DeSitterGaussBonnet.agda).
+--    3. Regression tests: if any count is changed, these proofs
+--       will fail at type-check time.
 -- ════════════════════════════════════════════════════════════════════
 
 -- ────────────────────────────────────────────────────────────────
@@ -424,7 +449,9 @@ ds-face-incidence = refl
 --  on the polygon complex, so the boundary-edge count of the
 --  polygon complex (10) differs from the boundary-leg count of
 --  the flow graph (20).  Both are correct in their respective
---  contexts.
+--  contexts.  See docs/instances/desitter-patch.md §2 for the
+--  distinction between the polygon complex topology and the
+--  restricted star-topology flow graph.
 -- ════════════════════════════════════════════════════════════════════
 
 dsBoundaryEdgesPerN : ℕ
@@ -462,13 +489,20 @@ ds-boundary-edges-check = refl
 --        5-bond star topology (C connected to N₀..N₄ with uniform
 --        weight 1), and the same 10 representative regions with
 --        the same min-cut values S(k) = min(k, 5−k).  The bridge
---        equivalence (Common/StarSpec.agda, Bridge/StarEquiv.agda,
---        Bridge/EnrichedStarEquiv.agda) is literally reused.
+--        equivalence is literally reused from the {5,4} star —
+--        the same BridgeWitness term (star-generic-witness from
+--        Bridge/GenericValidation.agda) serves both curvature
+--        regimes without modification.
 --
 --  This module provides the geometric substrate for the dS
 --  curvature theorem.  The bridge is imported unchanged from the
 --  existing modules, confirming that the holographic correspondence
 --  is curvature-agnostic.
+--
+--  Reference:
+--    docs/formal/08-wick-rotation.md §9  (what changes and what does not)
+--    docs/formal/04-discrete-geometry.md §6  (dS vs AdS comparison)
+--    docs/instances/desitter-patch.md §15    (comparison table)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -499,7 +533,15 @@ ds-boundary-edges-check = refl
 --  Exports for Bridge/WickRotation.agda:
 --
 --    All of the above, packaged as the dS-side geometric data.
---    The WickRotation record will import both this module and
+--    The WickRotation record imports both this module and
 --    Bulk/PatchComplex.agda (the AdS side), along with the
---    shared bridge from Bridge/EnrichedStarEquiv.agda.
+--    shared bridge from Bridge/GenericValidation.agda
+--    (star-generic-witness : BridgeWitness, produced by the
+--    generic bridge machinery from Bridge/GenericBridge.agda).
+--
+--  Reference:
+--    docs/formal/08-wick-rotation.md §7  (WickRotationWitness)
+--    docs/formal/04-discrete-geometry.md §6  (dS patch structure)
+--    docs/instances/desitter-patch.md        (instance data sheet)
+--    docs/reference/module-index.md          (module description)
 -- ════════════════════════════════════════════════════════════════════

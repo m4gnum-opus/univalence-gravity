@@ -1,5 +1,5 @@
 # Abstract
- v0.4.5
+ v0.5.0
 
 **Univalence Gravity** is a constructive formalization project in Cubical Agda (v2.8.0, `agda/cubical` library) that machine-checks whether five pillars of a holographic universe — geometry, causality, gauge matter, curvature, and quantum superposition — can coexist in a single formally verified artifact, connected by computational transport along Univalence paths.
 

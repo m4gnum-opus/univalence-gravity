@@ -32,8 +32,12 @@ open import Common.StarSpec
 --  For an empty boundary, the holonomy is ε (the identity).
 --
 --  Reference:
---    docs/10-frontier.md §13.3  (Wilson loop definition)
---    docs/10-frontier.md §13.6  (type-theoretic definition)
+--    docs/formal/05-gauge-theory.md §6.1  (Wilson Loop Computation)
+--    docs/formal/05-gauge-theory.md §6    (Holonomy and Particle
+--                                          Defects — type-theoretic
+--                                          definition)
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — theorem registry)
 -- ════════════════════════════════════════════════════════════════════
 
 holonomy :
@@ -57,7 +61,7 @@ holonomy {G} ω ((b , d) ∷ rest) =
 --  The vacuum (empty space) is a flat connection: W_f = ε for all f.
 --
 --  Reference:
---    docs/10-frontier.md §13.3  ("The vacuum is a flat connection")
+--    docs/formal/05-gauge-theory.md §6.2  (Flatness)
 -- ════════════════════════════════════════════════════════════════════
 
 isFlat :
@@ -82,8 +86,10 @@ isFlat {G} ω ∂f = (f : _) → holonomy {G} ω (∂f f) ≡ FiniteGroup.ε G
 --  can evaluate whether a defect exists at any concrete face.
 --
 --  Reference:
---    docs/10-frontier.md §13.6  (ParticleDefect definition)
---    docs/10-frontier.md §13.12 (exit criterion, item 2)
+--    docs/formal/05-gauge-theory.md §6.3  (ParticleDefect — Matter
+--                                          as Topological Excitation)
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — theorem registry)
 -- ════════════════════════════════════════════════════════════════════
 
 ParticleDefect :
@@ -132,7 +138,12 @@ centralFaceBdy =
 --  expressible in terms of star bonds.  (Neighbor faces N_i have
 --  edges involving N–G bonds from the 15-bond filled patch.)
 --
---  This single-face type is sufficient for Phase M.1.
+--  This single-face type is sufficient for the holonomy and
+--  ParticleDefect demonstrations on the star patch.
+--
+--  Reference:
+--    docs/instances/star-patch.md §8     (Gauge Enrichment)
+--    docs/formal/05-gauge-theory.md §6.4 (Concrete Defect Witnesses)
 -- ════════════════════════════════════════════════════════════════════
 
 data StarFace : Type₀ where
@@ -228,10 +239,17 @@ flat-Z2-isFlat centralFace = refl
 --  machine-checked topological defect (non-trivial Wilson loop)
 --  on the holographic tensor network.
 --
---  Exit criterion (§13.12 of docs/10-frontier.md):
+--  This result satisfies Theorem 6 in the canonical theorem
+--  registry (docs/formal/01-theorems.md §Thm 6):
 --    "A ParticleDefect type is inhabited for a concrete gauge
 --     connection on the 6-tile star patch with a specified
 --     non-trivial holonomy at one face."
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — theorem registry)
+--    docs/formal/05-gauge-theory.md §6.4  (Concrete Defect Witnesses)
+--    docs/instances/star-patch.md §8      (Gauge Enrichment)
 -- ════════════════════════════════════════════════════════════════════
 
 -- The holonomy reduces to e1 by judgmental computation
@@ -244,7 +262,7 @@ nontrivZ2-not-flat flat = e1≢e0 (flat centralFace)
 
 -- ★ THE PARTICLE DEFECT — a constructive witness of matter ★
 --
--- This is the inhabited ParticleDefect for the exit criterion.
+-- This is the inhabited ParticleDefect for Theorem 6.
 -- The proof: if the holonomy (= e1) were equal to ε (= e0),
 -- we could derive ⊥ via the discriminator e1≢e0.
 defect-Z2 : ParticleDefect starNontrivZ2 centralFaceBdy
@@ -264,6 +282,10 @@ defect-Z2 p = e1≢e0 p
 --  Since ℤ/3ℤ is abelian, [z1] = {z1} — a singleton class.
 --  This is the "charge +1" particle type (of 3 total:
 --  vacuum + charge +1 + charge −1).
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §7    (Conjugacy Classes and
+--                                          Particle Species)
 -- ════════════════════════════════════════════════════════════════════
 
 holonomy-nontrivZ3 : holonomy starNontrivZ3 centralFaceBdy ≡ z1
@@ -295,6 +317,12 @@ defect-Z3 p = z1≢z0 p
 --  holonomy depends on the ordered product, not just which
 --  bonds carry non-identity elements.  This is the hallmark
 --  of non-abelian gauge theory.
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §6    (Holonomy and Particle
+--                                          Defects — non-commutativity)
+--    docs/formal/05-gauge-theory.md §4.3  (Q₈ — the Quaternion Group)
+--    docs/instances/star-patch.md §8.1    (Concrete Connections)
 -- ════════════════════════════════════════════════════════════════════
 
 -- ── Connection A: single non-identity bond (i) ────────────────
@@ -357,6 +385,10 @@ defect-Q8-ji p = qnk≢q1 p
 --  This is a machine-checked demonstration that non-abelian gauge
 --  theory on a discrete holographic network produces order-dependent
 --  holonomies — exactly as expected from the non-commutativity of Q₈.
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §6    (Non-commutative holonomy)
+--    docs/formal/01-theorems.md §Thm 6    (Non-commutativity witness)
 
 noncommutative-holonomy :
   holonomy starQ8-ij centralFaceBdy
@@ -459,12 +491,13 @@ private
 --    defect-Q8-i / defect-Q8-ij / defect-Q8-ji : ParticleDefect ...
 --    noncommutative-holonomy : ... → ⊥  (k ≠ −k witness)
 --
---  Exit criterion satisfaction (§13.12 of docs/10-frontier.md):
+--  Theorem 6 satisfaction (docs/formal/01-theorems.md §Thm 6):
 --
---    Item 2: ✓  ParticleDefect is inhabited (defect-Z2) for a
---    concrete gauge connection (starNontrivZ2) on the 6-tile star
---    patch with a specified non-trivial holonomy (e1) at the
---    central face.
+--    ✓  ParticleDefect is inhabited (defect-Z2) for a concrete
+--    gauge connection (starNontrivZ2) on the 6-tile star patch
+--    with a specified non-trivial holonomy (e1) at the central
+--    face.  Non-abelian defects (Q₈) and the non-commutativity
+--    witness are additionally provided.
 --
 --  Relationship to existing code:
 --
@@ -482,7 +515,7 @@ private
 --    algebraic structure (group elements) while the flow-graph
 --    infrastructure (Boundary/, Bulk/, Bridge/) continues to
 --    operate on scalar capacities extracted by the dimension
---    functor (Gauge/RepCapacity.agda, future).
+--    functor (Gauge/RepCapacity.agda).
 --
 --  Design decisions:
 --
@@ -510,22 +543,51 @@ private
 --        11-tile filled patch, a richer face type (and the 15-bond
 --        filled-patch bond type) would be needed.
 --
---  Next steps (Phase M.2 → M.3):
+--  Downstream consumers:
 --
---    1. src/Gauge/ConjugacyClass.agda  — Compute the conjugacy
---       class [W_f] of the holonomy.  For abelian groups (ℤ/nℤ),
---       each element is its own class.  For Q₈, there are 5
---       conjugacy classes: {1}, {−1}, {±i}, {±j}, {±k}.
---       The particle spectrum = set of non-identity classes.
+--    • Gauge/ConjugacyClass.agda  — Computes the conjugacy class
+--      [W_f] of the holonomy.  For abelian groups (ℤ/nℤ), each
+--      element is its own class.  For Q₈, there are 5 conjugacy
+--      classes: {1}, {−1}, {±i}, {±j}, {±k}.  The particle
+--      spectrum = set of non-identity classes.
 --
---    2. src/Gauge/RepCapacity.agda  — Define SpinLabel assigning
---       an irreducible representation to each bond, and the
---       dimension functor  dim : Rep G → ℕ  extracting scalar
---       capacities for the PatchData interface.
+--    • Gauge/RepCapacity.agda  — Defines SpinLabel assigning an
+--      irreducible representation to each bond, and the dimension
+--      functor  dim : Rep G → ℕ  extracting scalar capacities
+--      for the PatchData interface.  The GaugedPatchWitness record
+--      packages the dimension-weighted bridge, a Q₈ connection,
+--      and a ParticleDefect into a single artifact — the first
+--      machine-checked holographic spacetime with matter.
 --
---    3. Phase M.4 (stretch) — GaugedPatchWitness packaging:
---       (a) BridgeWitness for dimension-weighted patch
---       (b) GaugeConnection with defect locations
---       (c) ParticleDefect inhabitants at defect faces
---       (d) isFlat proofs at all non-defect faces
+--    • Quantum/StarQuantumBridge.agda  — The quantum superposition
+--      bridge theorem consumes per-microstate bridge data (from
+--      Bulk/StarChainParam.agda) and Q₈ connections defined here
+--      to prove ⟨S⟩ = ⟨L⟩ for any finite superposition.
+--
+--  Architectural role:
+--
+--    This is a Tier 2 (Observable / Geometry Layer) module in the
+--    Gauge directory.  It provides Theorem 6 (Matter as Topological
+--    Defects) from the canonical theorem registry.  The three-layer
+--    gauge architecture (docs/getting-started/architecture.md) is:
+--      Gauge Layer:    FiniteGroup → Connection → Holonomy (this)
+--                      → ConjugacyClass → ParticleDefect
+--      Capacity Layer: RepCapacity (dim functor → scalar weights)
+--      Bridge Layer:   GenericBridge (operates on scalar PatchData)
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md       (gauge theory — full
+--                                          formal treatment)
+--    docs/formal/05-gauge-theory.md §6    (Holonomy and Particle
+--                                          Defects)
+--    docs/formal/05-gauge-theory.md §10   (The Three-Layer
+--                                          Architecture)
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — theorem registry)
+--    docs/instances/star-patch.md §8      (Gauge Enrichment on the
+--                                          star patch)
+--    docs/getting-started/architecture.md (module dependency DAG)
+--    docs/reference/module-index.md       (module description)
+--    docs/historical/development-docs/10-frontier.md §13
+--                                         (original development plan)
 -- ════════════════════════════════════════════════════════════════════

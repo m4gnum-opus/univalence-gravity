@@ -43,13 +43,41 @@ open import Gauge.Q8
 --    | ℤ/3ℤ   |     3    |       3       |        2         |
 --    | Q₈     |     8    |       5       |        4         |
 --
+--  Architectural role:
+--    This is a Tier 2 (Observable / Geometry Layer) module in the
+--    Gauge directory.  It defines the conjugacy relation and
+--    particle species classification consumed by downstream modules.
+--    The module sits between Gauge/Holonomy.agda (which produces
+--    holonomy values) and Gauge/RepCapacity.agda (which maps
+--    representations to scalar bond capacities).  The three-layer
+--    gauge architecture is:
+--      Gauge Layer:    FiniteGroup → Connection → Holonomy
+--                      → ConjugacyClass (this) → ParticleDefect
+--      Capacity Layer: RepCapacity (dim functor → scalar weights)
+--      Bridge Layer:   GenericBridge (operates on scalar PatchData)
+--    See docs/getting-started/architecture.md for the full module
+--    dependency DAG.
+--
 --  Reference:
---    docs/10-frontier.md §13.6   (conjugacy classes and particle spectrum)
---    docs/10-frontier.md §13.9   (Phase M.2 — Conjugacy Classes)
---    docs/10-frontier.md §13.12  (exit criterion)
+--    docs/formal/05-gauge-theory.md §7    (conjugacy classes and
+--                                          particle species —
+--                                          formal treatment)
+--    docs/formal/05-gauge-theory.md §7.1  (the conjugacy relation)
+--    docs/formal/05-gauge-theory.md §7.3  (Q₈ conjugacy classes)
+--    docs/formal/05-gauge-theory.md §7.4  (species classification)
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — downstream)
+--    docs/reference/module-index.md       (module description)
+--    docs/getting-started/architecture.md (module dependency DAG)
+--    docs/historical/development-docs/10-frontier.md §13.6
+--                                         (original development plan —
+--                                          conjugacy classes)
+--    docs/historical/development-docs/10-frontier.md §13.9
+--                                         (original Phase M.2)
 --
 --  Downstream modules:
---    src/Gauge/RepCapacity.agda  — SpinLabel, dim functor
+--    src/Gauge/RepCapacity.agda  — SpinLabel, dim functor,
+--                                  GaugedPatchWitness
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -66,6 +94,9 @@ open import Gauge.Q8
 --  Usage:
 --    Conj._~G_ Q₈ qi qni  :  Type₀
 --    (the type of witnesses that qi and qni are conjugate in Q₈)
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §7.1  (the conjugacy relation)
 -- ════════════════════════════════════════════════════════════════════
 
 module Conj (G : FiniteGroup) where
@@ -82,6 +113,7 @@ module Conj (G : FiniteGroup) where
   --  In the physics interpretation, conjugation corresponds to a
   --  gauge transformation: if two face holonomies are conjugate,
   --  they carry the same gauge charge (same "particle species").
+  --  See docs/formal/05-gauge-theory.md §7.1.
 
   infix 4 _~G_
 
@@ -105,6 +137,10 @@ module Conj (G : FiniteGroup) where
   --  For concrete abelian groups (ℤ/2, ℤ/3) where all axioms
   --  hold by refl on closed constructors, this composed path
   --  itself reduces to refl.
+  --
+  --  Reference:
+  --    docs/formal/05-gauge-theory.md §7.2  (abelian groups:
+  --                                          trivial conjugacy)
 
   abelian-self-conjugate :
     ((x y : Carrier) → x · y ≡ y · x)
@@ -174,8 +210,8 @@ module Z2Conj where
 --
 --  Particle spectrum: 2 non-identity classes → 2 charge types.
 --
---  This matches the mathematical expectation from §13.6 of
---  docs/10-frontier.md:
+--  This matches the mathematical expectation from
+--  docs/formal/05-gauge-theory.md §7:
 --    ℤ/3ℤ → 3 conjugacy classes → vacuum + 2 charge types.
 -- ════════════════════════════════════════════════════════════════════
 
@@ -229,8 +265,12 @@ module Z3Conj where
 --
 --  Particle spectrum: 5 total classes − 1 identity = 4 species.
 --
---  This matches the mathematical expectation from §13.6:
+--  This matches the mathematical expectation from
+--  docs/formal/05-gauge-theory.md §7.3:
 --    Q₈ → 5 conjugacy classes → vacuum + 4 species.
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §7.3  (Q₈ conjugacy classes)
 -- ════════════════════════════════════════════════════════════════════
 
 data Q8ConjClass : Type₀ where
@@ -333,6 +373,11 @@ conj-n1-n1 = q1 , refl
 --
 --  For abelian groups, sameSpecies reduces to equality of
 --  holonomies (since every element is its own conjugacy class).
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §7.4  (species classification)
+--    docs/physics/holographic-dictionary.md §4  (gauge theory
+--                                               Agda ↔ physics)
 -- ════════════════════════════════════════════════════════════════════
 
 -- ── Q₈ species predicate ──────────────────────────────────────
@@ -594,10 +639,24 @@ private
 --      are the same particle species (even if W ≡ qi and W' ≡ qni,
 --      since both map to cc-i).
 --
---  Next steps (Phase M.3):
+--  Next steps:
 --
---    src/Gauge/RepCapacity.agda  — Define SpinLabel assigning an
+--    src/Gauge/RepCapacity.agda  — Defines SpinLabel assigning an
 --    irreducible representation to each bond, the dimension functor
 --    dim : Rep G → ℕ, and the integration with PatchData for
---    dimension-weighted bridge witnesses.
+--    dimension-weighted bridge witnesses (GaugedPatchWitness).
+--    See docs/formal/05-gauge-theory.md §8 for the capacity
+--    extraction and gauge-enriched bridge.
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §7    (conjugacy classes and
+--                                          particle species)
+--    docs/formal/05-gauge-theory.md §10   (three-layer gauge
+--                                          architecture)
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — downstream)
+--    docs/reference/module-index.md       (module description)
+--    docs/getting-started/architecture.md (module dependency DAG)
+--    docs/historical/development-docs/10-frontier.md §13
+--                                         (original development plan)
 -- ════════════════════════════════════════════════════════════════════

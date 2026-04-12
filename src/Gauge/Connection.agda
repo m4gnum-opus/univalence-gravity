@@ -29,11 +29,31 @@ open import Gauge.FiniteGroup
 --  The record is parameterized by both the group and the bond type.
 --  Both are fixed for any given connection.
 --
+--  Architectural role:
+--    This is a Tier 2 (Observable / Geometry Layer) module in the
+--    Gauge directory.  It defines the connection infrastructure
+--    consumed by Gauge/Holonomy.agda (holonomy computation,
+--    ParticleDefect) and Gauge/RepCapacity.agda (dimension functor,
+--    GaugedPatchWitness).  The three-layer gauge architecture is:
+--      Gauge Layer:    FiniteGroup → Connection → Holonomy
+--      Capacity Layer: RepCapacity (dim functor → scalar weights)
+--      Bridge Layer:   GenericBridge (operates on scalar PatchData)
+--    See docs/getting-started/architecture.md for the full module
+--    dependency DAG.
+--
 --  Reference:
---    docs/10-frontier.md §13.3  (lattice gauge theory on the network)
---    docs/10-frontier.md §13.7  (three-layer architecture)
---    docs/10-frontier.md §13.8  (module plan: GaugeConnection, readBond)
---    docs/10-frontier.md §13.9  (Phase M.1)
+--    docs/formal/05-gauge-theory.md §5    (Gauge Connections)
+--    docs/formal/05-gauge-theory.md §5.1  (The GaugeConnection Record)
+--    docs/formal/05-gauge-theory.md §10   (The Three-Layer Architecture)
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — downstream)
+--    docs/reference/module-index.md       (module description)
+--    docs/reference/assumptions.md §A9    (finite gauge groups
+--                                          replace continuous Lie
+--                                          groups)
+--    docs/getting-started/architecture.md (module dependency DAG)
+--    docs/historical/development-docs/10-frontier.md §13
+--                                         (original development plan)
 -- ════════════════════════════════════════════════════════════════════
 
 record GaugeConnection (G : FiniteGroup) (BondTy : Type₀) : Type₀ where
@@ -58,6 +78,13 @@ record GaugeConnection (G : FiniteGroup) (BondTy : Type₀) : Type₀ where
 --  list of  (Bond × Dir)  pairs specifying how each bond in the
 --  face boundary is traversed.  readBond  then applies  inv  when
 --  the direction is  rev .
+--
+--  Design decision: Dir is a 2-constructor data type (not Bool) to
+--  give semantic names to the two traversal directions, improving
+--  readability of holonomy specifications.
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §5.2  (Bond Traversal Direction)
 -- ════════════════════════════════════════════════════════════════════
 
 data Dir : Type₀ where
@@ -80,6 +107,16 @@ data Dir : Type₀ where
 --
 --    holonomy ω f  =  readBond ω d₁ b₁  ·  readBond ω d₂ b₂
 --                     ·  ⋯  ·  readBond ω dₙ bₙ
+--
+--  Design decision: readBond takes Dir as a SEPARATE argument (not
+--  paired with the bond) to allow partial application and to match
+--  the mathematical notation where direction is a property of how
+--  a bond is traversed in a specific cycle, not an intrinsic
+--  property of the bond itself.
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §5.2  (Bond Traversal Direction)
+--    docs/formal/05-gauge-theory.md §6.1  (Wilson Loop Computation)
 -- ════════════════════════════════════════════════════════════════════
 
 readBond :
@@ -119,13 +156,15 @@ readBond-rev _ _ = refl
 --  face: the product of identities is the identity.
 --
 --  This is the "empty space" configuration — no matter, no fields,
---  no defects.  A ParticleDefect (docs/10-frontier.md §13.6) is
---  defined as a face whose holonomy under a given connection differs
---  from the identity.
+--  no defects.  A ParticleDefect (Gauge/Holonomy.agda) is defined
+--  as a face whose holonomy under a given connection differs from
+--  the identity.
 --
 --  Reference:
---    docs/10-frontier.md §13.3  ("The vacuum (empty space) is a
---    flat connection: W_f = e (the identity) for every face f.")
+--    docs/formal/05-gauge-theory.md §5.3  (The Flat (Vacuum) Connection)
+--    docs/formal/05-gauge-theory.md §6.2  (Flatness)
+--    docs/formal/05-gauge-theory.md §6.3  (ParticleDefect — Matter
+--                                          as Topological Excitation)
 -- ════════════════════════════════════════════════════════════════════
 
 flatConnection :
@@ -199,18 +238,20 @@ readFlat-rev G _ = inv-ε G
 --
 --  On the 5-bond star graph (which is a TREE), neither connection
 --  has any face cycles to compute holonomy around.  The genuine
---  defect test requires the 11-tile filled patch (which has 4-cycles
---  in the bond graph);  this is handled in Gauge/Holonomy.agda.
+--  defect test requires the central pentagon face boundary;  this
+--  is handled in Gauge/Holonomy.agda using  centralFaceBdy .
 --
 --  The star-patch connections serve as:
 --    (a) smoke tests that the GaugeConnection infrastructure works
 --        for concrete groups and bond types;
---    (b) building blocks for the filled-patch connection (which
---        extends the star assignment to the 10 additional G-bonds).
+--    (b) building blocks for the Q₈-enriched connections in
+--        Gauge/Holonomy.agda (starQ8-i, starQ8-ij, starQ8-ji).
 --
 --  Reference:
---    docs/10-frontier.md §13.9  (Phase M.1 — instantiate on the
---    6-tile star patch with ℤ/2ℤ)
+--    docs/formal/05-gauge-theory.md §5.4  (Concrete Connections on
+--                                          the Star Patch)
+--    docs/instances/star-patch.md §8      (Gauge Enrichment)
+--    docs/instances/star-patch.md §8.1    (Concrete Connections)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Common.StarSpec using (Bond ; bCN0 ; bCN1 ; bCN2 ; bCN3 ; bCN4)
@@ -228,10 +269,10 @@ starFlatZ2 = flatConnection ℤ/2
 --  all other bonds.  This is the simplest non-flat assignment:
 --  at least one bond carries a non-identity element.
 --
---  When this assignment is extended to the 15-bond filled patch
---  (with the remaining 10 G-bonds set to e0), faces adjacent to
---  bond bCN0 will have non-trivial holonomy ( ≠ e0 ), producing
---  a ParticleDefect at the corresponding face.
+--  In Gauge/Holonomy.agda, the holonomy of this connection around
+--  the central pentagon is computed as  e1 · e0 · e0 · e0 · e0 = e1
+--  ≠ e0 = ε , producing a  ParticleDefect  — the first machine-
+--  checked topological defect on a holographic tensor network.
 
 starNontrivZ2 : GaugeConnection ℤ/2 Bond
 starNontrivZ2 .GaugeConnection.assign bCN0 = e1
@@ -255,6 +296,10 @@ starNontrivZ2 .GaugeConnection.assign bCN4 = e0
 --  This verifies that the orientation convention  g_ē = g_e⁻¹
 --  produces genuinely different values in the forward and reverse
 --  directions for non-self-inverse elements.
+--
+--  Reference:
+--    docs/formal/05-gauge-theory.md §4.2  (ℤ/3ℤ — The First
+--                                          Non-Trivial Inverse)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Gauge.ZMod using (Z3 ; z0 ; z1 ; z2 ; ℤ/3)
@@ -390,13 +435,18 @@ private
 --        face boundary
 --      — Defines isFlat (holonomy ≡ ε for every face)
 --      — Defines ParticleDefect (¬(holonomy ≡ ε))
---      — Instantiates on the 11-tile filled patch with ℤ/2:
---        extends starNontrivZ2 to 15 bonds and shows that the
---        face adjacent to bCN0 has non-trivial holonomy
+--      — Instantiates on the star patch with ℤ/2 and Q₈:
+--        shows that the central face has non-trivial holonomy
+--        for starNontrivZ2 and starQ8-i connections
 --
 --    src/Gauge/ConjugacyClass.agda
 --      — The conjugacy class of the holonomy determines the
 --        particle species (gauge-invariant)
+--
+--    src/Gauge/RepCapacity.agda
+--      — The dimension functor extracts scalar bond capacities
+--        from representation labels, feeding into PatchData for
+--        the gauge-enriched bridge (GaugedPatchWitness)
 --
 --  Relationship to existing code:
 --
@@ -410,9 +460,12 @@ private
 --    modified.  The connection assigns algebraic structure to the
 --    same bonds used by the flow-graph infrastructure (Boundary/,
 --    Bulk/, Bridge/).  The capacity layer (Gauge/RepCapacity.agda)
---    will extract scalar weights from this algebraic structure via
+--    extracts scalar weights from this algebraic structure via
 --    the dimension functor, feeding them into the existing PatchData
---    interface.
+--    interface.  The bridge layer (Bridge/GenericBridge.agda) is
+--    completely unaware of the gauge group — it operates on abstract
+--    scalar bond weights.  This is the architectural content of the
+--    claim that the holographic correspondence is gauge-agnostic.
 --
 --  Design decisions:
 --
@@ -438,14 +491,26 @@ private
 --        do not need to case-split on the specific group.
 --
 --    5.  The star-patch connections are defined on the 5-bond star
---        topology from Common/StarSpec.agda.  The 15-bond filled
---        patch topology will be handled in Gauge/Holonomy.agda,
---        which imports PatchFace and faceVertices from
---        Bulk/PatchComplex.agda for face boundary data.
+--        topology from Common/StarSpec.agda.  The central pentagon
+--        face boundary (centralFaceBdy) for holonomy computation is
+--        defined in Gauge/Holonomy.agda, which also provides the Q₈
+--        connections (starQ8-i, starQ8-ij, starQ8-ji) and the
+--        concrete ParticleDefect witnesses.
 --
 --  Reference:
---    docs/10-frontier.md §13     (Adding Data Payloads)
---    docs/10-frontier.md §13.3   (lattice gauge theory formulation)
---    docs/10-frontier.md §13.8   (module plan)
---    docs/10-frontier.md §13.9   (Phase M.1 execution plan)
+--    docs/formal/05-gauge-theory.md       (gauge theory — full formal
+--                                          treatment)
+--    docs/formal/05-gauge-theory.md §5    (Gauge Connections)
+--    docs/formal/05-gauge-theory.md §10   (The Three-Layer Architecture)
+--    docs/formal/01-theorems.md §Thm 6    (Matter as Topological
+--                                          Defects — downstream)
+--    docs/instances/star-patch.md §8      (Gauge Enrichment on the
+--                                          star patch)
+--    docs/reference/module-index.md       (module description)
+--    docs/getting-started/architecture.md (module dependency DAG)
+--    docs/reference/assumptions.md §A9    (finite gauge groups
+--                                          replace continuous Lie
+--                                          groups)
+--    docs/historical/development-docs/10-frontier.md §13
+--                                         (original development plan)
 -- ════════════════════════════════════════════════════════════════════

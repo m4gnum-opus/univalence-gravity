@@ -47,30 +47,35 @@ open import Bulk.StarChain
 --  cycle), where monotonicity holds cleanly.  This restriction is
 --  natural: the representative type was designed to cover all
 --  distinct min-cut values without redundancy from complement
---  symmetry  S(A) = S(Ā)  (see §6.3 of docs/09-happy-instance.md).
+--  symmetry  S(A) = S(Ā).  See docs/instances/star-patch.md §3
+--  for the representative type design rationale.
 --
 --  Purpose in the project.  This module contributes to:
 --
---    • Theorem 2 (§3.0 of docs/03-architecture.md):  structural
---      property of the entropy functional.  Together with
+--    • Theorem 8 (Structural Properties — Subadditivity &
+--      Monotonicity) in the canonical theorem registry
+--      (docs/formal/01-theorems.md §Thm 8).  Together with
 --      Boundary/StarSubadditivity.agda, this establishes both
 --      subadditivity (boundary side) and monotonicity (bulk side)
 --      for the 6-tile star instance.
 --
---    • Phase 3C enriched-package equivalence (§12.3 of
---      docs/09-happy-instance.md):  the monotonicity witness
---      becomes a proof-carrying field in an enriched bulk
---      observable package  BulkObs , making the type-level
---      equivalence between  BdyObs  (with subadditivity) and
---      BulkObs  (with monotonicity) genuinely nontrivial.
---      Transport along the resulting  ua  path would produce a
---      verified translator between boundary and bulk observable
---      bundles — the "compilation step" of Phase 3C.
+--    • The full enriched-package equivalence in
+--      Bridge/FullEnrichedStarObs.agda:  the monotonicity witness
+--      is a proof-carrying field in the enriched bulk observable
+--      package  FullBulk , making the type-level equivalence
+--      between  FullBdy  (with subadditivity) and  FullBulk
+--      (with monotonicity) genuinely nontrivial.  Transport along
+--      the resulting  ua  path converts a subadditivity witness
+--      into a monotonicity witness — the "compilation step"
+--      verified in Bridge/FullEnrichedStarObs.agda §11.
+--      See docs/formal/03-holographic-bridge.md §4 for the
+--      full enriched equivalence construction.
 --
 --  Mathematical reference:
---    §3.1, §10.1  of docs/09-happy-instance.md  (numerical data)
---    §12.1, §12.3 of docs/09-happy-instance.md  (proof obligations)
---    sim/prototyping/01_happy_patch_cuts.py      (Python prototype)
+--    docs/instances/star-patch.md §4   (min-cut / observable agreement)
+--    docs/instances/star-patch.md §5   (structural properties)
+--    docs/formal/01-theorems.md §Thm 8 (theorem registry entry)
+--    sim/prototyping/01_happy_patch_cuts.py   (Python prototype)
 --
 --  Scalar infrastructure:
 --    _≤ℚ_ : ℚ≥0 → ℚ≥0 → Type₀
@@ -190,9 +195,9 @@ data _⊆R_ : Region → Region → Type₀ where
 --  All 10 cases reduce to the single concrete inequality  1 ≤ 2 ,
 --  witnessed by  (1 , refl)  because  1 + 1 ≡ 2  judgmentally.
 --
---  ┌──────────────────────────────────────────────────────────────┐
---  │  Inclusion           │  LHS    │  RHS    │  Witness         │
---  ├──────────────────────┼─────────┼─────────┼──────────────────┤
+--  ┌──────────────────────────────────────────────────────────┐
+--  │  Inclusion           │  LHS    │  RHS    │  Witness      │
+--  ├──────────────────────┼─────────┼─────────┼───────────────┤
 --  │  {N₀} ⊆ {N₄,N₀}    │  1      │  2      │  (1 , refl)     │
 --  │  {N₀} ⊆ {N₀,N₁}    │  1      │  2      │  (1 , refl)     │
 --  │  {N₁} ⊆ {N₀,N₁}    │  1      │  2      │  (1 , refl)     │
@@ -203,7 +208,7 @@ data _⊆R_ : Region → Region → Type₀ where
 --  │  {N₃} ⊆ {N₃,N₄}    │  1      │  2      │  (1 , refl)     │
 --  │  {N₄} ⊆ {N₃,N₄}    │  1      │  2      │  (1 , refl)     │
 --  │  {N₄} ⊆ {N₄,N₀}    │  1      │  2      │  (1 , refl)     │
---  └──────────────────────────────────────────────────────────────┘
+--  └──────────────────────────────────────────────────────────┘
 --
 --  Geometric interpretation:  severing the bond  C–N_i  (cost 1)
 --  disconnects the singleton  {N_i}  from the rest of the star.
@@ -218,12 +223,15 @@ data _⊆R_ : Region → Region → Type₀ where
 --    Boundary:  subadditivity   S(A ∪ B) ≤ S(A) + S(B)
 --    Bulk:      monotonicity    r₁ ⊆ r₂  →  L(r₁) ≤ L(r₂)
 --
+--  Both are packaged into the full enriched type equivalence in
+--  Bridge/FullEnrichedStarObs.agda, where transport converts
+--  subadditivity into monotonicity.  See
+--  docs/formal/03-holographic-bridge.md §4 for the construction.
+--
 --  Numerical verification:
 --    sim/prototyping/01_happy_patch_cuts.py
---    §3.1 of docs/09-happy-instance.md:
---      "Geodesic bound: S(A) ≤ internal geodesic length  ✓ (20/20)"
---      "Geodesic equality: S(A) = internal geodesic length for all
---       20 regions  ✓"
+--    docs/instances/star-patch.md §4:
+--      All 20 regions verified with geodesic equality S = L.
 -- ════════════════════════════════════════════════════════════════════
 
 monotonicity :
@@ -279,20 +287,21 @@ monotonicity sub-N4∈N4N0 = 1 , refl
 --  follows from the pointwise agreement path composed with the
 --  monotonicity witnesses.
 --
---  In the enriched-package architecture (§12.3 of
---  docs/09-happy-instance.md), this observation means that the
---  forward map of the type equivalence can transport a
---  subadditivity witness to a monotonicity witness by:
+--  In the full enriched-package architecture
+--  (Bridge/FullEnrichedStarObs.agda), the forward map of the
+--  type equivalence transports a subadditivity witness to a
+--  monotonicity witness by:
 --
 --    1.  Using the pointwise agreement to rewrite  S-cut  as  L-min
 --        in all inequality statements.
 --    2.  Deriving monotonicity from the rewritten subadditivity
---        witnesses.
+--        witnesses via  subst Monotone (sym q) LB-mono .
 --
---  The reverse map would derive subadditivity from monotonicity.
---  Both directions require the functional agreement as a
---  connecting lemma — which is exactly what  star-obs-path
---  (in Bridge/StarEquiv.agda) provides.
+--  The reverse map derives subadditivity from monotonicity
+--  symmetrically.  Both directions use the functional agreement
+--  star-obs-path  (in Bridge/StarEquiv.agda) as the connecting
+--  lemma.  See docs/formal/03-holographic-bridge.md §4 for the
+--  full construction.
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -314,17 +323,29 @@ monotonicity sub-N4∈N4N0 = 1 , refl
 --    Boundary/StarSubadditivity.agda
 --      — proves subadditivity of S-star on the full 20-region type
 --      — uses the same _≤ℚ_ and (k , refl) proof pattern
---      — serves as the boundary-side enrichment for Phase 3C
+--      — serves as the boundary-side enrichment
 --
 --    Bridge/StarObs.agda
 --      — proves star-pointwise: S-cut ≡ L-min on all 10 regions
 --      — the connecting lemma between boundary and bulk sides
 --
 --    Bridge/StarEquiv.agda
---      — currently uses idEquiv for the trivial package equivalence
---      — future enriched-package equivalence will depend on both
---        subadditivity (boundary) and monotonicity (bulk) as
---        proof fields in the enriched record types
+--      — assembles star-obs-path = funExt star-pointwise
+--
+--    Bridge/FullEnrichedStarObs.agda
+--      — defines FullBdy (obs + spec + subadditivity) and
+--        FullBulk (obs + spec + monotonicity) record types
+--      — constructs the full enriched equivalence  full-equiv
+--      — verifies transport:  full-transport converts a boundary
+--        bundle (with subadditivity) to a bulk bundle (with
+--        monotonicity) via the discrete RT correspondence
+--
+--    Bridge/EnrichedStarEquiv.agda
+--      — re-exports Theorem3 = full-transport
+--
+--    Bridge/EnrichedStarStepInvariance.agda
+--      — extends monotonicity to variable weight functions via
+--        L-param-mono using +-comm from Util/NatLemmas.agda
 --
 --  Design decisions:
 --
@@ -345,9 +366,8 @@ monotonicity sub-N4∈N4N0 = 1 , refl
 --    3.  All scalar constants (1q, 2q) are imported from
 --        Util/Scalars.agda, never reconstructed locally.  This
 --        maintains the judgmental stability guarantee required for
---        refl-based proofs (same principle as §11.5 of
---        docs/08-tree-instance.md and §15.5 of
---        docs/09-happy-instance.md).
+--        refl-based proofs — the shared-constants discipline
+--        documented in docs/formal/02-foundations.md §6.3.
 --
 --    4.  The module follows the same proof-engineering pattern as
 --        Boundary/StarSubadditivity.agda: an inductive relation
@@ -356,20 +376,21 @@ monotonicity sub-N4∈N4N0 = 1 , refl
 --        witnesses.  This uniformity makes both sides of the
 --        enriched-package equivalence structurally parallel.
 --
---  Next steps:
+--  Architectural role:
 --
---    • Define enriched record types  BdyObs  and  BulkObs  with
---      proof-carrying fields (subadditivity and monotonicity
---      respectively).
---    • Construct the forward map  f : BdyObs → BulkObs  using
---      star-obs-path to rewrite S-cut as L-min and derive
---      monotonicity from the rewritten subadditivity.
---    • Construct the inverse map  g : BulkObs → BdyObs  using
---      the symmetric rewriting.
---    • Prove round-trip homotopies  g ∘ f ~ id  and  f ∘ g ~ id .
---    • Apply  ua  to obtain the nontrivial Univalence path.
---    • Verify that  transport  along this path carries the
---      boundary observable bundle to the bulk observable bundle.
---    • This completes Phase 3C and satisfies Milestones 3–4 of
---      §6.9 of docs/06-challenges.md.
+--    This is a Tier 2 (Observable / Geometry Layer) module providing
+--    the bulk-side structural property consumed by the enriched
+--    bridge in Bridge/FullEnrichedStarObs.agda and the parameterized
+--    enriched step-invariance in Bridge/EnrichedStarStepInvariance.agda.
+--    See docs/getting-started/architecture.md for the full module
+--    dependency DAG.
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 8    (theorem registry entry)
+--    docs/formal/03-holographic-bridge.md §4 (full enriched equivalence)
+--    docs/instances/star-patch.md §5       (structural properties)
+--    docs/instances/star-patch.md §4       (min-cut / observable table)
+--    docs/formal/02-foundations.md §6.3    (shared-constants discipline)
+--    docs/reference/module-index.md        (module description)
+--    sim/prototyping/01_happy_patch_cuts.py (numerical verification)
 -- ════════════════════════════════════════════════════════════════════

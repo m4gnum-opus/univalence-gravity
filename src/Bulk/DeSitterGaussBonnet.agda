@@ -42,15 +42,12 @@ open import Bulk.DeSitterCurvature
 --    Bulk/DeSitterCurvature.agda        — dsκ-class, dsTotalCurvature,
 --                                         dsTotalCurvature≡χ
 --
---  Mathematical references:
---    §7.4.4 of docs/10-frontier.md    (curvature comparison)
---    §7.5.1 of docs/10-frontier.md    (Component 2: dS Gauss–Bonnet)
---    sim/prototyping/10_desitter_prototype.py  (Python prototype)
---
---  Exit criterion (§7.13 of docs/10-frontier.md):
---    "An Agda module Bulk/DeSitterGaussBonnet.agda proves discrete
---     Gauss–Bonnet for the {5,3} star patch with positive interior
---     curvature, discharged by refl."
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §6  (the {5,3} dS patch)
+--    docs/formal/08-wick-rotation.md §5      (dS Gauss–Bonnet)
+--    docs/formal/01-theorems.md §Thm 4       (Discrete Wick Rotation)
+--    docs/instances/desitter-patch.md §5     (Gauss–Bonnet on dS patch)
+--    sim/prototyping/10_desitter_prototype.py (Python prototype)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -108,7 +105,7 @@ dsχ₁₀-encodes-χ = refl
 
 
 -- ════════════════════════════════════════════════════════════════════
---  §2.  Discrete Gauss–Bonnet theorem  (dS — Theorem 1 analogue)
+--  §2.  Discrete Gauss–Bonnet theorem  (dS — Theorem 2 analogue)
 -- ════════════════════════════════════════════════════════════════════
 --
 --  THEOREM (Discrete Gauss–Bonnet, combinatorial form, dS).
@@ -137,13 +134,20 @@ dsχ₁₀-encodes-χ = refl
 --  constructor terms, and the ℤ normalizer reduces the entire
 --  expression to  pos 10 .
 --
---  This is the dS analogue of Phase 2B.3 (docs/05-roadmap.md),
---  and corresponds to Component 2 of the discrete Wick rotation
---  theorem (§7.5.1 of docs/10-frontier.md).
+--  This is the dS counterpart of Theorem 2 (Discrete Gauss–Bonnet
+--  for the {5,4} tiling in Bulk/GaussBonnet.agda), and corresponds
+--  to Component 2 of the discrete Wick rotation theorem
+--  (Theorem 4, docs/formal/08-wick-rotation.md §5).
 --
 --  Verified numerically by
 --  sim/prototyping/10_desitter_prototype.py §8:
 --    5·(+1) + 5·(−1) + 5·(+2) = 5 − 5 + 10 = 10 = one₁₀  ✓
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §6.3  (dS Gauss–Bonnet)
+--    docs/formal/08-wick-rotation.md §5        (dS GB in the Wick
+--                                               rotation context)
+--    docs/formal/01-theorems.md §Thm 2         (theorem registry)
 -- ════════════════════════════════════════════════════════════════════
 
 ds-discrete-gauss-bonnet : dsTotalCurvature ≡ dsχ₁₀
@@ -185,6 +189,11 @@ ds-discrete-gauss-bonnet = dsTotalCurvature≡χ
 --  shorthands (dsInteriorCurv, dsBoundaryCurv) with distinct names
 --  to avoid scope clashes, and prefixes the decomposition lemmas
 --  with ds-gb- to distinguish them from the imported versions.
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §6.3  (dS symmetric decomp.)
+--    docs/formal/08-wick-rotation.md §5.3      (dS vs AdS decomp.)
+--    docs/instances/desitter-patch.md §5       (dS Gauss–Bonnet)
 -- ════════════════════════════════════════════════════════════════════
 
 -- ────────────────────────────────────────────────────────────────
@@ -283,6 +292,10 @@ dsSymmetricSplit = refl
 --  This is the dS companion to patch-gb-witness (the AdS witness).
 --  Together they form the two curvature inputs to the WickRotation
 --  coherence record (Bridge/WickRotation.agda).
+--
+--  Reference:
+--    docs/formal/08-wick-rotation.md §7  (WickRotationWitness)
+--    docs/formal/04-discrete-geometry.md §5.4 (GaussBonnetWitness)
 -- ════════════════════════════════════════════════════════════════════
 
 record DSGaussBonnetWitness : Type₀ where
@@ -321,10 +334,10 @@ ds-patch-gb-witness .DSGaussBonnetWitness.gauss-bonnet   = ds-discrete-gauss-bon
 -- ════════════════════════════════════════════════════════════════════
 --
 --  The type  DSTheorem1  and its inhabitant  ds-theorem1  provide a
---  stable reference point for the roadmap and documentation.
+--  stable reference point for the documentation.
 --  The Bridge/WickRotation.agda module will import  ds-theorem1
 --  alongside  theorem1  (from Bulk/GaussBonnet.agda) and the shared
---  bridge equivalence (from Bridge/EnrichedStarEquiv.agda).
+--  bridge equivalence (from Bridge/GenericValidation.agda).
 --
 --  The type is a proposition (it lives in a set type ℚ₁₀ = ℤ,
 --  so paths between elements of ℤ are propositions by isSetℤ).
@@ -392,6 +405,11 @@ dsBoundary-raw = refl
 --
 --  This is the combinatorial analogue of the cosmological constant
 --  sign flip:  Λ_AdS < 0  →  Λ_dS > 0 .
+--
+--  Reference:
+--    docs/formal/08-wick-rotation.md §4.3  (curvature comparison)
+--    docs/formal/08-wick-rotation.md §9    (what changes / doesn't)
+--    docs/instances/desitter-patch.md §15  (comparison table)
 -- ════════════════════════════════════════════════════════════════════
 
 -- dS interior curvature is POSITIVE:  pos 1  (= +1 in tenths)
@@ -407,13 +425,9 @@ dsInterior-is-positive = refl
 --  §8.  Summary and design notes
 -- ════════════════════════════════════════════════════════════════════
 --
---  This module completes Phase E.1 Step 4 of the dS/AdS translator
---  development plan (§7.11 of docs/10-frontier.md) and satisfies
---  the exit criterion from §7.13:
---
---    "An Agda module Bulk/DeSitterGaussBonnet.agda proves discrete
---     Gauss–Bonnet for the {5,3} star patch with positive interior
---     curvature, discharged by refl."
+--  This module completes the dS-side Gauss–Bonnet theorem,
+--  providing the positively-curved counterpart to
+--  Bulk/GaussBonnet.agda (AdS, negative curvature).
 --
 --  Proof pipeline:
 --
@@ -450,10 +464,20 @@ dsInterior-is-positive = refl
 --
 --  Next step:
 --
---    Bridge/WickRotation.agda — the "Theory of Everything" coherence
---    record, importing both the AdS Gauss–Bonnet witness
---    (patch-gb-witness from Bulk/GaussBonnet.agda), the dS
---    Gauss–Bonnet witness (ds-patch-gb-witness from this module),
---    and the shared holographic bridge
---    (enriched-equiv from Bridge/EnrichedStarEquiv.agda).
+--    Bridge/WickRotation.agda — the coherence record importing both
+--    the AdS Gauss–Bonnet witness (patch-gb-witness from
+--    Bulk/GaussBonnet.agda), the dS Gauss–Bonnet witness
+--    (ds-patch-gb-witness from this module), and the shared
+--    holographic bridge (star-generic-witness from
+--    Bridge/GenericValidation.agda, produced by the generic bridge
+--    machinery from Bridge/GenericBridge.agda).
+--
+--  Reference:
+--    docs/formal/04-discrete-geometry.md §6   (the {5,3} dS patch)
+--    docs/formal/08-wick-rotation.md §5       (dS Gauss–Bonnet)
+--    docs/formal/08-wick-rotation.md §7       (WickRotationWitness)
+--    docs/formal/01-theorems.md §Thm 4        (Discrete Wick Rotation)
+--    docs/instances/desitter-patch.md         (instance data sheet)
+--    docs/reference/module-index.md           (module description)
+--    docs/getting-started/architecture.md     (module dependency DAG)
 -- ════════════════════════════════════════════════════════════════════

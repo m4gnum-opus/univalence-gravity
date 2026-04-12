@@ -8,6 +8,48 @@ open import Cubical.Data.Nat using (ℕ ; zero ; suc)
 open import Util.Scalars
 
 -- ════════════════════════════════════════════════════════════════════
+--  Bridge/ResolutionTower — Original Resolution Tower (DEAD CODE)
+-- ════════════════════════════════════════════════════════════════════
+--
+--  STATUS: Architecturally superseded by Bridge/SchematicTower.agda.
+--
+--  This module was the original resolution tower implementation,
+--  developed during Phase G of the implementation plan.  Its entire
+--  content — ResolutionStep, ResolutionTower, ConvergenceCertificate,
+--  ConvergenceCertificate3L, ContinuumLimitEvidence, AreaLawLevel,
+--  spectrum monotonicity witnesses, and all Dense-100/Dense-200
+--  instances — has been absorbed into Bridge/SchematicTower.agda
+--  (§16–§24), which serves as the SINGLE CANONICAL tower module
+--  for the repository.
+--
+--  This module remains valid (it type-checks) and is preserved as
+--  a historical record, but it is NOT on the critical path.  All
+--  downstream code should import tower infrastructure from
+--  Bridge/SchematicTower.agda instead.
+--
+--  The module does NOT carry the HalfBoundWitness integration
+--  (§25 of SchematicTower) or the {5,4} layer tower (§9–§14 of
+--  SchematicTower).  For the full tower infrastructure including
+--  the DiscreteBekensteinHawking capstone type, see
+--  Bridge/SchematicTower.agda.
+--
+--  Architectural role:
+--    DEAD CODE — not imported by any downstream module.
+--    Retained for backward compatibility and as a historical
+--    development artifact.
+--
+--  Reference:
+--    docs/formal/09-thermodynamics.md       (area law, resolution tower)
+--    docs/formal/11-generic-bridge.md §5–§7 (SchematicTower infrastructure)
+--    docs/formal/12-bekenstein-hawking.md   (half-bound, tower integration)
+--    docs/getting-started/architecture.md   (module dependency DAG)
+--    docs/reference/module-index.md         (module status: DEAD CODE)
+--    docs/historical/development-docs/10-frontier.md §10
+--        (original development plan for the resolution tower)
+-- ════════════════════════════════════════════════════════════════════
+
+
+-- ════════════════════════════════════════════════════════════════════
 --  Imports — Dense-100 Infrastructure
 -- ════════════════════════════════════════════════════════════════════
 --
@@ -18,6 +60,10 @@ open import Util.Scalars
 --  The RT correspondence is verified at the orbit level (8 refl
 --  proofs) and lifted to 717 regions by a 1-line composition.
 --  The area law is verified on all 717 regions (abstract).
+--
+--  Reference:
+--    docs/instances/dense-100.md   (Dense-100 instance data sheet)
+--    docs/engineering/orbit-reduction.md  (orbit reduction strategy)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Common.Dense100Spec
@@ -31,7 +77,7 @@ open import Boundary.Dense100AreaLaw
 
 
 -- ════════════════════════════════════════════════════════════════════
---  Imports — Dense-200 Infrastructure  (Phase G.2)
+--  Imports — Dense-200 Infrastructure
 -- ════════════════════════════════════════════════════════════════════
 --
 --  The Dense-200 patch (200 cubes, 1246 regions, 9 orbit reps)
@@ -47,6 +93,11 @@ open import Boundary.Dense100AreaLaw
 --  Module-qualified imports for Dense200Cut and Dense200AreaLaw
 --  resolve name clashes with Dense-100 exports (S-cut-rep,
 --  regionArea, area-law).
+--
+--  Reference:
+--    docs/instances/dense-200.md   (Dense-200 instance data sheet)
+--    docs/formal/09-thermodynamics.md §4  (resolution tower)
+--    sim/prototyping/12_generate_dense200.py  (Python oracle)
 -- ════════════════════════════════════════════════════════════════════
 
 open import Common.Dense200Spec
@@ -80,7 +131,12 @@ import Boundary.Dense200AreaLaw as D200AL
 --
 --  The record lives in  Type₁  because it stores types as fields.
 --
---  Reference: §10.3 of docs/10-frontier.md
+--  NOTE: This record is duplicated in Bridge/SchematicTower.agda §16.
+--  Downstream modules should use the SchematicTower version.
+--
+--  Reference:
+--    docs/formal/09-thermodynamics.md §4   (resolution tower)
+--    docs/formal/11-generic-bridge.md §6   (SchematicTower — canonical)
 -- ════════════════════════════════════════════════════════════════════
 
 record ResolutionStep : Type₁ where
@@ -112,7 +168,9 @@ record ResolutionStep : Type₁ where
 --
 --    D100Region (717 constructors)  →  D100OrbitRep (8 constructors)
 --
---  Reference: §10.4 of docs/10-frontier.md
+--  Reference:
+--    docs/instances/dense-100.md §4   (orbit reduction)
+--    docs/instances/dense-100.md §10  (resolution tower role)
 -- ════════════════════════════════════════════════════════════════════
 
 dense-resolution-step : ResolutionStep
@@ -128,7 +186,7 @@ dense-resolution-step .ResolutionStep.compat _     = refl
 
 
 -- ════════════════════════════════════════════════════════════════════
---  §3.  Dense-200 Resolution Step  (Phase G.2)
+--  §3.  Dense-200 Resolution Step
 -- ════════════════════════════════════════════════════════════════════
 --
 --  The Dense-200 orbit reduction:
@@ -150,7 +208,10 @@ dense-resolution-step .ResolutionStep.compat _     = refl
 --              =  D200Cut.S-cut-rep (classify200 r)
 --              ≡  S-coarse (project r)          definitionally
 --
---  Generated by  sim/prototyping/12_generate_dense200.py
+--  Reference:
+--    docs/instances/dense-200.md §4   (orbit reduction)
+--    docs/instances/dense-200.md §9   (resolution tower role)
+--    sim/prototyping/12_generate_dense200.py  (Python oracle)
 -- ════════════════════════════════════════════════════════════════════
 
 dense200-resolution-step : ResolutionStep
@@ -175,7 +236,12 @@ dense200-resolution-step .ResolutionStep.compat _     = refl
 --  (so  base  lives at index zero,  step _ (base _)  at  suc zero,
 --  etc.).
 --
---  Reference: §10.3 of docs/10-frontier.md
+--  NOTE: This data type is duplicated in Bridge/SchematicTower.agda §18.
+--  Downstream modules should use the SchematicTower version.
+--
+--  Reference:
+--    docs/formal/09-thermodynamics.md §4   (resolution tower)
+--    docs/formal/11-generic-bridge.md §6   (SchematicTower — canonical)
 -- ════════════════════════════════════════════════════════════════════
 
 data ResolutionTower : ℕ → Type₁ where
@@ -188,8 +254,8 @@ data ResolutionTower : ℕ → Type₁ where
 --  §5.  Tower Instances
 -- ════════════════════════════════════════════════════════════════════
 --
---  single-step-tower:  the Dense-100 orbit reduction  (Phase G.0)
---  two-step-tower:     Dense-100 + Dense-200 steps   (Phase G.2)
+--  single-step-tower:  the Dense-100 orbit reduction
+--  two-step-tower:     Dense-100 + Dense-200 steps
 --
 --  The two-step tower represents the resolution sequence:
 --    Dense-50 → Dense-100 → Dense-200
@@ -222,14 +288,17 @@ two-step-tower = step dense200-resolution-step single-step-tower
 --    | Dense-50 → Dense-100  |      7 |      8 | (1 , refl)  |
 --    | Dense-100 → Dense-200 |      8 |      9 | (1 , refl)  |
 --
---  Reference: §10.5 of docs/10-frontier.md
---  Empirical source: 12_generate_dense200_OUTPUT.txt
+--  Reference:
+--    docs/formal/09-thermodynamics.md §4.3   (spectrum monotonicity)
+--    docs/formal/11-generic-bridge.md §6.2   (spectrum monotonicity)
+--    docs/instances/dense-200.md §9          (monotonicity witness)
+--    sim/prototyping/12_generate_dense200_OUTPUT.txt  (empirical data)
 -- ════════════════════════════════════════════════════════════════════
 
 spectrum-grows : 7 ≤ℚ 8
 spectrum-grows = 1 , refl
 
--- Phase G.2:  Dense-100 (max 8) → Dense-200 (max 9)
+-- Dense-100 (max 8) → Dense-200 (max 9)
 -- 1 + 8 = 9  judgmentally
 spectrum-grows-200 : 8 ≤ℚ 9
 spectrum-grows-200 = 1 , refl
@@ -244,7 +313,11 @@ spectrum-grows-200 = 1 , refl
 --
 --    S_cut(A)  ≤  area(A)
 --
---  Reference: §10.6 of docs/10-frontier.md
+--  NOTE: This record is duplicated in Bridge/SchematicTower.agda §20.
+--  Downstream modules should use the SchematicTower version.
+--
+--  Reference:
+--    docs/formal/09-thermodynamics.md §3   (the discrete area law)
 -- ════════════════════════════════════════════════════════════════════
 
 record AreaLawLevel : Type₁ where
@@ -265,6 +338,9 @@ record AreaLawLevel : Type₁ where
 --  Both area-law proofs are  abstract  (sealed in their respective
 --  AreaLaw modules), so downstream modules never re-unfold the
 --  hundreds of (k , refl) cases.
+--
+--  Reference:
+--    docs/engineering/abstract-barrier.md   (the abstract barrier)
 -- ════════════════════════════════════════════════════════════════════
 
 dense100-area-law-level : AreaLawLevel
@@ -273,7 +349,7 @@ dense100-area-law-level .AreaLawLevel.S-obs      = S∂D100
 dense100-area-law-level .AreaLawLevel.area       = regionArea
 dense100-area-law-level .AreaLawLevel.area-bound = area-law
 
--- Phase G.2:  Dense-200 area law (1246 abstract (k , refl) cases)
+-- Dense-200 area law (1246 abstract (k , refl) cases)
 --
 --  S-obs = S∂D200 = Boundary.Dense200Cut.S-cut d200BdyView
 --  area  = D200AL.regionArea  (from Boundary/Dense200AreaLaw.agda)
@@ -291,13 +367,17 @@ dense200-area-law-level .AreaLawLevel.area-bound = D200AL.area-law
 
 
 -- ════════════════════════════════════════════════════════════════════
---  §9.  ConvergenceCertificate — 2-level certificate  (Phase G.0)
+--  §9.  ConvergenceCertificate — 2-level certificate
 -- ════════════════════════════════════════════════════════════════════
 --
 --  Retained for backward compatibility.  Packages the Dense-50 →
 --  Dense-100 transition as a single-step certificate.
 --
---  Reference: §10.9 of docs/10-frontier.md
+--  NOTE: Duplicated in Bridge/SchematicTower.agda §21.
+--  Downstream modules should use the SchematicTower version.
+--
+--  Reference:
+--    docs/formal/09-thermodynamics.md §4.5  (convergence certificates)
 -- ════════════════════════════════════════════════════════════════════
 
 record ConvergenceCertificate : Type₁ where
@@ -315,7 +395,7 @@ convergence-certificate .ConvergenceCertificate.area-law-level = dense100-area-l
 
 
 -- ════════════════════════════════════════════════════════════════════
---  §10.  ConvergenceCertificate3L — 3-level certificate  (Phase G.2)
+--  §10.  ConvergenceCertificate3L — 3-level certificate
 -- ════════════════════════════════════════════════════════════════════
 --
 --  The 3-level convergence certificate packages:
@@ -334,14 +414,18 @@ convergence-certificate .ConvergenceCertificate.area-law-level = dense100-area-l
 --         Dense-100:  717 regions,  S ≤ area  (abstract, slack 3–18)
 --         Dense-200: 1246 regions,  S ≤ area  (abstract, slack 3–18)
 --
---  This satisfies the stretch exit criterion from §10.13:
+--  NOTE: This record is duplicated in Bridge/SchematicTower.agda §21.
+--  The SchematicTower version also has a stronger variant
+--  (ConvergenceCertificate3L-HB in §25.7) that carries the sharp
+--  Bekenstein–Hawking half-bound  2·S ≤ area  instead of the
+--  weaker area law  S ≤ area .  Downstream modules should use the
+--  SchematicTower version.
 --
---    "A Dense-200 instance extends the certificate to 3 levels,
---     with the new max min-cut ≥ 8 witnessed by (k , refl)."
---
---  The max min-cut grew from 8 to 9, witnessed by (1 , refl).
---
---  Reference: §10.11 Phase G.2 of docs/10-frontier.md
+--  Reference:
+--    docs/formal/09-thermodynamics.md §4.5  (convergence certificates)
+--    docs/formal/11-generic-bridge.md §6.4  (3-level certificate)
+--    docs/formal/12-bekenstein-hawking.md §5 (tower integration with
+--                                             half-bound — supersedes this)
 -- ════════════════════════════════════════════════════════════════════
 
 record ConvergenceCertificate3L : Type₁ where
@@ -389,8 +473,6 @@ convergence-certificate-3L .ConvergenceCertificate3L.area-law-200     = dense200
 --  §11.  ContinuumLimitEvidence — The fully formalized statement
 -- ════════════════════════════════════════════════════════════════════
 --
---  Updated from Phase G.0 to reference the 3-level certificate.
---
 --  The resolution tower for the {4,3,5} honeycomb factors through
 --  the orbit reduction at each level, the RT correspondence holds
 --  at every resolution, the area-law bound holds at every
@@ -398,7 +480,15 @@ convergence-certificate-3L .ConvergenceCertificate3L.area-law-200     = dense200
 --
 --    7 ≤ 8 ≤ 9
 --
---  Reference: §10.14 of docs/10-frontier.md
+--  NOTE: This type alias is superseded by DiscreteBekensteinHawking
+--  (= ConvergenceCertificate3L-HB) in Bridge/SchematicTower.agda §25.9,
+--  which carries the stronger half-bound  2·S ≤ area  at each level
+--  instead of the weaker area law  S ≤ area .
+--
+--  Reference:
+--    docs/formal/09-thermodynamics.md §4.5   (convergence certificates)
+--    docs/formal/12-bekenstein-hawking.md §5 (DiscreteBekensteinHawking —
+--                                             the stronger capstone type)
 -- ════════════════════════════════════════════════════════════════════
 
 ContinuumLimitEvidence : Type₁
@@ -445,7 +535,7 @@ private
     ≡ ResolutionStep.L-fine dense-resolution-step d100r15
   rt-check-d100-15 = ResolutionStep.rt-fine dense-resolution-step d100r15
 
-  -- ── Dense-200 compat checks  (Phase G.2) ─────────────────────
+  -- ── Dense-200 compat checks ──────────────────────────────────
   -- d200r0: classify200 d200r0 = mc2, S-cut-rep mc2 = 2
   compat-check-d200-0 :
     ResolutionStep.S-fine dense200-resolution-step d200r0
@@ -460,7 +550,7 @@ private
         (ResolutionStep.project dense200-resolution-step d200r9)
   compat-check-d200-9 = refl
 
-  -- ── Dense-200 RT checks  (Phase G.2) ─────────────────────────
+  -- ── Dense-200 RT checks ──────────────────────────────────────
   -- d200r0: S∂D200 d200r0 ≡ LBD200 d200r0  (both = 2)
   rt-check-d200-0 :
     ResolutionStep.S-fine dense200-resolution-step d200r0
@@ -485,22 +575,21 @@ private
 --  §13.  Summary and design notes
 -- ════════════════════════════════════════════════════════════════════
 --
---  This module completes Phases G.0 and G.2 of the implementation
---  plan (§10.11 of docs/10-frontier.md) and satisfies the exit
---  criterion from §10.13 including the stretch goal:
+--  STATUS: DEAD CODE — superseded by Bridge/SchematicTower.agda.
 --
---    1. ✓  A ResolutionStep record type-checks with the Dense-100
---          orbit reduction as the concrete instance.
+--  This module's entire content has been absorbed into
+--  Bridge/SchematicTower.agda (§16–§24), which serves as the
+--  single canonical tower module for the repository.  The
+--  SchematicTower version additionally carries:
 --
---    2. ✓  A ConvergenceCertificate record type-checks with
---          1 resolution step, 1 monotonicity witness (7 ≤ 8),
---          and 1 area-law instance (717 regions).
+--    • The {5,4} layer tower (depths 2–7, §9–§14)
+--    • TowerLevel / LayerStep / mkTowerLevel (§1–§3)
+--    • The HalfBoundWitness integration (§25)
+--    • The DiscreteBekensteinHawking capstone type (§25.9)
 --
---    3. ✓  (Stretch — Phase G.2)  A Dense-200 instance extends
---          the certificate to 3 levels, with the new max min-cut
---          = 9 ≥ 8 witnessed by (1 , refl).
+--  None of these are present in this module.
 --
---  Exports:
+--  Exports (retained for backward compatibility only):
 --
 --    ResolutionStep             — record type for a single step
 --    dense-resolution-step      — Dense-100 orbit reduction instance
@@ -515,7 +604,7 @@ private
 --    dense200-area-law-level    — Dense-200 area-law instance
 --    ConvergenceCertificate     — 2-level certificate (backward compat)
 --    convergence-certificate    — the 2-level concrete certificate
---    ConvergenceCertificate3L   — 3-level certificate (Phase G.2)
+--    ConvergenceCertificate3L   — 3-level certificate
 --    convergence-certificate-3L — the 3-level concrete certificate
 --    ContinuumLimitEvidence     — type alias (= ConvergenceCertificate3L)
 --    continuum-limit-evidence   — the concrete 3-level evidence term
@@ -533,6 +622,10 @@ private
 --      • Boundary/Dense200AreaLaw.agda  — regionArea, area-law  (as D200AL.*)
 --      • Util/Scalars.agda              — ℚ≥0, _≤ℚ_
 --
+--    This module is NOT imported by any downstream module.
+--    All tower infrastructure is consumed from
+--    Bridge/SchematicTower.agda instead.
+--
 --  Resolution tower summary:
 --
 --    Level   Patch      Regions  Orbits  Max S  Monotone   Area law
@@ -541,7 +634,12 @@ private
 --      1     Dense-100    717      8       8    (1,refl)   717 cases
 --      2     Dense-200   1246      9       9    (1,refl)  1246 cases
 --
---  Future extensions (Phase G.3):
+--  For the strengthened version with the discrete Bekenstein–Hawking
+--  half-bound (2·S ≤ area with tight achiever), see
+--  Bridge/SchematicTower.agda §25 (ConvergenceCertificate3L-HB and
+--  DiscreteBekensteinHawking).
+--
+--  Future extensions:
 --
 --    Each additional Dense-N instance contributes:
 --      • A new ResolutionStep
@@ -549,8 +647,24 @@ private
 --      • A new AreaLawLevel
 --      • An extended tower: step newStep oldTower
 --
---    The coinductive horizon (Phase G.3, §10.8) requires a generic
---    patch constructor  patch : ℕ → VerifiedPatch , which is
---    equivalent to solving Direction C (N-Layer Generalization).
---    Without it, the tower can only be defined for a finite prefix.
+--    The coinductive horizon requires a generic patch constructor
+--    patch : ℕ → VerifiedPatch , which is equivalent to solving
+--    the N-Layer Generalization problem.  Without it, the tower
+--    can only be defined for a finite prefix.  The existing
+--    finite tower is sufficient for the DiscreteBekensteinHawking
+--    capstone type in Bridge/SchematicTower.agda.
+--
+--  Reference:
+--    docs/formal/09-thermodynamics.md       (area law, coarse-graining,
+--                                           resolution tower)
+--    docs/formal/11-generic-bridge.md §5–§7 (SchematicTower — canonical)
+--    docs/formal/12-bekenstein-hawking.md   (half-bound, tower form)
+--    docs/instances/dense-100.md            (Dense-100 instance)
+--    docs/instances/dense-200.md            (Dense-200 instance)
+--    docs/engineering/orbit-reduction.md    (orbit reduction strategy)
+--    docs/engineering/abstract-barrier.md   (abstract for area-law)
+--    docs/getting-started/architecture.md   (module dependency DAG)
+--    docs/reference/module-index.md         (module status: DEAD CODE)
+--    docs/historical/development-docs/10-frontier.md §10
+--        (original development plan — Phases G.0, G.2)
 -- ════════════════════════════════════════════════════════════════════

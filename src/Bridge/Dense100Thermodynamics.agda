@@ -32,8 +32,8 @@ open import Boundary.Dense100HalfBound
 --  Dense-100 Thermodynamic Illusion — Coarse-Grained RT Instantiation
 -- ════════════════════════════════════════════════════════════════════
 --
---  This module is the capstone of Section 8 of docs/10-frontier.md
---  ("The Grid vs. The Curve: The Thermodynamic Illusion Route").
+--  This module is the capstone of the thermodynamic layer
+--  (docs/formal/09-thermodynamics.md).
 --  It instantiates  CoarseGrainedRT  from Bridge/CoarseGrain.agda
 --  by combining three independently constructed components:
 --
@@ -53,8 +53,9 @@ open import Boundary.Dense100HalfBound
 --          717 regions by (k , refl) witnesses, sealed in abstract.
 --          (Boundary/Dense100AreaLaw.agda)
 --
---  UPDATE (§15.11 Phase B):  The module now also carries the
---  STRENGTHENED discrete Bekenstein–Hawking half-bound:
+--  The module now also carries the STRENGTHENED discrete
+--  Bekenstein–Hawking half-bound (Theorem 3 in the canonical
+--  theorem registry, docs/formal/01-theorems.md):
 --
 --    4.  dense100HalfBound : HalfBoundWitness pd
 --        — The sharp bound  2·S(A) ≤ area(A)  for all 717 regions,
@@ -68,31 +69,37 @@ open import Boundary.Dense100HalfBound
 --  area-law continues to work, and the half-bound provides the
 --  strictest constraint.
 --
---  The key architectural consequence (§15.11 of docs/10-frontier.md):
+--  The key architectural consequence (docs/formal/12-bekenstein-hawking.md):
 --  the old  ConvergenceWitness  (which required constructive reals
 --  and Cauchy completeness for the η_N limit) is REPLACED by the
 --  sharp half-bound (which requires only ℕ arithmetic and refl).
 --  The discrete Newton's constant  1/(4G) = 1/2  in bond-dimension-1
 --  units is verified by refl on closed ℕ terms at every resolution
---  level.  This ELIMINATES the constructive-reals wall from §15.6
---  for the entropy-area relationship.
+--  level.  This ELIMINATES the constructive-reals wall
+--  (docs/physics/five-walls.md) for the entropy-area relationship.
 --
 --  Reference:
---    docs/10-frontier.md §8.10   (the fully formalized statement)
---    docs/10-frontier.md §8.11   (exit criterion)
---    docs/10-frontier.md §15.10  (discrete Bekenstein–Hawking proof)
---    docs/10-frontier.md §15.11  (Phase A + B: half-bound integration)
+--    docs/formal/09-thermodynamics.md    (area law, coarse-graining,
+--                                         resolution tower)
+--    docs/formal/12-bekenstein-hawking.md (discrete BH proof,
+--                                         HalfBound, from-two-cuts)
+--    docs/formal/01-theorems.md §Thm 3   (Discrete Bekenstein–Hawking)
+--    docs/formal/11-generic-bridge.md    (SchematicTower, tower form)
+--    docs/instances/dense-100.md         (Dense-100 instance data)
+--    docs/physics/five-walls.md          (constructive-reals wall)
+--    docs/physics/discrete-bekenstein-hawking.md
+--                                        (physics interpretation)
 --    sim/prototyping/11_generate_area_law.py   (area-law oracle)
 --    sim/prototyping/17_generate_half_bound.py (half-bound oracle)
 --
---  Exit criterion (§8.11.3 — stretch):
---    "A two-level tower instantiation demonstrates resolution-
---     independence of the holographic correspondence."
---
---  This module satisfies §8.11 items 1–2 and contributes to item 3
---  by demonstrating that the area-law bound coheres with the orbit
---  reduction at a single resolution level.  The half-bound upgrade
---  (§9–§11) strengthens this to the sharp  2·S ≤ area  form.
+--  Architectural role:
+--    This is a Tier 3 (Bridge Layer) module.  It integrates the
+--    CoarseGrainedRT triple and the HalfBoundWitness for the
+--    Dense-100 patch, providing three levels of entropy-area
+--    constraint through the same observable S-cut d100BdyView
+--    and the same area function regionArea.
+--    See docs/getting-started/architecture.md for the module
+--    dependency DAG.
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -137,7 +144,8 @@ private
 --  §2.  The CoarseGrainedRT Instance
 -- ════════════════════════════════════════════════════════════════════
 --
---  The fully formalized statement from §8.10 of docs/10-frontier.md:
+--  The fully formalized thermodynamic statement
+--  (docs/formal/09-thermodynamics.md §6):
 --
 --    CoarseGrainedRT = Σ[ w ∈ CoarseGrainWitness ]
 --      Σ[ regionArea ∈ (FineRegion w → ℚ≥0) ]
@@ -158,6 +166,7 @@ private
 --  Since _≤ℚ_ is propositional (by isProp≤ℚ from
 --  Bridge/FullEnrichedStarObs.agda), the abstract barrier does not
 --  damage any Univalence bridge or transport computation.
+--  See docs/engineering/abstract-barrier.md for details.
 -- ════════════════════════════════════════════════════════════════════
 
 dense100-thermodynamics : CoarseGrainedRT
@@ -201,6 +210,9 @@ the-bound = snd (snd dense100-thermodynamics)
 --
 --  The area-law proofs are abstract (we cannot inspect the k
 --  component), but we CAN verify the observable and area values.
+--
+--  See docs/instances/dense-100.md §5 for the full min-cut /
+--  observable agreement table.
 -- ════════════════════════════════════════════════════════════════════
 
 -- d100r0:  1-cell region, S=1, area=6, slack=5
@@ -269,6 +281,9 @@ check-area-r15 = refl
 --  S-cut-rep), and the area law holds for every region in the
 --  orbit (via area-law).  This is the type-theoretic content of
 --  "statistical averaging preserves the entropy–area relationship."
+--
+--  See docs/engineering/orbit-reduction.md for the full scaling
+--  analysis of the orbit reduction strategy.
 -- ════════════════════════════════════════════════════════════════════
 
 -- The compat field is refl (S-cut is S-cut-rep ∘ classify100)
@@ -296,17 +311,20 @@ compat-is-trivial = CoarseGrainWitness.compat the-witness
 --
 --  Together, the Dense-100 formalization provides:
 --
---    D100Theorem3  (Bridge/Dense100Equiv.agda):
---      The exact discrete RT correspondence S = L on 717 regions,
---      with transport along a Univalence path verified.
+--    Discrete RT correspondence (Theorem 1 via GenericBridge):
+--      The exact S = L on 717 regions, with transport along a
+--      Univalence path verified.
+--      (Bridge/GenericValidation.agda, docs/formal/03-holographic-bridge.md)
 --
---    dense100-thermodynamics  (this module):
+--    dense100-thermodynamics (this module):
 --      The area-law bound S ≤ area on 717 regions, packaged with
 --      the orbit reduction into a CoarseGrainedRT triple.
+--      (docs/formal/09-thermodynamics.md §6)
 --
---    dense100-half-bound-witness  (§9 below):
+--    dense100-half-bound-witness (§9 below):
 --      The SHARP half-bound 2·S ≤ area on 717 regions, with a
 --      tight achiever where 2·S = area.
+--      (docs/formal/12-bekenstein-hawking.md)
 --
 --  The three results are independent (the area-law and half-bound
 --  modules do not import the bridge) but share the same fine-grained
@@ -318,8 +336,9 @@ compat-is-trivial = CoarseGrainWitness.compat the-witness
 --  §7.  The Macroscopic Observer Interpretation
 -- ════════════════════════════════════════════════════════════════════
 --
---  The Dense-100 orbit reduction implements "Observer 1" from
---  §8.6 of docs/10-frontier.md:
+--  The Dense-100 orbit reduction implements a concrete "macroscopic
+--  observer" with bounded memory
+--  (docs/formal/09-thermodynamics.md §7):
 --
 --    Fine   = D100Region   (717 constructors)
 --    Coarse = D100OrbitRep (8 constructors)
@@ -348,9 +367,11 @@ compat-is-trivial = CoarseGrainWitness.compat the-witness
 --  the observer's memory stays bounded, the coarse-grained
 --  observable approaches the continuum entropy formula — is a
 --  metatheoretic claim beyond the scope of constructive Cubical
---  Agda (§8.8).  However, the SHARP half-bound eliminates the
---  need for a limit argument entirely: the discrete Newton's
---  constant is exactly 1/2 at every finite resolution level.
+--  Agda (docs/formal/09-thermodynamics.md §8,
+--  docs/physics/translation-problem.md).  However, the SHARP
+--  half-bound eliminates the need for a limit argument entirely:
+--  the discrete Newton's constant is exactly 1/2 at every finite
+--  resolution level.
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -358,8 +379,8 @@ compat-is-trivial = CoarseGrainWitness.compat the-witness
 --  §8.  Summary and Exit Criterion (Original)
 -- ════════════════════════════════════════════════════════════════════
 --
---  This module satisfies the exit criterion of §8.11 of
---  docs/10-frontier.md:
+--  This module satisfies the original exit criterion for the
+--  thermodynamic layer:
 --
 --    1. ✓  A CoarseGrainWitness record type-checks in
 --          Bridge/CoarseGrain.agda with the Dense-100 orbit
@@ -398,6 +419,11 @@ compat-is-trivial = CoarseGrainWitness.compat the-witness
 --
 --  is witnessed concretely by  dense100-thermodynamics  for the
 --  Dense-100 patch of the {4,3,5} hyperbolic honeycomb.
+--
+--  Reference:
+--    docs/formal/09-thermodynamics.md    (thermodynamic layer)
+--    docs/engineering/oracle-pipeline.md  (Python oracle pipeline)
+--    docs/instances/dense-100.md          (Dense-100 instance data)
 -- ════════════════════════════════════════════════════════════════════
 
 
@@ -415,12 +441,17 @@ compat-is-trivial = CoarseGrainWitness.compat the-witness
 --  CoarseGrainedRT infrastructure, showing that the strengthened
 --  bound coexists with and subsumes the original area law.
 --
---  The key result (§15.11 of docs/10-frontier.md):
+--  The key result (docs/formal/12-bekenstein-hawking.md):
 --
 --    The discrete Newton's constant is exactly  1/(4G) = 1/2
 --    in bond-dimension-1 units.  This is verified by refl on
 --    closed ℕ terms — no limit argument, no constructive reals,
 --    no Cauchy completeness needed.
+--
+--  Reference:
+--    docs/formal/12-bekenstein-hawking.md  (formal treatment)
+--    docs/physics/discrete-bekenstein-hawking.md  (physics)
+--    docs/physics/five-walls.md  (constructive-reals wall bypass)
 --
 -- ════════════════════════════════════════════════════════════════════
 -- ════════════════════════════════════════════════════════════════════
@@ -515,6 +546,10 @@ check-2S-r15 = refl
 --  half their faces crossing to neighbors (n_cross = 3) and half
 --  exposed as boundary legs (n_bdy = 3), giving n_cross = n_bdy
 --  = area/2 = 3.  The min-cut saturates both independent cuts.
+--
+--  Reference:
+--    docs/formal/12-bekenstein-hawking.md §4  (per-instance witnesses)
+--    docs/physics/discrete-bekenstein-hawking.md §3  (the proof)
 -- ════════════════════════════════════════════════════════════════════
 
 -- Re-exported for direct access
@@ -532,16 +567,19 @@ the-tight-witness = d100-tight-witness
 --
 --    Level 1 (weak):    S(A) = L(A)     for all 717 regions
 --             ← The discrete Ryu–Takayanagi correspondence
---                (Bridge/Dense100Equiv.agda via GenericBridge)
+--                (Bridge/GenericValidation.agda via GenericBridge)
+--                (docs/formal/01-theorems.md §Thm 1)
 --
 --    Level 2 (medium):  S(A) ≤ area(A)  for all 717 regions
 --             ← The discrete isoperimetric inequality
 --                (dense100-thermodynamics : CoarseGrainedRT)
+--                (docs/formal/09-thermodynamics.md §3)
 --
 --    Level 3 (sharp):   2·S(A) ≤ area(A)  for all 717 regions
 --             ← The discrete Bekenstein–Hawking bound
 --                (dense100-half-bound-witness : HalfBoundWitness)
 --                with tight achiever:  2·S = area  (40 regions)
+--                (docs/formal/12-bekenstein-hawking.md)
 --
 --  Level 3 subsumes Level 2 (2·S ≤ area implies S ≤ area).
 --  Level 1 is independent (RT correspondence, not a bound).
@@ -584,5 +622,15 @@ the-tight-witness = d100-tight-witness
 --     with equality achieved.  The discrete Newton's constant is
 --     1/(4G) = 1/2 in bond-dimension-1 units, verified by refl
 --     on closed ℕ terms — no limit argument needed."
+--
+--  Reference:
+--    docs/formal/01-theorems.md §Thm 3  (theorem registry)
+--    docs/formal/09-thermodynamics.md    (area law, coarse-graining)
+--    docs/formal/12-bekenstein-hawking.md (half-bound, tower form)
+--    docs/formal/11-generic-bridge.md    (SchematicTower)
+--    docs/instances/dense-100.md          (Dense-100 instance)
+--    docs/getting-started/architecture.md (module dependency DAG)
+--    docs/reference/module-index.md       (module description)
+--    docs/engineering/oracle-pipeline.md   (Python oracle scripts)
 --
 -- ════════════════════════════════════════════════════════════════════
