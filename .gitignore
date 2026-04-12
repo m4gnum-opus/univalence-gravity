@@ -1,2 +1,3 @@
 venv/
 sim/prototyping/__pycache__
+.vscode/
