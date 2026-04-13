@@ -1,4 +1,4 @@
-# Univalence Gravity - The Spacetime Compiler _v0.5.5_
+# Univalence Gravity - The Spacetime Compiler v0.5.6
 
 **A Constructive Formalization of Discrete Entanglement-Geometry Duality in Cubical Agda**
 
@@ -24,7 +24,7 @@ Univalence paths.
 | **Matter as Topological Defects** | `Gauge/Holonomy.agda` | Non-trivial Q₈ Wilson loops on the holographic network |
 | **Quantum Superposition Bridge** | `Quantum/QuantumBridge.agda` | ⟨S⟩ = ⟨L⟩ for any finite superposition (5-line proof, amplitude-polymorphic) |
 
-For the full theorem registry with type signatures and module cross-references, see [`docs/formal/01-theorems.md`](docs/formal/01-theorems.md).
+For the full theorem registry with type signatures and module cross-references, see [`docs/formal/01-theorems.md`](formal/01-theorems.md).
 
 ## Quick Start
 
@@ -83,30 +83,30 @@ python3 18_export_json.py   # regenerates data/*.json from oracle outputs
 
 ```
 src/                          Cubical Agda formalization (verification layer)
-├── Util/         — Scalars (ℚ≥0 = ℕ), Rationals (ℚ₁₀ = ℤ), NatLemmas
-├── Common/       — Patch specifications (star, filled, dense, layer, honeycomb)
-├── Boundary/     — Min-cut observables, subadditivity, area law, half-bound
-├── Bulk/         — Chain observables, curvature, Gauss–Bonnet
-├── Bridge/       — GenericBridge, SchematicTower, WickRotation, Dynamics,
+├── Util/           — Scalars (ℚ≥0 = ℕ), Rationals (ℚ₁₀ = ℤ), NatLemmas
+├── Common/         — Patch specifications (star, filled, dense, layer, honeycomb)
+├── Boundary/       — Min-cut observables, subadditivity, area law, half-bound
+├── Bulk/           — Chain observables, curvature, Gauss–Bonnet
+├── Bridge/         — GenericBridge, SchematicTower, WickRotation, Dynamics,
 │                   HalfBound, BridgeWitness, CoarseGrain
-├── Causal/       — Event, CausalDiamond, NoCTC, LightCone
-├── Gauge/        — FiniteGroup, Q₈, Connection, Holonomy, ConjugacyClass
-└── Quantum/      — AmplitudeAlg, Superposition, QuantumBridge
+├── Causal/         — Event, CausalDiamond, NoCTC, LightCone
+├── Gauge/          — FiniteGroup, Q₈, Connection, Holonomy, ConjugacyClass
+└── Quantum/        — AmplitudeAlg, Superposition, QuantumBridge
 
 sim/prototyping/              Python oracle pipeline (computation layer)
                               19 scripts generating Agda code + JSON data export
 
 data/                         Pre-computed JSON (served by the backend)
-├── patches/      — 14 patch instance files
-├── tower.json    — Resolution tower levels + monotonicity
-├── theorems.json — Theorem registry
-├── curvature.json — Gauss–Bonnet summaries
-└── meta.json     — Version, build date, data hash
+├── patches/        — 14 patch instance files
+├── tower.json      — Resolution tower levels + monotonicity
+├── theorems.json   — Theorem registry
+├── curvature.json  — Gauss–Bonnet summaries
+└── meta.json       — Version, build date, data hash
 
 backend/                      Haskell REST API (serving layer)
-├── src/          — Api.hs, Server.hs, Types.hs, DataLoader.hs, Invariants.hs
-├── app/          — Main.hs (CLI, startup, Warp)
-└── test/         — InvariantSpec.hs (property tests), ApiSpec.hs (integration)
+├── src/            — Api.hs, Server.hs, Types.hs, DataLoader.hs, Invariants.hs
+├── app/            — Main.hs (CLI, startup, Warp)
+└── test/           — InvariantSpec.hs (property tests), ApiSpec.hs (integration)
 
 docs/                         Documentation
 ```
@@ -215,7 +215,7 @@ docs/
 
 | Component | Status | Description |
 |-----------|--------|-------------|
-| **WebGL frontend** | Planned | Three.js + TypeScript browser visualization ([spec](docs/engineering/frontend-spec-webgl.md)) |
+| **WebGL frontend** | Planned | Three.js + TypeScript browser visualization ([spec](engineering/frontend-spec-webgl.md)) |
 
 ## Acknowledgements
 

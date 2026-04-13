@@ -542,59 +542,74 @@ frontend/
 ├── tsconfig.json
 ├── vite.config.ts
 ├── tailwind.config.js
+├── postcss.config.js
+├── .env.example
+├── eslint.config.js
 ├── index.html
 ├── public/
 │   └── favicon.ico
 ├── src/
-│   ├── main.tsx                    -- React entry point
-│   ├── App.tsx                     -- Router + layout
+│   ├── main.tsx
+│   ├── App.tsx
 │   ├── api/
-│   │   └── client.ts              -- Typed API client (§3.1)
+│   │   └── client.ts
 │   ├── types/
-│   │   └── index.ts               -- TypeScript types (§3.2)
+│   │   └── index.ts
 │   ├── hooks/
-│   │   ├── usePatch.ts            -- Fetch + cache a single patch
-│   │   ├── usePatches.ts          -- Fetch patch list
-│   │   ├── useTower.ts            -- Fetch tower data
-│   │   └── useTheorems.ts         -- Fetch theorem list
+│   │   ├── usePatch.ts
+│   │   ├── usePatches.ts
+│   │   ├── useTower.ts
+│   │   ├── useTheorems.ts
+│   │   ├── useMeta.ts
+│   │   └── useCurvature.ts
 │   ├── components/
+│   │   ├── common/
+│   │   │   ├── Loading.tsx
+│   │   │   ├── ErrorMessage.tsx
+│   │   │   └── NotFound.tsx
 │   │   ├── layout/
-│   │   │   ├── Header.tsx          -- Navigation bar
-│   │   │   ├── Footer.tsx          -- Version + links
-│   │   │   └── Layout.tsx          -- Shell with header/footer
+│   │   │   ├── Header.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   └── Layout.tsx
 │   │   ├── home/
-│   │   │   ├── TheoremCard.tsx     -- Single theorem status card
-│   │   │   └── HomePage.tsx        -- Landing page
+│   │   │   ├── TheoremCard.tsx
+│   │   │   └── HomePage.tsx
 │   │   ├── patches/
-│   │   │   ├── PatchCard.tsx       -- Summary card for patch list
-│   │   │   ├── PatchList.tsx       -- Grid of patch cards
-│   │   │   ├── PatchView.tsx       -- Main patch viewer (3-panel)
-│   │   │   ├── PatchScene.tsx      -- Three.js canvas (@react-three/fiber)
-│   │   │   ├── CellMesh.tsx        -- Single cell 3D component
-│   │   │   ├── BondConnector.tsx   -- Bond cylinder between cells
-│   │   │   ├── RegionInspector.tsx -- Side panel: selected region details
-│   │   │   ├── CurvaturePanel.tsx  -- Curvature class table
-│   │   │   ├── HalfBoundPanel.tsx  -- Bekenstein–Hawking statistics
-│   │   │   ├── DistributionChart.tsx -- Histograms (Recharts)
-│   │   │   └── ColorControls.tsx   -- Color-by selector + toggles
+│   │   │   ├── PatchCard.tsx
+│   │   │   ├── PatchList.tsx
+│   │   │   ├── PatchView.tsx
+│   │   │   ├── PatchScene.tsx
+│   │   │   ├── CellMesh.tsx
+│   │   │   ├── BondConnector.tsx
+│   │   │   ├── BoundaryWireframe.tsx
+│   │   │   ├── RegionInspector.tsx
+│   │   │   ├── CurvaturePanel.tsx
+│   │   │   ├── HalfBoundPanel.tsx
+│   │   │   ├── DistributionChart.tsx
+│   │   │   └── ColorControls.tsx
 │   │   ├── tower/
-│   │   │   ├── TowerTimeline.tsx   -- Horizontal scrollable timeline
-│   │   │   ├── TowerLevel.tsx      -- Single level card
-│   │   │   └── TowerView.tsx       -- Full tower page
+│   │   │   ├── TowerTimeline.tsx
+│   │   │   ├── TowerLevel.tsx
+│   │   │   └── TowerView.tsx
 │   │   └── theorems/
-│   │       ├── TheoremRow.tsx      -- Expandable row in the table
-│   │       └── TheoremDashboard.tsx -- Full theorem page
+│   │       ├── TheoremRow.tsx
+│   │       └── TheoremDashboard.tsx
 │   ├── utils/
-│   │   ├── colors.ts              -- Color scale functions
-│   │   ├── layout.ts              -- Force-directed / spectral layout
-│   │   └── tiling.ts              -- Tiling-specific geometry helpers
+│   │   ├── colors.ts
+│   │   ├── layout.ts
+│   │   └── tiling.ts
 │   └── styles/
-│       └── globals.css            -- Tailwind base + custom styles
+│       └── globals.css
 ├── tests/
-│   ├── api.test.ts                -- API client mock tests
-│   ├── types.test.ts              -- Type guard tests
+│   ├── api.test.ts
+│   ├── types.test.ts
+│   ├── utils/
+│   │   └── colors.test.ts
+│   ├── hooks/
+│   │   └── usePatch.test.ts
 │   └── components/
 │       ├── PatchCard.test.tsx
+│       ├── PatchScene.test.tsx
 │       └── TheoremCard.test.tsx
 └── README.md
 ```

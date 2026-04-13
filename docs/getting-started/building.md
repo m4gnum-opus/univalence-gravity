@@ -48,7 +48,7 @@ agda src/Quantum/QuantumBridge.agda
 
 Each command loads the target module and all its transitive dependencies. Agda caches interface files (`.agdai`) in the source tree, so subsequent loads of overlapping dependencies are fast.
 
-> **Tip:** On first load, modules with large auto-generated datatypes (e.g., `Common/Dense200Spec.agda` with 1246 constructors) may take 1–5 minutes to parse. Subsequent loads use the cached interface.
+> **Tip:** On first load, modules with large auto-generated datatypes (e.g., `Common/Dense200Spec.agda` with 1246 constructors) may take a minute to parse. Subsequent loads use the cached interface.
 
 ## Full Repository Type-Check
 
