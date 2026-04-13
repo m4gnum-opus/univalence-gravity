@@ -1,0 +1,118 @@
+{
+  "patchBonds": 6,
+  "patchBoundary": 4,
+  "patchCells": 7,
+  "patchCurvature": null,
+  "patchDensity": 1.71,
+  "patchDimension": 1,
+  "patchHalfBound": null,
+  "patchHalfBoundVerified": false,
+  "patchMaxCut": 2,
+  "patchName": "tree",
+  "patchOrbits": 0,
+  "patchRegionData": [
+    {
+      "regionArea": 5,
+      "regionCells": [
+        0
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 0,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        1
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 1,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        2
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 2,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        3
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 3,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        0,
+        1
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 4,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.2,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        1,
+        2
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 5,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.2,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        2,
+        3
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 6,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.2,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        0,
+        3
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 7,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.2,
+      "regionSize": 2
+    }
+  ],
+  "patchRegions": 8,
+  "patchStrategy": "BFS",
+  "patchTiling": "Tree"
+}

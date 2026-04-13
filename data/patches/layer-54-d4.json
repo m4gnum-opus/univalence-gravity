@@ -1,0 +1,1288 @@
+{
+  "patchBonds": 225,
+  "patchBoundary": 380,
+  "patchCells": 166,
+  "patchCurvature": null,
+  "patchDensity": 2.71,
+  "patchDimension": 2,
+  "patchHalfBound": {
+    "hbAchieverCount": 0,
+    "hbAchieverSizes": [],
+    "hbMeanSlack": 2.2,
+    "hbRegionCount": 105,
+    "hbSlackRange": [
+      1,
+      3
+    ],
+    "hbViolations": 0
+  },
+  "patchHalfBoundVerified": false,
+  "patchMaxCut": 2,
+  "patchName": "layer-54-d4",
+  "patchOrbits": 2,
+  "patchRegionData": [
+    {
+      "regionArea": 5,
+      "regionCells": [
+        61
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 0,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        62
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 1,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        63
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 2,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        64
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 3,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        65
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 4,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        66
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 5,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        67
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 6,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        68
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 7,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        69
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 8,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        70
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 9,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        71
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 10,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        72
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 11,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        73
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 12,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        74
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 13,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        75
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 14,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        76
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 15,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        77
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 16,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        78
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 17,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        79
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 18,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        80
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 19,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        81
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 20,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        82
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 21,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        83
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 22,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        84
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 23,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        85
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 24,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        86
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 25,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        87
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 26,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        88
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 27,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        89
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 28,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        90
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 29,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        91
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 30,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        92
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 31,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        93
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 32,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        94
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 33,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        95
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 34,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        96
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 35,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        97
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 36,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        98
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 37,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        99
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 38,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        100
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 39,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        101
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 40,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        102
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 41,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        103
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 42,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        104
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 43,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        105
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 44,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        106
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 45,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        107
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 46,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        108
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 47,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        109
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 48,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        110
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 49,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        111
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 50,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        112
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 51,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        113
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 52,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        114
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 53,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        115
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 54,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        116
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 55,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        117
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 56,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        118
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 57,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        119
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 58,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        120
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 59,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        121
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 60,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        122
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 61,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        123
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 62,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        124
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 63,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        125
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 64,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        126
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 65,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        127
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 66,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        128
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 67,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        129
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 68,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        130
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 69,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        131
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 70,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        132
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 71,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        133
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 72,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        134
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 73,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        135
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 74,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        136
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 75,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        137
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 76,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        138
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 77,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        139
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 78,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        140
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 79,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        141
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 80,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        142
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 81,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        143
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 82,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        144
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 83,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        145
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 84,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        146
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 85,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        147
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 86,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        148
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 87,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        149
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 88,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        150
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 89,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        151
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 90,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        152
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 91,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        153
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 92,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        154
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 93,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        155
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 94,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        156
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 95,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        157
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 96,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        158
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 97,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        159
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 98,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        160
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 99,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        161
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 100,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        162
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 101,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        163
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 102,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        164
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 103,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        165
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 104,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    }
+  ],
+  "patchRegions": 105,
+  "patchStrategy": "BFS",
+  "patchTiling": "Tiling54"
+}

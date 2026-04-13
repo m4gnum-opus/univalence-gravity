@@ -1,0 +1,50 @@
+-- backend/cabal.project
+--
+-- Cabal project configuration for the Univalence Gravity Haskell backend.
+-- See docs/engineering/backend-spec-haskell.md for the full specification.
+--
+-- PRODUCTION BUILDS
+-- -----------------
+-- This file sets optimization: 0 for fast development iteration.
+-- For production deployment, override with -O1 or -O2:
+--
+--   cabal install -O1 --install-method=copy --overwrite-policy=always
+--
+-- Alternatively, create a cabal.project.local with:
+--
+--   optimization: 1
+--
+-- Include test-suite dependencies in the solver plan.
+tests: True
+--
+-- which takes precedence over this file without modifying it.
+
+-- The single local package in this project.
+packages: .
+
+-- Pin the Hackage index snapshot for reproducible dependency resolution.
+-- The freeze file (cabal.project.freeze) pins exact versions; the
+-- index-state ensures the solver sees the same package set even if
+-- the freeze file is regenerated.
+index-state: 2026-04-12T00:00:00Z
+
+-- Build with optimisations off during development for faster iteration.
+-- The -O0 flag reduces GHC compile times by ~40-60% for this project.
+-- This applies globally to the library, executable, and test suite.
+-- Tests run unoptimised, which is fine for correctness testing.
+--
+-- For production or benchmarking, pass -O1 on the command line:
+--
+--   cabal build -O1
+--   cabal run -O1 univalence-gravity-backend
+--
+-- Or create a cabal.project.local containing "optimization: 1".
+optimization: 0
+
+-- Write build artefacts under dist-newstyle/ (the default).
+-- Uncomment to relocate:
+-- builddir: dist-newstyle
+
+-- Uncomment to promote warnings to errors in CI:
+-- package univalence-gravity-backend
+--   ghc-options: -Werror

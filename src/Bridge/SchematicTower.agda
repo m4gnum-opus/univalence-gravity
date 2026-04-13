@@ -129,13 +129,24 @@ record RichLayerStep (lo hi : TowerLevel) : Type₁ where
 -- ════════════════════════════════════════════════════════════════════
 
 open import Bridge.GenericValidation
-  using (d100OrbitPatch ; d200OrbitPatch)
+  using (d100OrbitPatch ; d200OrbitPatch ; h145OrbitPatch)
 
 d100-tower-level : TowerLevel
 d100-tower-level = mkTowerLevel d100OrbitPatch 8
 
 d200-tower-level : TowerLevel
 d200-tower-level = mkTowerLevel d200OrbitPatch 9
+
+-- ════════════════════════════════════════════════════════════════════
+--  Honeycomb-145 tower level  (1008 regions, 9 orbits, maxCut = 9)
+-- ════════════════════════════════════════════════════════════════════
+
+h145-tower-level : TowerLevel
+h145-tower-level = mkTowerLevel h145OrbitPatch 9
+
+-- Bridge witness extraction (for downstream consumption)
+h145-bridge : BridgeWitness
+h145-bridge = TowerLevel.bridge h145-tower-level
 
 
 -- ════════════════════════════════════════════════════════════════════

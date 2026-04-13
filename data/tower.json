@@ -1,0 +1,113 @@
+[
+  {
+    "tlHasAreaLaw": false,
+    "tlHasBridge": true,
+    "tlHasHalfBound": false,
+    "tlMaxCut": 7,
+    "tlMonotone": null,
+    "tlOrbits": 0,
+    "tlPatchName": "dense-50",
+    "tlRegions": 139
+  },
+  {
+    "tlHasAreaLaw": true,
+    "tlHasBridge": true,
+    "tlHasHalfBound": true,
+    "tlMaxCut": 8,
+    "tlMonotone": [
+      1,
+      "refl"
+    ],
+    "tlOrbits": 8,
+    "tlPatchName": "dense-100",
+    "tlRegions": 717
+  },
+  {
+    "tlHasAreaLaw": true,
+    "tlHasBridge": true,
+    "tlHasHalfBound": true,
+    "tlMaxCut": 9,
+    "tlMonotone": [
+      1,
+      "refl"
+    ],
+    "tlOrbits": 9,
+    "tlPatchName": "dense-200",
+    "tlRegions": 1246
+  },
+  {
+    "tlHasAreaLaw": false,
+    "tlHasBridge": true,
+    "tlHasHalfBound": false,
+    "tlMaxCut": 2,
+    "tlMonotone": null,
+    "tlOrbits": 2,
+    "tlPatchName": "layer-54-d2",
+    "tlRegions": 15
+  },
+  {
+    "tlHasAreaLaw": false,
+    "tlHasBridge": true,
+    "tlHasHalfBound": false,
+    "tlMaxCut": 2,
+    "tlMonotone": [
+      0,
+      "refl"
+    ],
+    "tlOrbits": 2,
+    "tlPatchName": "layer-54-d3",
+    "tlRegions": 40
+  },
+  {
+    "tlHasAreaLaw": false,
+    "tlHasBridge": true,
+    "tlHasHalfBound": false,
+    "tlMaxCut": 2,
+    "tlMonotone": [
+      0,
+      "refl"
+    ],
+    "tlOrbits": 2,
+    "tlPatchName": "layer-54-d4",
+    "tlRegions": 105
+  },
+  {
+    "tlHasAreaLaw": false,
+    "tlHasBridge": true,
+    "tlHasHalfBound": false,
+    "tlMaxCut": 2,
+    "tlMonotone": [
+      0,
+      "refl"
+    ],
+    "tlOrbits": 2,
+    "tlPatchName": "layer-54-d5",
+    "tlRegions": 275
+  },
+  {
+    "tlHasAreaLaw": false,
+    "tlHasBridge": true,
+    "tlHasHalfBound": false,
+    "tlMaxCut": 2,
+    "tlMonotone": [
+      0,
+      "refl"
+    ],
+    "tlOrbits": 2,
+    "tlPatchName": "layer-54-d6",
+    "tlRegions": 720
+  },
+  {
+    "tlHasAreaLaw": false,
+    "tlHasBridge": true,
+    "tlHasHalfBound": false,
+    "tlMaxCut": 2,
+    "tlMonotone": [
+      0,
+      "refl"
+    ],
+    "tlOrbits": 2,
+    "tlPatchName": "layer-54-d7",
+    "tlRegions": 1885
+  }
+]

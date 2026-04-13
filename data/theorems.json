@@ -1,0 +1,82 @@
+[
+  {
+    "thmModule": "Bridge/GenericBridge.agda",
+    "thmName": "Discrete Ryu-Takayanagi",
+    "thmNumber": 1,
+    "thmProofMethod": "isoToEquiv + ua + uaβ on contractible reversed singletons",
+    "thmStatement": "S_cut = L_min on every boundary region, for any patch, via a single generic theorem.",
+    "thmStatus": "Verified"
+  },
+  {
+    "thmModule": "Bulk/GaussBonnet.agda",
+    "thmName": "Discrete Gauss-Bonnet",
+    "thmNumber": 2,
+    "thmProofMethod": "refl on class-weighted ℤ sum",
+    "thmStatement": "Total combinatorial curvature equals Euler characteristic: Σκ(v) = χ(K) = 1.",
+    "thmStatus": "Verified"
+  },
+  {
+    "thmModule": "Bridge/HalfBound.agda",
+    "thmName": "Discrete Bekenstein-Hawking",
+    "thmNumber": 3,
+    "thmProofMethod": "from-two-cuts generic lemma + per-instance abstract witnesses",
+    "thmStatement": "S(A) ≤ area(A)/2 with 1/(4G) = 1/2 in bond-dimension-1 units.",
+    "thmStatus": "Verified"
+  },
+  {
+    "thmModule": "Bridge/WickRotation.agda",
+    "thmName": "Discrete Wick Rotation",
+    "thmNumber": 4,
+    "thmProofMethod": "Coherence record importing shared bridge + two GB witnesses",
+    "thmStatement": "The holographic bridge is curvature-agnostic: same Agda term for AdS and dS.",
+    "thmStatus": "Verified"
+  },
+  {
+    "thmModule": "Causal/NoCTC.agda",
+    "thmName": "No Closed Timelike Curves",
+    "thmNumber": 5,
+    "thmProofMethod": "Well-foundedness of (ℕ, <) via snotz + injSuc",
+    "thmStatement": "Structural acyclicity from ℕ well-foundedness.",
+    "thmStatus": "Verified"
+  },
+  {
+    "thmModule": "Gauge/Holonomy.agda",
+    "thmName": "Matter as Topological Defects",
+    "thmNumber": 6,
+    "thmProofMethod": "Decidable equality on Q₈ + discriminator on q1",
+    "thmStatement": "Non-trivial Q₈ Wilson loops produce inhabited ParticleDefect types.",
+    "thmStatus": "Verified"
+  },
+  {
+    "thmModule": "Quantum/QuantumBridge.agda",
+    "thmName": "Quantum Superposition Bridge",
+    "thmNumber": 7,
+    "thmProofMethod": "Structural induction on List; cong₂ on _+A_",
+    "thmStatement": "⟨S⟩ = ⟨L⟩ for any finite superposition, any amplitude algebra.",
+    "thmStatus": "Verified"
+  },
+  {
+    "thmModule": "Boundary/StarSubadditivity.agda",
+    "thmName": "Subadditivity & Monotonicity",
+    "thmNumber": 8,
+    "thmProofMethod": "Exhaustive (k, refl) case splits",
+    "thmStatement": "S(A∪B) ≤ S(A) + S(B) and r₁ ⊆ r₂ → L(r₁) ≤ L(r₂).",
+    "thmStatus": "Verified"
+  },
+  {
+    "thmModule": "Bridge/StarStepInvariance.agda",
+    "thmName": "Step Invariance & Dynamics Loop",
+    "thmNumber": 9,
+    "thmProofMethod": "Parameterized SL-param + list induction",
+    "thmStatement": "RT preserved under arbitrary single-bond weight perturbations.",
+    "thmStatus": "Verified"
+  },
+  {
+    "thmModule": "Bridge/EnrichedStarStepInvariance.agda",
+    "thmName": "Enriched Step Invariance",
+    "thmNumber": 10,
+    "thmProofMethod": "Parameterized full-equiv-w for arbitrary weight functions",
+    "thmStatement": "Full enriched equivalence holds for any weight function.",
+    "thmStatus": "Verified"
+  }
+]

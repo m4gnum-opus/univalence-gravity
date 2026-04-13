@@ -1,0 +1,66 @@
+╔═══════════════════════════════════════════════════════════╗
+║  M1: JSON Data Export for Haskell Backend                 ║
+║  18_export_json.py — deterministic, idempotent            ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Output directory: /home/zimablue/univalence-gravity/data
+
+  ── Generating 14 patch files ──
+
+    tree ...  ✓  /home/zimablue/univalence-gravity/data/patches/tree.json  (2230 bytes)
+  8 regions  (0.0s)
+    star ...  ✓  /home/zimablue/univalence-gravity/data/patches/star.json  (2875 bytes)
+  10 regions  (0.0s)
+    filled ...  ✓  /home/zimablue/univalence-gravity/data/patches/filled.json  (26267 bytes)
+  90 regions  (0.1s)
+    honeycomb-3d ...  ✓  /home/zimablue/univalence-gravity/data/patches/honeycomb-3d.json  (9383 bytes)
+  34 regions  (0.2s)
+    dense-50 ...  ✓  /home/zimablue/univalence-gravity/data/patches/dense-50.json  (36241 bytes)
+  139 regions  (1.1s)
+    dense-100 ...  ✓  /home/zimablue/univalence-gravity/data/patches/dense-100.json  (191655 bytes)
+  717 regions [Agda ✓]  (8.9s)
+    dense-200 ...  ✓  /home/zimablue/univalence-gravity/data/patches/dense-200.json  (334432 bytes)
+  1246 regions [Agda ✓]  (36.1s)
+    desitter ...  ✓  /home/zimablue/univalence-gravity/data/patches/desitter.json  (3450 bytes)
+  10 regions  (0.0s)
+    layer-54-d2 ...  ✓  /home/zimablue/univalence-gravity/data/patches/layer-54-d2.json  (3980 bytes)
+  15 regions  (0.0s)
+    layer-54-d3 ...  ✓  /home/zimablue/univalence-gravity/data/patches/layer-54-d3.json  (9735 bytes)
+  40 regions  (0.2s)
+    layer-54-d4 ...  ✓  /home/zimablue/univalence-gravity/data/patches/layer-54-d4.json  (24760 bytes)
+  105 regions  (1.5s)
+    layer-54-d5 ...  ✓  /home/zimablue/univalence-gravity/data/patches/layer-54-d5.json  (64239 bytes)
+  275 regions  (11.0s)
+    layer-54-d6 ...  ✓  /home/zimablue/univalence-gravity/data/patches/layer-54-d6.json  (167643 bytes)
+  720 regions  (91.1s)
+    layer-54-d7 ...  ✓  /home/zimablue/univalence-gravity/data/patches/layer-54-d7.json  (440534 bytes)
+  1885 regions  (731.9s)
+
+  ── Tower, theorems, curvature, meta ──
+
+  ✓  /home/zimablue/univalence-gravity/data/tower.json  (2029 bytes)
+  ✓  /home/zimablue/univalence-gravity/data/theorems.json  (3089 bytes)
+  ✓  /home/zimablue/univalence-gravity/data/curvature.json  (962 bytes)
+  ✓  /home/zimablue/univalence-gravity/data/meta.json  (123 bytes)
+
+════════════════════════════════════════════════════════════
+  produced 18 files in 882.3s
+  Data hash: f8fcfb4dc6d9be08
+  Half-bound Agda-verified: 2 / 14 patches
+
+  Output structure:
+    /home/zimablue/univalence-gravity/data/
+    ├── patches/  (14 files)
+    ├── tower.json
+    ├── theorems.json
+    ├── curvature.json
+    └── meta.json
+
+  The Haskell backend reads from this directory at startup.
+  See docs/engineering/backend-spec-haskell.md §4.
+
+  NOTE: Curvature fields renamed curvTotalTenths → curvTotal,
+        curvEulerTenths → curvEuler.  The curvDenominator field
+        (10 for 2D, 20 for 3D) disambiguates the unit.
+        Update Haskell Types.hs CurvatureData/CurvatureSummary
+        field names accordingly.

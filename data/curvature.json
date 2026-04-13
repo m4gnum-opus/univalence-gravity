@@ -1,0 +1,50 @@
+[
+  {
+    "curvDenominator": 20,
+    "curvEuler": -60,
+    "curvTotal": -60,
+    "gaussBonnet": true,
+    "patchName": "dense-100",
+    "tiling": "Tiling435"
+  },
+  {
+    "curvDenominator": 20,
+    "curvEuler": -60,
+    "curvTotal": -60,
+    "gaussBonnet": true,
+    "patchName": "dense-200",
+    "tiling": "Tiling435"
+  },
+  {
+    "curvDenominator": 20,
+    "curvEuler": -60,
+    "curvTotal": -60,
+    "gaussBonnet": true,
+    "patchName": "dense-50",
+    "tiling": "Tiling435"
+  },
+  {
+    "curvDenominator": 10,
+    "curvEuler": 10,
+    "curvTotal": 10,
+    "gaussBonnet": true,
+    "patchName": "desitter",
+    "tiling": "Tiling53"
+  },
+  {
+    "curvDenominator": 10,
+    "curvEuler": 10,
+    "curvTotal": 10,
+    "gaussBonnet": true,
+    "patchName": "filled",
+    "tiling": "Tiling54"
+  },
+  {
+    "curvDenominator": 20,
+    "curvEuler": 2800,
+    "curvTotal": 2800,
+    "gaussBonnet": true,
+    "patchName": "honeycomb-3d",
+    "tiling": "Tiling435"
+  }
+]

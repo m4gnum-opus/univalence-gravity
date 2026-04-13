@@ -1,3 +1,4 @@
 venv/
-sim/prototyping/__pycache__
+sim/prototyping/__pycache__/
 .vscode/
+backend/dist-newstyle/

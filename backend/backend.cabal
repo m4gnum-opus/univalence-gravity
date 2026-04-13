@@ -1,0 +1,116 @@
+cabal-version:   3.0
+name:            univalence-gravity-backend
+version:         0.1.0.0
+synopsis:
+  REST API serving pre-computed, Agda-verified holographic patch data.
+
+description:
+  A hand-written Haskell server that reads JSON data exported by the
+  Python oracle pipeline (18_export_json.py) and serves it via a
+  type-safe Servant REST API.  The data has been verified by Cubical
+  Agda 2.8.0; this backend carries only the verified /data/, not the
+  proofs themselves.
+  .
+  See docs/engineering/backend-spec-haskell.md for the full specification.
+
+license:         MIT
+license-file:    ../LICENSE
+author:          Sven Bichtemann
+maintainer:      sven@example.com
+category:        Web, Science
+build-type:      Simple
+extra-doc-files: README.md
+
+-- ────────────────────────────────────────────────────────────────────
+--  Internal library (shared between executable and test suite)
+-- ────────────────────────────────────────────────────────────────────
+library
+  exposed-modules:
+    Api
+    DataLoader
+    Invariants
+    Server
+    Types
+
+  hs-source-dirs:  src
+  default-language: Haskell2010
+
+  ghc-options:
+    -Wall -Wcompat -Widentities -Wincomplete-record-updates
+    -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints
+
+  build-depends:
+      base             >= 4.18  && < 5
+    , aeson            >= 2.1   && < 2.3
+    , bytestring       >= 0.11  && < 0.13
+    , containers       >= 0.6   && < 0.8
+    , directory        >= 1.3   && < 1.4
+    , filepath         >= 1.4   && < 1.6
+    , http-types       >= 0.12  && < 0.13
+    , servant          >= 0.20  && < 0.22
+    , servant-server   >= 0.20  && < 0.22
+    , text             >= 2.0   && < 2.2
+    , wai              >= 3.2   && < 3.3
+    , wai-cors         >= 0.2   && < 0.3
+    , warp             >= 3.3   && < 3.5
+
+-- ────────────────────────────────────────────────────────────────────
+--  Executable
+--
+--  The entry point lives in app/Main.hs, separate from the library
+--  source tree in src/.  Main.hs is a thin shell: it parses CLI
+--  arguments, calls the library's data-loading and validation
+--  functions, and hands the assembled WAI Application to Warp.
+--
+--  Main.hs directly imports Network.Wai.Handler.Warp (run), so
+--  the warp package must appear here even though the library also
+--  depends on it.  With Cabal >= 2.0 component-based resolution,
+--  each stanza must declare its own dependencies — the library's
+--  warp dependency is not inherited by the executable.
+-- ────────────────────────────────────────────────────────────────────
+executable univalence-gravity-backend
+  main-is:          Main.hs
+  hs-source-dirs:   app
+  default-language:  Haskell2010
+
+  ghc-options:
+    -Wall -threaded -rtsopts -with-rtsopts=-N
+
+  build-depends:
+      base                        >= 4.18 && < 5
+    , univalence-gravity-backend
+    , warp                        >= 3.3  && < 3.5
+
+-- ────────────────────────────────────────────────────────────────────
+--  Test suite
+-- ────────────────────────────────────────────────────────────────────
+test-suite univalence-gravity-backend-test
+  type:             exitcode-stdio-1.0
+  main-is:          Spec.hs
+  hs-source-dirs:   test
+  default-language:  Haskell2010
+
+  ghc-options:
+    -Wall -threaded -rtsopts -with-rtsopts=-N
+
+  other-modules:
+    InvariantSpec
+    ApiSpec
+
+  build-depends:
+      base                        >= 4.18 && < 5
+    , univalence-gravity-backend
+    , aeson                       >= 2.1  && < 2.3
+    , bytestring                  >= 0.11 && < 0.13
+    , containers                  >= 0.6  && < 0.8
+    , hspec                       >= 2.11 && < 2.13
+    , http-client                 >= 0.7  && < 0.8
+    , http-types                  >= 0.12 && < 0.13
+    , QuickCheck                  >= 2.14 && < 2.16
+    , servant                     >= 0.20 && < 0.22
+    , servant-client              >= 0.20 && < 0.22
+    , text                        >= 2.0  && < 2.2
+    , warp                        >= 3.3  && < 3.5
+
+  build-tool-depends:
+    hspec-discover:hspec-discover >= 2.11 && < 2.13

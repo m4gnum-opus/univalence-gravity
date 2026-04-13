@@ -1,0 +1,1964 @@
+{
+  "patchBonds": 68,
+  "patchBoundary": 164,
+  "patchCells": 50,
+  "patchCurvature": {
+    "curvClasses": [
+      {
+        "ccCount": 12,
+        "ccKappa": -5,
+        "ccLocation": "interior",
+        "ccName": "ev5",
+        "ccValence": 5
+      }
+    ],
+    "curvDenominator": 20,
+    "curvEuler": -60,
+    "curvGaussBonnet": true,
+    "curvTotal": -60
+  },
+  "patchDensity": 2.72,
+  "patchDimension": 3,
+  "patchHalfBound": {
+    "hbAchieverCount": 10,
+    "hbAchieverSizes": [
+      [
+        1,
+        8
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    "hbMeanSlack": 5.9,
+    "hbRegionCount": 139,
+    "hbSlackRange": [
+      0,
+      14
+    ],
+    "hbViolations": 0
+  },
+  "patchHalfBoundVerified": false,
+  "patchMaxCut": 7,
+  "patchName": "dense-50",
+  "patchOrbits": 7,
+  "patchRegionData": [
+    {
+      "regionArea": 6,
+      "regionCells": [
+        8
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 0,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        8,
+        47
+      ],
+      "regionHalfSlack": 0,
+      "regionId": 1,
+      "regionMinCut": 5,
+      "regionOrbit": "mc5",
+      "regionRatio": 0.5,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        8,
+        47,
+        49
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 2,
+      "regionMinCut": 5,
+      "regionOrbit": "mc5",
+      "regionRatio": 0.3571,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        8,
+        47,
+        48,
+        49
+      ],
+      "regionHalfSlack": 8,
+      "regionId": 3,
+      "regionMinCut": 5,
+      "regionOrbit": "mc5",
+      "regionRatio": 0.2778,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        44,
+        47,
+        48,
+        49
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 4,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.2727,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        39,
+        47,
+        48,
+        49
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 5,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.2727,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        18,
+        47,
+        48,
+        49
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 6,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.2727,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        8,
+        44,
+        47,
+        49
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 7,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.3333,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        44,
+        46,
+        47,
+        49
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 8,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.2727,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        44,
+        45,
+        47,
+        49
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 9,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.2727,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        39,
+        44,
+        47,
+        49
+      ],
+      "regionHalfSlack": 8,
+      "regionId": 10,
+      "regionMinCut": 7,
+      "regionOrbit": "mc7",
+      "regionRatio": 0.3182,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        8,
+        39,
+        47,
+        49
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 11,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.3333,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        39,
+        40,
+        47,
+        49
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 12,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.2727,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        8,
+        47,
+        48
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 13,
+      "regionMinCut": 5,
+      "regionOrbit": "mc5",
+      "regionRatio": 0.3571,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        8,
+        44,
+        47,
+        48
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 14,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.3333,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        44,
+        46,
+        47,
+        48
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 15,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.2727,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        44,
+        45,
+        47,
+        48
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 16,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.2727,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        18,
+        44,
+        47,
+        48
+      ],
+      "regionHalfSlack": 8,
+      "regionId": 17,
+      "regionMinCut": 7,
+      "regionOrbit": "mc7",
+      "regionRatio": 0.3182,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        8,
+        18,
+        47,
+        48
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 18,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.3333,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        18,
+        19,
+        47,
+        48
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 19,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.2727,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        8,
+        44,
+        47
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 20,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.4286,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        8,
+        44,
+        46,
+        47
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 21,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.3333,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        44,
+        45,
+        46,
+        47
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 22,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.2727,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        37,
+        44,
+        46,
+        47
+      ],
+      "regionHalfSlack": 8,
+      "regionId": 23,
+      "regionMinCut": 7,
+      "regionOrbit": "mc7",
+      "regionRatio": 0.3182,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        8,
+        44,
+        45,
+        47
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 24,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.3333,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        16,
+        44,
+        45,
+        47
+      ],
+      "regionHalfSlack": 8,
+      "regionId": 25,
+      "regionMinCut": 7,
+      "regionOrbit": "mc7",
+      "regionRatio": 0.3182,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        8,
+        44
+      ],
+      "regionHalfSlack": 0,
+      "regionId": 26,
+      "regionMinCut": 5,
+      "regionOrbit": "mc5",
+      "regionRatio": 0.5,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        8,
+        44,
+        46
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 27,
+      "regionMinCut": 5,
+      "regionOrbit": "mc5",
+      "regionRatio": 0.3571,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        8,
+        44,
+        45,
+        46
+      ],
+      "regionHalfSlack": 8,
+      "regionId": 28,
+      "regionMinCut": 5,
+      "regionOrbit": "mc5",
+      "regionRatio": 0.2778,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        37,
+        44,
+        45,
+        46
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 29,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.2727,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        16,
+        44,
+        45,
+        46
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 30,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.2727,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        8,
+        37,
+        44,
+        46
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 31,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.3333,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        37,
+        38,
+        44,
+        46
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 32,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.2727,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        8,
+        44,
+        45
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 33,
+      "regionMinCut": 5,
+      "regionOrbit": "mc5",
+      "regionRatio": 0.3571,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        8,
+        16,
+        44,
+        45
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 34,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.3333,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        8,
+        16,
+        17,
+        44,
+        45
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 35,
+      "regionMinCut": 6,
+      "regionOrbit": "mc6",
+      "regionRatio": 0.2727,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        9
+      ],
+      "regionHalfSlack": 0,
+      "regionId": 36,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.5,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        9,
+        38
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 37,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        9,
+        37,
+        38
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 38,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2857,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        9,
+        37,
+        38,
+        46
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 39,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2222,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        9,
+        37,
+        38,
+        44,
+        46
+      ],
+      "regionHalfSlack": 12,
+      "regionId": 40,
+      "regionMinCut": 5,
+      "regionOrbit": "mc5",
+      "regionRatio": 0.2273,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        9,
+        10,
+        37,
+        38,
+        46
+      ],
+      "regionHalfSlack": 14,
+      "regionId": 41,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.1818,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        9,
+        10,
+        37,
+        38
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 42,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2222,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        9,
+        10,
+        38
+      ],
+      "regionHalfSlack": 8,
+      "regionId": 43,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.2143,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        9,
+        10
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 44,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        10
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 45,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        11
+      ],
+      "regionHalfSlack": 0,
+      "regionId": 46,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.5,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        11,
+        40
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 47,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        11,
+        39,
+        40
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 48,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2857,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        11,
+        39,
+        40,
+        49
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 49,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2222,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        11,
+        39,
+        40,
+        47,
+        49
+      ],
+      "regionHalfSlack": 12,
+      "regionId": 50,
+      "regionMinCut": 5,
+      "regionOrbit": "mc5",
+      "regionRatio": 0.2273,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        11,
+        12,
+        39,
+        40,
+        49
+      ],
+      "regionHalfSlack": 14,
+      "regionId": 51,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.1818,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        11,
+        12,
+        39,
+        40
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 52,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2222,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        11,
+        12,
+        40
+      ],
+      "regionHalfSlack": 8,
+      "regionId": 53,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.2143,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        11,
+        12
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 54,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        12
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 55,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        13
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 56,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        13,
+        14
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 57,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.2,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        14
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 58,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        15
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 59,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        15,
+        43
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 60,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.2,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        15,
+        42,
+        43
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 61,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.1429,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        16
+      ],
+      "regionHalfSlack": 0,
+      "regionId": 62,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.5,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        16,
+        45
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 63,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        16,
+        44,
+        45
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 64,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2857,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        16,
+        44,
+        45,
+        46
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 65,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2222,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        16,
+        37,
+        44,
+        45,
+        46
+      ],
+      "regionHalfSlack": 12,
+      "regionId": 66,
+      "regionMinCut": 5,
+      "regionOrbit": "mc5",
+      "regionRatio": 0.2273,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        16,
+        17,
+        44,
+        45,
+        46
+      ],
+      "regionHalfSlack": 14,
+      "regionId": 67,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.1818,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        16,
+        17,
+        44,
+        45
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 68,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2222,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        16,
+        17,
+        45
+      ],
+      "regionHalfSlack": 8,
+      "regionId": 69,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.2143,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        16,
+        17
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 70,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        17
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 71,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        18
+      ],
+      "regionHalfSlack": 0,
+      "regionId": 72,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.5,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        18,
+        48
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 73,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        18,
+        47,
+        48
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 74,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2857,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        18,
+        47,
+        48,
+        49
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 75,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2222,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        18,
+        39,
+        47,
+        48,
+        49
+      ],
+      "regionHalfSlack": 12,
+      "regionId": 76,
+      "regionMinCut": 5,
+      "regionOrbit": "mc5",
+      "regionRatio": 0.2273,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        18,
+        19,
+        47,
+        48,
+        49
+      ],
+      "regionHalfSlack": 14,
+      "regionId": 77,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.1818,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        18,
+        19,
+        47,
+        48
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 78,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2222,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        18,
+        19,
+        48
+      ],
+      "regionHalfSlack": 8,
+      "regionId": 79,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.2143,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        18,
+        19
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 80,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        19
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 81,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        20
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 82,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.1667,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        21
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 83,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        21,
+        22
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 84,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.2,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        22
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 85,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        23
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 86,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.1667,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        24
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 87,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        24,
+        25
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 88,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.2,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        25
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 89,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        26
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 90,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        26,
+        27
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 91,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.2,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        27
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 92,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        28
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 93,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.1667,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        29
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 94,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        29,
+        30
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 95,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.2,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        30
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 96,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        31
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 97,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        31,
+        32
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 98,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.2,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        32
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 99,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        33
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 100,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.1667,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        34
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 101,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        34,
+        35
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 102,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.2,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        35
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 103,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        36
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 104,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.1667,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        37
+      ],
+      "regionHalfSlack": 0,
+      "regionId": 105,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.5,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        37,
+        46
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 106,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        37,
+        44,
+        46
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 107,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2857,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        37,
+        44,
+        45,
+        46
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 108,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2222,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        37,
+        38,
+        44,
+        45,
+        46
+      ],
+      "regionHalfSlack": 14,
+      "regionId": 109,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.1818,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        37,
+        38,
+        44,
+        46
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 110,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2222,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        37,
+        38,
+        46
+      ],
+      "regionHalfSlack": 8,
+      "regionId": 111,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.2143,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        37,
+        38
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 112,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        38
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 113,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        39
+      ],
+      "regionHalfSlack": 0,
+      "regionId": 114,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.5,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        39,
+        49
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 115,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        39,
+        47,
+        49
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 116,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2857,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        39,
+        47,
+        48,
+        49
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 117,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2222,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 22,
+      "regionCells": [
+        39,
+        40,
+        47,
+        48,
+        49
+      ],
+      "regionHalfSlack": 14,
+      "regionId": 118,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.1818,
+      "regionSize": 5
+    },
+    {
+      "regionArea": 18,
+      "regionCells": [
+        39,
+        40,
+        47,
+        49
+      ],
+      "regionHalfSlack": 10,
+      "regionId": 119,
+      "regionMinCut": 4,
+      "regionOrbit": "mc4",
+      "regionRatio": 0.2222,
+      "regionSize": 4
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        39,
+        40,
+        49
+      ],
+      "regionHalfSlack": 8,
+      "regionId": 120,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.2143,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        39,
+        40
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 121,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        40
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 122,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        41
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 123,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.1667,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        42
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 124,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        42,
+        43
+      ],
+      "regionHalfSlack": 6,
+      "regionId": 125,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.2,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        43
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 126,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        44
+      ],
+      "regionHalfSlack": 0,
+      "regionId": 127,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.5,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        44,
+        46
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 128,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        44,
+        45,
+        46
+      ],
+      "regionHalfSlack": 8,
+      "regionId": 129,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.2143,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        44,
+        45
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 130,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        45
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 131,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        46
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 132,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        47
+      ],
+      "regionHalfSlack": 0,
+      "regionId": 133,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.5,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        47,
+        49
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 134,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 14,
+      "regionCells": [
+        47,
+        48,
+        49
+      ],
+      "regionHalfSlack": 8,
+      "regionId": 135,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.2143,
+      "regionSize": 3
+    },
+    {
+      "regionArea": 10,
+      "regionCells": [
+        47,
+        48
+      ],
+      "regionHalfSlack": 4,
+      "regionId": 136,
+      "regionMinCut": 3,
+      "regionOrbit": "mc3",
+      "regionRatio": 0.3,
+      "regionSize": 2
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        48
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 137,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 6,
+      "regionCells": [
+        49
+      ],
+      "regionHalfSlack": 2,
+      "regionId": 138,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.3333,
+      "regionSize": 1
+    }
+  ],
+  "patchRegions": 139,
+  "patchStrategy": "Dense",
+  "patchTiling": "Tiling435"
+}

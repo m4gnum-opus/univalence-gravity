@@ -1,4 +1,4 @@
-# Univalence Gravity v0.5.0
+# Univalence Gravity - The Spacetime Compiler _v0.5.5_
 
 **A Constructive Formalization of Discrete Entanglement-Geometry Duality in Cubical Agda**
 
@@ -26,7 +26,9 @@ Univalence paths.
 
 For the full theorem registry with type signatures and module cross-references, see [`docs/formal/01-theorems.md`](docs/formal/01-theorems.md).
 
-## Verification
+## Quick Start
+
+### Verify the Agda Proofs
 
 ```bash
 # Prerequisites: Agda 2.8.0, agda/cubical library
@@ -34,20 +36,55 @@ For the full theorem registry with type signatures and module cross-references, 
 # See docs/getting-started/building.md for module load order
 
 # Type-check the core theorems:
-agda src/Bridge/GenericBridge.agda
-agda src/Bulk/GaussBonnet.agda
-agda src/Bridge/WickRotation.agda
-agda src/Causal/NoCTC.agda
-agda src/Quantum/QuantumBridge.agda
-agda src/Bridge/HalfBound.agda
+agda src/Bridge/GenericBridge.agda    # Discrete RT (generic)
+agda src/Bulk/GaussBonnet.agda        # Discrete Gauss–Bonnet
+agda src/Bridge/HalfBound.agda        # Discrete Bekenstein–Hawking
+agda src/Bridge/WickRotation.agda     # Discrete Wick Rotation
+agda src/Causal/NoCTC.agda            # No CTCs
+agda src/Gauge/Holonomy.agda          # Matter defects
+agda src/Quantum/QuantumBridge.agda   # Quantum superposition bridge
+```
+
+### Run the Haskell Backend
+
+```bash
+# Prerequisites: GHC 9.6+, Cabal 3.10+
+cd backend
+ln -sf ../data data       # symlink to the data/ directory (if not present)
+cabal update && cabal build all
+cabal test all            # property-based + integration tests
+cabal run univalence-gravity-backend
+# → Listening on http://localhost:8080
+```
+
+The backend serves pre-computed, Agda-verified holographic patch data via a REST API. It is a hand-written Haskell server — not compiled from Agda (Cubical Agda's `--cubical` flag has no meaningful GHC runtime extraction). See [`docs/engineering/backend-spec-haskell.md`](engineering/backend-spec-haskell.md) and [`backend/README.md`](../backend/README.md) for details.
+
+**API at a glance:**
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /patches` | List all 14 verified patch instances |
+| `GET /patches/:name` | Full patch data (regions, curvature, half-bound) |
+| `GET /tower` | Resolution tower with monotonicity witnesses |
+| `GET /theorems` | All 10 machine-checked theorems |
+| `GET /curvature` | Gauss–Bonnet summaries |
+| `GET /meta` | Version, Agda version, data hash |
+| `GET /health` | Server health check |
+
+### Regenerate Data (Optional)
+
+```bash
+# Prerequisites: Python 3.12, networkx, numpy
+cd sim/prototyping
+python3 18_export_json.py   # regenerates data/*.json from oracle outputs
 ```
 
 ## Architecture
 
 ```
-src/
+src/                          Cubical Agda formalization (verification layer)
 ├── Util/         — Scalars (ℚ≥0 = ℕ), Rationals (ℚ₁₀ = ℤ), NatLemmas
-├── Common/       — Patch specifications (star, filled, dense, layer)
+├── Common/       — Patch specifications (star, filled, dense, layer, honeycomb)
 ├── Boundary/     — Min-cut observables, subadditivity, area law, half-bound
 ├── Bulk/         — Chain observables, curvature, Gauss–Bonnet
 ├── Bridge/       — GenericBridge, SchematicTower, WickRotation, Dynamics,
@@ -56,11 +93,25 @@ src/
 ├── Gauge/        — FiniteGroup, Q₈, Connection, Holonomy, ConjugacyClass
 └── Quantum/      — AmplitudeAlg, Superposition, QuantumBridge
 
-sim/prototyping/  — 17 Python oracle scripts generating Agda code
-docs/             — Documentation (see below)
+sim/prototyping/              Python oracle pipeline (computation layer)
+                              19 scripts generating Agda code + JSON data export
+
+data/                         Pre-computed JSON (served by the backend)
+├── patches/      — 14 patch instance files
+├── tower.json    — Resolution tower levels + monotonicity
+├── theorems.json — Theorem registry
+├── curvature.json — Gauss–Bonnet summaries
+└── meta.json     — Version, build date, data hash
+
+backend/                      Haskell REST API (serving layer)
+├── src/          — Api.hs, Server.hs, Types.hs, DataLoader.hs, Invariants.hs
+├── app/          — Main.hs (CLI, startup, Warp)
+└── test/         — InvariantSpec.hs (property tests), ApiSpec.hs (integration)
+
+docs/                         Documentation
 ```
 
-For the full module dependency DAG, see [`docs/getting-started/architecture.md`](docs/getting-started/architecture.md).
+For the full module dependency DAG, see [`docs/getting-started/architecture.md`](getting-started/architecture.md).
 
 ## The Generic Bridge (The Core Innovation)
 
@@ -69,7 +120,7 @@ generic theorem (`Bridge/GenericBridge.agda`), parameterized by an
 abstract `PatchData` interface. The Python oracle generates concrete
 patches; the generic theorem handles the proof — once. Twelve patch
 instances have been verified, spanning 1D trees, 2D pentagonal tilings,
-and 3D cubic honeycombs. See [`docs/formal/11-generic-bridge.md`](docs/formal/11-generic-bridge.md).
+and 3D cubic honeycombs. See [`docs/formal/11-generic-bridge.md`](formal/11-generic-bridge.md).
 
 ## The Discrete Bekenstein–Hawking Bound
 
@@ -79,8 +130,8 @@ constant as 1/(4G) = 1/2 in bond-dimension-1 units — is verified across
 strategies, and 3 capacities. The bound is proven generically via the
 `from-two-cuts` lemma and instantiated per-patch by `abstract` witnesses.
 This eliminates the constructive-reals wall for the entropy-area
-relationship. See [`docs/formal/12-bekenstein-hawking.md`](docs/formal/12-bekenstein-hawking.md)
-and [`docs/physics/discrete-bekenstein-hawking.md`](docs/physics/discrete-bekenstein-hawking.md).
+relationship. See [`docs/formal/12-bekenstein-hawking.md`](formal/12-bekenstein-hawking.md)
+and [`docs/physics/discrete-bekenstein-hawking.md`](physics/discrete-bekenstein-hawking.md).
 
 ## What This Does NOT Prove
 
@@ -89,9 +140,9 @@ and [`docs/physics/discrete-bekenstein-hawking.md`](docs/physics/discrete-bekens
 - That the causal poset approximates a Lorentzian metric
 - That "transport along a Univalence path" has physical meaning
 
-See [`docs/physics/translation-problem.md`](docs/physics/translation-problem.md)
+See [`docs/physics/translation-problem.md`](physics/translation-problem.md)
 for the honest assessment of the gap between this discrete model and
-our universe, and [`docs/physics/five-walls.md`](docs/physics/five-walls.md) for
+our universe, and [`docs/physics/five-walls.md`](physics/five-walls.md) for
 the hard boundaries of the formalization (now four — the constructive-reals
 wall for entropy-area is bypassed).
 
@@ -128,12 +179,14 @@ docs/
 │   ├── three-hypotheses.md            # Emergent / phase transition / discrete
 │   └── five-walls.md                  # Hard boundaries (now four)
 │
-├── engineering/                       # Proof engineering
+├── engineering/                       # Proof engineering & tooling
 │   ├── oracle-pipeline.md             # Python-to-Agda (scripts 01–17)
 │   ├── orbit-reduction.md             # 717→8 orbits, scaling
 │   ├── abstract-barrier.md            # The abstract keyword, Issue #4573
 │   ├── generic-bridge-pattern.md      # PatchData → BridgeWitness
-│   └── scaling-report.md              # Region counts, parse/check times
+│   ├── scaling-report.md              # Region counts, parse/check times
+│   ├── backend-spec-haskell.md        # ★ Haskell backend specification
+│   └── frontend-spec-webgl.md         # WebGL frontend specification (planned)
 │
 ├── instances/                         # Per-patch data sheets
 │   ├── tree-pilot.md                  # 7-vertex binary tree
@@ -147,7 +200,7 @@ docs/
 ├── reference/
 │   ├── assumptions.md                 # Frozen model assumptions
 │   ├── glossary.md                    # Key terms
-│   └── module-index.md               # Every src/ module with description
+│   └── module-index.md                # Every src/ module with description
 │
 ├── historical/                        # Development archive (verbatim)
 │   └── development-docs/
@@ -158,34 +211,25 @@ docs/
 
 ## Roadmap
 
-**Phase 1: Mathematical Groundwork (Complete)**
-* All core theorems mechanized (RT, Gauss–Bonnet, Bekenstein–Hawking)
-* Generic bridge + orbit reduction architecture validated
-* 12 patch instances verified across 2D and 3D
-* Causal, gauge, and quantum layers integrated
+**Tooling & Visualization**
 
-**Phase 2: Documentation & Refactoring (Complete)**
-* `docs/` overhauled into the audience-oriented structure above
-* Inline comments expanded across all `.agda` files
-* Historical development docs preserved in `historical/`
-
-**Phase 3: Tooling & Visualization (Planned)**
-* Develop a Haskell backend via `agda --compile --ghc`
-* Create a WebGL adapter for browser-based visualization
+| Component | Status | Description |
+|-----------|--------|-------------|
+| **WebGL frontend** | Planned | Three.js + TypeScript browser visualization ([spec](docs/engineering/frontend-spec-webgl.md)) |
 
 ## Acknowledgements
 
 While this repository is a solo-developed project, I want to express my gratitude
-to Anthropic's Claude Opus 4.6. Claude acted as an invaluable sounding board, pair-programmer,
+to Anthropic's Claude 4.6 Opus. Claude acted as an invaluable sounding board, pair-programmer,
 and rubber duck throughout the mathematical groundwork and architectural design
 phases. The realization of this project relied heavily on advanced prompt
-engineering, which I orchestrated entirely through a tiny self-developed interface
+engineering, which I orchestrated mostly through a tiny self-developed interface
 based on `streamlit`, OpenRouterGUI (available at
-`docs/historical/tools/OpenRouterGUI.7z`).
+`historical/tools/OpenRouterGUI.7z`).
 
 ## Citation
 
-Please cite this repository as described in [`docs/CITATION.cff`](docs/CITATION.cff).
+Please cite this repository as described in [`CITATION.cff`](CITATION.cff).
 
 ## License
 

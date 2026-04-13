@@ -1,0 +1,508 @@
+{
+  "patchBonds": 80,
+  "patchBoundary": 145,
+  "patchCells": 61,
+  "patchCurvature": null,
+  "patchDensity": 2.62,
+  "patchDimension": 2,
+  "patchHalfBound": {
+    "hbAchieverCount": 0,
+    "hbAchieverSizes": [],
+    "hbMeanSlack": 2.2,
+    "hbRegionCount": 40,
+    "hbSlackRange": [
+      1,
+      3
+    ],
+    "hbViolations": 0
+  },
+  "patchHalfBoundVerified": false,
+  "patchMaxCut": 2,
+  "patchName": "layer-54-d3",
+  "patchOrbits": 2,
+  "patchRegionData": [
+    {
+      "regionArea": 5,
+      "regionCells": [
+        21
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 0,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        22
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 1,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        23
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 2,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        24
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 3,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        25
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 4,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        26
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 5,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        27
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 6,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        28
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 7,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        29
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 8,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        30
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 9,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        31
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 10,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        32
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 11,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        33
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 12,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        34
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 13,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        35
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 14,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        36
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 15,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        37
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 16,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        38
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 17,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        39
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 18,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        40
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 19,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        41
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 20,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        42
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 21,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        43
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 22,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        44
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 23,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        45
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 24,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        46
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 25,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        47
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 26,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        48
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 27,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        49
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 28,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        50
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 29,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        51
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 30,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        52
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 31,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        53
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 32,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        54
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 33,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        55
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 34,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        56
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 35,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        57
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 36,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        58
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 37,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        59
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 38,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        60
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 39,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    }
+  ],
+  "patchRegions": 40,
+  "patchStrategy": "BFS",
+  "patchTiling": "Tiling54"
+}

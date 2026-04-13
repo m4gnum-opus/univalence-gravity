@@ -355,9 +355,60 @@ d200-LB-pointwise : (r : D200Region)
   → PatchData.LB (orbit-to-patch d200OrbitPatch) r ≡ LBD200 r
 d200-LB-pointwise _ = refl
 
+-- ════════════════════════════════════════════════════════════════════
+--  §7.  Honeycomb-145 Orbit-Reduced Instance  (1008 regions → 9 orbits)
+-- ════════════════════════════════════════════════════════════════════
+--
+--  The Honeycomb-145 patch is a 145-cell Dense patch of the {4,3,5}
+--  hyperbolic honeycomb, grown by greedy max-connectivity.  It has
+--  1008 regions classified into 9 orbit representatives by min-cut
+--  value (range 1–9), giving a 112× orbit reduction.
+--
+--  This validates the orbit reduction architecture on a third 3D
+--  patch size, extending the tower candidates beyond Dense-100/200.
+--
+--  Existing modules:
+--    Common/Honeycomb145Spec.agda      — H145Region, H145OrbitRep, classify145
+--    Boundary/Honeycomb145Cut.agda     — S-cut-rep (9 clauses)
+--    Bulk/Honeycomb145Chain.agda       — L-min-rep (9 clauses)
+--    Bridge/Honeycomb145Obs.agda       — h145-pointwise-rep (9 refl proofs)
+-- ════════════════════════════════════════════════════════════════════
+
+open import Common.Honeycomb145Spec
+  using (H145Region ; H145OrbitRep ; classify145)
+
+import Boundary.Honeycomb145Cut as H145Cut
+import Bulk.Honeycomb145Chain   as H145Chain
+
+open import Bridge.Honeycomb145Obs
+  using (h145-pointwise-rep)
+
+h145OrbitPatch : OrbitReducedPatch
+h145OrbitPatch .OrbitReducedPatch.RegionTy  = H145Region
+h145OrbitPatch .OrbitReducedPatch.OrbitTy   = H145OrbitRep
+h145OrbitPatch .OrbitReducedPatch.classify  = classify145
+h145OrbitPatch .OrbitReducedPatch.S-rep     = H145Cut.S-cut-rep
+h145OrbitPatch .OrbitReducedPatch.L-rep     = H145Chain.L-min-rep
+h145OrbitPatch .OrbitReducedPatch.rep-agree = h145-pointwise-rep
+
+h145-generic-witness : BridgeWitness
+h145-generic-witness = orbit-bridge-witness h145OrbitPatch
+
+-- ── Coherence: generic S∂ agrees pointwise with concrete S∂ ──────
+
+h145-S∂-pointwise : (r : H145Region)
+  → PatchData.S∂ (orbit-to-patch h145OrbitPatch) r
+  ≡ H145Cut.S-cut-rep (classify145 r)
+h145-S∂-pointwise _ = refl
+
+h145-LB-pointwise : (r : H145Region)
+  → PatchData.LB (orbit-to-patch h145OrbitPatch) r
+  ≡ H145Chain.L-min-rep (classify145 r)
+h145-LB-pointwise _ = refl
+
 
 -- ════════════════════════════════════════════════════════════════════
---  §7.  Summary and Design Notes
+--  §8.  Summary and Design Notes
 -- ════════════════════════════════════════════════════════════════════
 --
 --  Exports:

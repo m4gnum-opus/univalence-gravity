@@ -1,0 +1,208 @@
+{
+  "patchBonds": 25,
+  "patchBoundary": 55,
+  "patchCells": 21,
+  "patchCurvature": null,
+  "patchDensity": 2.38,
+  "patchDimension": 2,
+  "patchHalfBound": {
+    "hbAchieverCount": 0,
+    "hbAchieverSizes": [],
+    "hbMeanSlack": 2.3,
+    "hbRegionCount": 15,
+    "hbSlackRange": [
+      1,
+      3
+    ],
+    "hbViolations": 0
+  },
+  "patchHalfBoundVerified": false,
+  "patchMaxCut": 2,
+  "patchName": "layer-54-d2",
+  "patchOrbits": 2,
+  "patchRegionData": [
+    {
+      "regionArea": 5,
+      "regionCells": [
+        6
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 0,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        7
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 1,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        8
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 2,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        9
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 3,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        10
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 4,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        11
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 5,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        12
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 6,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        13
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 7,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        14
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 8,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        15
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 9,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        16
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 10,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        17
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 11,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        18
+      ],
+      "regionHalfSlack": 1,
+      "regionId": 12,
+      "regionMinCut": 2,
+      "regionOrbit": "mc2",
+      "regionRatio": 0.4,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        19
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 13,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    },
+    {
+      "regionArea": 5,
+      "regionCells": [
+        20
+      ],
+      "regionHalfSlack": 3,
+      "regionId": 14,
+      "regionMinCut": 1,
+      "regionOrbit": "mc1",
+      "regionRatio": 0.2,
+      "regionSize": 1
+    }
+  ],
+  "patchRegions": 15,
+  "patchStrategy": "BFS",
+  "patchTiling": "Tiling54"
+}

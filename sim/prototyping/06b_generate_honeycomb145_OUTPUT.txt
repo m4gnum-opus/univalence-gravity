@@ -1,0 +1,73 @@
+╔═══════════════════════════════════════════════════════════╗
+║  Honeycomb-145 {4,3,5} — Orbit-Reduced Agda Generator   ║
+║  Greedy max-connectivity • 145 cells                     ║
+╚═══════════════════════════════════════════════════════════╝
+
+  Building Dense-145 patch ...
+  ✓  Reflections: involution, G-preservation, Coxeter relations.
+  ✓  145 cells, 222 internal faces, 426 boundary faces.
+
+  Enumerating regions (max 5 cells) ...
+  ✓  1008 regions computed.
+  Min-cut range: 1 – 9
+  Computing orbit reduction ...
+  ✓  9 orbits (1008 → 9, 112× reduction)
+  Computing edge curvature classes ...
+  ✓  1 edge class(es).
+
+  ── Summary ──
+    S = 1: 4 regions
+    S = 2: 90 regions
+    S = 3: 91 regions
+    S = 4: 93 regions
+    S = 5: 159 regions
+    S = 6: 229 regions
+    S = 7: 317 regions
+    S = 8: 17 regions
+    S = 9: 8 regions
+  Orbits:
+    mc1  (S=1): 4 regions
+    mc2  (S=2): 90 regions
+    mc3  (S=3): 91 regions
+    mc4  (S=4): 93 regions
+    mc5  (S=5): 159 regions
+    mc6  (S=6): 229 regions
+    mc7  (S=7): 317 regions
+    mc8  (S=8): 17 regions
+    mc9  (S=9): 8 regions
+
+  Output directory: /home/zimablue/univalence-gravity/src
+
+  ✓  /home/zimablue/univalence-gravity/src/Common/Honeycomb145Spec.agda  (1138 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Honeycomb145Cut.agda  (30 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Honeycomb145Chain.agda  (30 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Honeycomb145Curvature.agda  (31 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bridge/Honeycomb145Obs.agda  (56 lines)
+
+  ── generated 5 files, ~1285 lines total ──
+
+  H145Region constructors:  1008
+  H145OrbitRep constructors: 9
+  classify145 clauses:       1008
+  Pointwise-rep proofs:      9
+  Max min-cut:               9
+
+  To register in Bridge/GenericValidation.agda:
+
+    open import Common.Honeycomb145Spec
+      using (H145Region ; H145OrbitRep ; classify145)
+    import Boundary.Honeycomb145Cut as H145Cut
+    import Bulk.Honeycomb145Chain   as H145Chain
+    open import Bridge.Honeycomb145Obs
+      using (h145-pointwise-rep)
+
+    h145OrbitPatch : OrbitReducedPatch
+    h145OrbitPatch .OrbitReducedPatch.RegionTy  = H145Region
+    h145OrbitPatch .OrbitReducedPatch.OrbitTy   = H145OrbitRep
+    h145OrbitPatch .OrbitReducedPatch.classify  = classify145
+    h145OrbitPatch .OrbitReducedPatch.S-rep     = H145Cut.S-cut-rep
+    h145OrbitPatch .OrbitReducedPatch.L-rep     = H145Chain.L-min-rep
+    h145OrbitPatch .OrbitReducedPatch.rep-agree = h145-pointwise-rep
+
+    h145-generic-witness : BridgeWitness
+    h145-generic-witness = orbit-bridge-witness h145OrbitPatch
