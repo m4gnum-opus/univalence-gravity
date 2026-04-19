@@ -4,6 +4,8 @@
 
 *By Sven Bichtemann* | Agda 2.8.0 | agda/cubical library | MIT License
 
+![WebGL Excerpt](img/README_FE-Cutout.png)
+
 ## What This Is
 
 A machine-checked proof that five pillars of a holographic universe
@@ -56,7 +58,7 @@ agda -i src src/Quantum/QuantumBridge.agda   # Quantum superposition bridge
 
 ### Web Presence
 
-The app will soon be available at [www.univalence-gravity.com](www.univalence-gravity.com)
+The app will soon be available at [www.univalence-gravity.com](https://univalence-gravity.com)
 Until then, you can access the app on your own computer via Data Export -> Backend Setup -> Frontend Setup -> Browser View.
 
 ### Run the Haskell Backend
@@ -284,6 +286,10 @@ phases. The realization of this project relied heavily on advanced prompt
 engineering, which I orchestrated mostly through a tiny self-developed interface
 based on `streamlit`, OpenRouterGUI (available at
 `historical/tools/OpenRouterGUI.7z`).
+
+$$
+\sum_{i=1}^{n} i = \frac{n(n+1)}{2}
+$$
 
 ## Citation
 
