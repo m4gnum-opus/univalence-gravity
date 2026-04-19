@@ -100,13 +100,12 @@ function kappaColorClass(kappa: number): string {
 
 interface ClassRowProps {
   cls: CurvatureClass;
-  denominator: number;
 }
 
 /**
  * A single row in the curvature class table.
  */
-function ClassRow({ cls, denominator }: ClassRowProps) {
+function ClassRow({ cls }: ClassRowProps) {
   const contribution = cls.ccCount * cls.ccKappa;
   const contributionStr = contribution < 0 ? `−${Math.abs(contribution)}` : String(contribution);
 
@@ -203,7 +202,6 @@ export function CurvaturePanel({ data }: CurvaturePanelProps) {
                 <ClassRow
                   key={cls.ccName}
                   cls={cls}
-                  denominator={data.curvDenominator}
                 />
               ))}
             </tbody>

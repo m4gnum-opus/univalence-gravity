@@ -109,8 +109,11 @@ export function Header() {
             <span className="font-serif text-lg font-bold text-gray-900 tracking-tight">
               Univalence Gravity
             </span>
-            <span className="hidden sm:inline text-xs text-gray-400 font-mono">
-              v0.5
+            <span className="hidden sm:inline text-xs text-gray-700 font-mono">
+              v0.6.0
+            </span>
+            <span className="hidden sm:inline text-xs text-gray-500 font-mono">
+                -  By Sven Bichtemann
             </span>
           </NavLink>
 

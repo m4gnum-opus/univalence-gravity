@@ -54,6 +54,11 @@ agda -i src src/Gauge/Holonomy.agda          # Matter defects
 agda -i src src/Quantum/QuantumBridge.agda   # Quantum superposition bridge
 ```
 
+### Web Presence
+
+The app will soon be available at [www.univalence-gravity.com](www.univalence-gravity.com)
+Until then, you can access the app on your own computer via Data Export -> Backend Setup -> Frontend Setup -> Browser View.
+
 ### Run the Haskell Backend
 
 ```bash

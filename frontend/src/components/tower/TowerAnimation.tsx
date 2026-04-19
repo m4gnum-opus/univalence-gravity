@@ -395,6 +395,7 @@ export function TowerAnimation({ levels }: TowerAnimationProps) {
                 onCellClick={() => {}}
                 showBonds={true}
                 showBoundary={false}
+                showShell={false}
               />
             ) : patchLoading ? (
               <div className="flex h-full items-center justify-center">
