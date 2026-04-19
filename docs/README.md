@@ -4,7 +4,7 @@
 
 *By Sven Bichtemann* | Agda 2.8.0 | agda/cubical library | MIT License
 
-![WebGL Excerpt](img/README_FE-Cutout.png)
+![WebGL Excerpt](.img/README_FE-Cutout.png)
 
 ## What This Is
 

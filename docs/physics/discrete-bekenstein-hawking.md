@@ -68,7 +68,7 @@ $$\text{area}(A) = n_{\text{cross}}(A) + n_{\text{bdy}}(A)$$
 
 where:
 
-- $n_{\text{cross}}(A)$ = the number of bonds (shared faces) connecting $A$-cells to non-$A$-cells. These are the bonds that *cross* from the region to its complement.
+- $n_{\text{cross}}(A)$ = the number of bonds (shared faces) connecting $A$ -cells to non-$A$-cells. These are the bonds that *cross* from the region to its complement.
 - $n_{\text{bdy}}(A)$ = the number of boundary legs of $A$-cells — faces exposed to the exterior of the patch (not shared with any other cell).
 
 Each cell has `faces_per_cell` faces (6 for cubes in $\{4,3,5\}$, 5 for pentagons in $\{5,4\}$, 4 for squares in $\{4,4\}$). Each internal face shared between two $A$-cells is counted by both but does not exit $A$. Subtracting these double-counted internal faces yields the total count of faces that exit $A$.
