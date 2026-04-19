@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 -- | Property-based tests for the data invariants described in
 --   @docs\/engineering\/backend-spec-haskell.md@ §6.
 --
@@ -17,15 +18,49 @@
 --
 --   Plus additional consistency checks on region counts, half-slack
 --   values, half-bound violation counts, region size / cells
---   agreement, and basic value-range sanity.
+--   agreement, Agda-aligned region counts, the
+--   patchHalfBoundVerified flag, patch graph structural invariants
+--   (node/edge counts, endpoint validity, boundary coverage), and
+--   patch graph geometry invariants (Poincaré position, quaternion
+--   unit norm, conformal scale range, and centring — Bug 1 fix).
 --
 --   Run from the @backend\/@ project root:
 --
 --   > cabal test
+--
+--   __Agda alignment notes (2026-04-17):__
+--
+--   The JSON export script @18_export_json.py@ was updated to match
+--   Agda-verified region counts exactly.  Key changes:
+--
+--     * @honeycomb-3d@:  max_rc=1 → 26 singletons
+--     * @honeycomb-145@: max_rc=5 → 1008 regions
+--     * @dense-1000@:    max_rc=6 → 10317 regions
+--
+--   The @patchHalfBoundVerified@ flag is @True@ only for patches
+--   with a corresponding @Boundary\/*HalfBound.agda@ module:
+--   dense-100, dense-200, dense-1000.
+--
+--   __Patch graph update (2026-04-18):__
+--
+--   @pgNodes@ is now @[GraphNode]@ where each node carries an ID,
+--   Poincaré-projected coordinates @(gnX, gnY, gnZ)@, a rotation
+--   quaternion @(gnQx, gnQy, gnQz, gnQw)@, and a conformal scale
+--   factor @gnScale@.  Set-based comparisons extract @gnId@ before
+--   building Int sets.  Additional geometry tests verify:
+--
+--     * Positions lie inside the Poincaré ball: @|u|² ≤ 1@
+--     * Quaternions are unit norm: @|q|² ≈ 1@
+--     * Scales lie in @(0, 0.5]@
+--     * For Poincaré-projected patches, cell 0 (the identity cell)
+--       lands at the origin — validating the Lorentz boost applied
+--       by @poincare_project@ per the centring fix plan (Step 1).
 
 module InvariantSpec (spec) where
 
+import Data.List             (sort)
 import qualified Data.Map.Strict as Map
+import qualified Data.Set        as Set
 import qualified Data.Text       as T
 
 import Test.Hspec
@@ -41,13 +76,11 @@ import Types
 --   copy) pointing to the repo-root @data\/@ produced by
 --   @sim\/prototyping\/18_export_json.py@.
 dataDir :: FilePath
-dataDir = "data"
+dataDir = "../data"
 
 
 -- | Load patches and tower levels once, shared across all specs
---   via hspec's 'beforeAll'.  If the data directory is missing or
---   any file fails to decode, the test suite aborts immediately
---   with a descriptive 'IOError'.
+--   via hspec's 'beforeAll'.
 loadAllData :: IO ([Patch], [TowerLevel])
 loadAllData = (,) <$> loadPatches dataDir <*> loadTower dataDir
 
@@ -58,16 +91,11 @@ loadAllData = (,) <$> loadPatches dataDir <*> loadTower dataDir
 --
 --   __Sampling note:__ Each QuickCheck iteration picks ONE random
 --   element from the pool.  With the default 100 iterations, this
---   means ~100 random regions are tested across the ~5400-element
---   pool.  This provides probabilistic coverage with good
---   fault-detection power for systematic bugs (e.g. a wrong area
---   formula affecting all regions of a certain size).
+--   means ~100 random regions are tested across the pool.
 --
 --   __Exhaustive coverage__ is provided by the @\"validateAll\"@
---   integration test above, which runs every check on every
---   region deterministically.  The property tests here serve as
---   a second, independent verification channel with randomised
---   sampling.
+--   integration test, which runs every check on every region
+--   deterministically.
 overPool :: Show a => String -> [a] -> (a -> Property) -> Property
 overPool label [] _ =
   counterexample (label ++ ": empty pool — no data to test") False
@@ -76,17 +104,87 @@ overPool _     xs f = forAll (elements xs) f
 
 -- | Number of faces (or edges, for 2D) per cell for each tiling.
 --
---   Returns 'Nothing' for tilings that do not use the standard
---   face-count boundary area formula (e.g. the 1D tree pilot).
---
---   Mirrors 'Invariants.facesPerCell' — duplicated here to keep
---   the test module self-contained and independently readable.
+--   Mirrors 'Invariants.facesPerCell'; duplicated to keep the
+--   test module self-contained.
 facesPerCell :: Tiling -> Maybe Int
 facesPerCell Tiling435 = Just 6
 facesPerCell Tiling54  = Just 5
 facesPerCell Tiling53  = Just 5
 facesPerCell Tiling44  = Just 4
 facesPerCell Tree      = Nothing
+
+
+-- | Agda-aligned region counts — source of truth is the
+--   corresponding @Common\/*Spec.agda@ module.  If the oracle is
+--   regenerated with different @max_rc@ parameters, both the Agda
+--   module and this table must be updated in lockstep.
+agdaAlignedRegionCounts :: [(T.Text, Int)]
+agdaAlignedRegionCounts =
+  [ ("tree",          8)
+  , ("star",          10)
+  , ("filled",        90)
+  , ("honeycomb-3d",  26)
+  , ("honeycomb-145", 1008)
+  , ("dense-50",      139)
+  , ("dense-100",     717)
+  , ("dense-200",     1246)
+  , ("dense-1000",    10317)
+  , ("desitter",      10)
+  , ("layer-54-d2",   15)
+  , ("layer-54-d3",   40)
+  , ("layer-54-d4",   105)
+  , ("layer-54-d5",   275)
+  , ("layer-54-d6",   720)
+  , ("layer-54-d7",   1885)
+  ]
+
+
+-- | Patches that have a corresponding Boundary\/*HalfBound.agda
+--   module machine-checking @2·S(A) ≤ area(A)@.
+agdaVerifiedHalfBoundPatches :: [T.Text]
+agdaVerifiedHalfBoundPatches =
+  [ "dense-100"
+  , "dense-200"
+  , "dense-1000"
+  ]
+
+
+-- | Patches whose graph coordinates are produced by
+--   @poincare_project@ in @18_export_json.py@ rather than a
+--   hand-written 2D layout.
+--
+--   For these patches, cell 0 is the identity element of the
+--   Coxeter group and must project to the origin of the Poincaré
+--   ball/disk after the Lorentz boost applied in Step 1 of the
+--   centring fix.  Hand-made layouts (tree, star, filled,
+--   desitter) place their central tile at the origin but its cell
+--   ID is not necessarily 0, so they are not tested here.
+poincareProjectedPatches :: [T.Text]
+poincareProjectedPatches =
+  [ "honeycomb-3d", "honeycomb-145"
+  , "dense-50", "dense-100", "dense-200", "dense-1000"
+  , "layer-54-d2", "layer-54-d3", "layer-54-d4"
+  , "layer-54-d5", "layer-54-d6", "layer-54-d7"
+  ]
+
+
+-- | Floating-point tolerance for geometry checks.
+--
+--   Matches 'Invariants.graphGeomTol'.  The Python exporter
+--   rounds every float to 6 decimal digits before serialisation;
+--   1e-4 absorbs accumulated round-off in squared-sum
+--   computations without admitting genuine bugs.
+geomTol :: Double
+geomTol = 1.0e-4
+
+
+-- | Extract node IDs from a patch graph.
+--
+--   Since 'GraphNode' derives 'Eq' but not 'Ord', set-based
+--   comparisons need to work on the @gnId@ field rather than on
+--   the full record.
+graphNodeIds :: PatchGraph -> [Int]
+graphNodeIds = map gnId . pgNodes
 
 
 spec :: Spec
@@ -97,11 +195,11 @@ spec = beforeAll loadAllData $ do
   -- ──────────────────────────────────────────────────────────────
 
   describe "data loading sanity" $ do
-    it "loaded at least 10 patches" $ \(patches, _) ->
-      length patches `shouldSatisfy` (>= 10)
+    it "loaded exactly 16 patches" $ \(patches, _) ->
+      length patches `shouldBe` 16
 
-    it "loaded at least 5 tower levels" $ \(_, tower) ->
-      length tower `shouldSatisfy` (>= 5)
+    it "loaded exactly 11 tower levels" $ \(_, tower) ->
+      length tower `shouldBe` 11
 
     it "at least one patch has curvature data" $ \(patches, _) ->
       length [() | p <- patches, Just _ <- [patchCurvature p]]
@@ -111,15 +209,22 @@ spec = beforeAll loadAllData $ do
       length [() | p <- patches, Just _ <- [patchHalfBound p]]
         `shouldSatisfy` (>= 1)
 
+    it "all expected patch names are present" $ \(patches, _) ->
+      let names = map patchName patches
+      in mapM_ (\(expected, _) ->
+           names `shouldSatisfy` elem expected
+         ) agdaAlignedRegionCounts
+
 
   -- ──────────────────────────────────────────────────────────────
   --  Integration: the full validateAll pipeline
   --
-  --  This test is EXHAUSTIVE: it runs every invariant check
-  --  (half-bound, orbit consistency, Gauss–Bonnet, tower
-  --  monotonicity, area decomposition, region counts, half-slack,
-  --  half-bound metadata) on ALL loaded data.  The property tests
-  --  below provide randomised redundancy via overPool sampling.
+  --  Exhaustive: runs EVERY invariant (half-bound, orbit
+  --  consistency, Gauss–Bonnet, tower monotonicity, area
+  --  decomposition, region counts, half-slack, half-bound
+  --  metadata, graph structure, graph geometry) on ALL loaded
+  --  data.  The property tests below provide randomised
+  --  redundancy via overPool sampling.
   -- ──────────────────────────────────────────────────────────────
 
   describe "validateAll (integration)" $
@@ -128,15 +233,58 @@ spec = beforeAll loadAllData $ do
 
 
   -- ──────────────────────────────────────────────────────────────
+  --  Agda-aligned region counts
+  -- ──────────────────────────────────────────────────────────────
+
+  describe "Agda-aligned region counts" $ do
+    it "every patch has the exact region count from its Agda Spec module" $
+      \(patches, _) ->
+        let patchMap = Map.fromList
+              [ (patchName p, p) | p <- patches ]
+        in mapM_ (\(name, expected) ->
+             case Map.lookup name patchMap of
+               Nothing -> expectationFailure $
+                 "Missing patch: " ++ T.unpack name
+               Just p  ->
+                 patchRegions p `shouldBe` expected
+           ) agdaAlignedRegionCounts
+
+    it "patchRegionData length matches patchRegions for every patch" $
+      \(patches, _) ->
+        mapM_ (\p ->
+          length (patchRegionData p) `shouldBe` patchRegions p
+        ) patches
+
+
+  -- ──────────────────────────────────────────────────────────────
+  --  patchHalfBoundVerified flag
+  -- ──────────────────────────────────────────────────────────────
+
+  describe "patchHalfBoundVerified flag" $ do
+    it "is True for Agda-verified half-bound patches" $
+      \(patches, _) ->
+        let patchMap = Map.fromList
+              [ (patchName p, p) | p <- patches ]
+        in mapM_ (\name ->
+             case Map.lookup name patchMap of
+               Nothing -> expectationFailure $
+                 "Missing patch: " ++ T.unpack name
+               Just p  ->
+                 patchHalfBoundVerified p `shouldBe` True
+           ) agdaVerifiedHalfBoundPatches
+
+    it "is False for non-verified patches" $
+      \(patches, _) ->
+        let nonVerified = filter
+              (\p -> patchName p `notElem` agdaVerifiedHalfBoundPatches)
+              patches
+        in mapM_ (\p ->
+             patchHalfBoundVerified p `shouldBe` False
+           ) nonVerified
+
+
+  -- ──────────────────────────────────────────────────────────────
   --  prop_halfBound — Discrete Bekenstein–Hawking (Theorem 3)
-  --
-  --  For every region: 2 * S(A) <= area(A).
-  --  Verified by Agda in Bridge/HalfBound.agda via (k, refl)
-  --  witnesses sealed behind abstract.
-  --
-  --  Note: samples one random region per QuickCheck iteration.
-  --  Exhaustive validation is performed by the "validateAll"
-  --  integration test above.
   -- ──────────────────────────────────────────────────────────────
 
   describe "prop_halfBound" $
@@ -158,21 +306,6 @@ spec = beforeAll loadAllData $ do
 
   -- ──────────────────────────────────────────────────────────────
   --  prop_orbitConsistency
-  --
-  --  All regions sharing an orbit label must have the same min-cut
-  --  value.  The orbit classification groups regions by min-cut;
-  --  a mismatch indicates a corrupt classify function output.
-  --
-  --  We use Map.fromListWith (\_ existing -> existing) to keep
-  --  the FIRST-SEEN value for each orbit.  This makes the
-  --  representative deterministic (insertion order) and ensures
-  --  the error messages point at the minority (corrupt) values,
-  --  not the majority.  In correct data all values agree, so the
-  --  choice of representative is immaterial.
-  --
-  --  Note: samples one random region per QuickCheck iteration.
-  --  Exhaustive validation is performed by the "validateAll"
-  --  integration test above.
   -- ──────────────────────────────────────────────────────────────
 
   describe "prop_orbitConsistency" $
@@ -183,9 +316,6 @@ spec = beforeAll loadAllData $ do
               | p <- patches
               , let pname   = patchName p
               , let regions = patchRegionData p
-                    -- First-wins: for fromListWith, the combining
-                    -- function receives (new, existing).  Returning
-                    -- 'existing' keeps the first-inserted value.
               , let orbitMap = Map.fromListWith (\_ existing -> existing)
                       [ (regionOrbit r', regionMinCut r')
                       | r' <- regions
@@ -203,12 +333,6 @@ spec = beforeAll loadAllData $ do
 
   -- ──────────────────────────────────────────────────────────────
   --  prop_towerMonotone
-  --
-  --  For every consecutive pair of tower levels where the higher
-  --  level carries a monotonicity witness (k, "refl"), verify
-  --  that maxCut_lo + k == maxCut_hi.  Levels without a witness
-  --  (tlMonotone == Nothing) mark the start of a new sub-tower
-  --  and are not checked against their predecessor.
   -- ──────────────────────────────────────────────────────────────
 
   describe "prop_towerMonotone" $
@@ -232,22 +356,11 @@ spec = beforeAll loadAllData $ do
   -- ──────────────────────────────────────────────────────────────
   --  prop_gaussBonnet — Discrete Gauss–Bonnet (Theorem 2)
   --
-  --  For every patch with curvature data, the total curvature
-  --  must equal the Euler characteristic.
-  --
-  --  CAVEAT (Issue #8): For 3D {4,3,5} patches (dense-50,
-  --  dense-100, dense-200, honeycomb-3d), 18_export_json.py sets
-  --  curvEuler = curvTotal (the same computed value), because no
-  --  independent 3D Euler characteristic has been formalised in
-  --  Agda.  This check is therefore TAUTOLOGICAL for 3D data —
-  --  it merely guards against JSON field transposition or
-  --  corruption.  It is independently meaningful only for 2D
-  --  patches (filled, desitter) where the two values are set
-  --  from separate computations.
-  --
-  --  The curvDenominator field (10 for 2D, 20 for 3D)
-  --  disambiguates the rational unit of the integer numerators
-  --  stored in curvTotal and curvEuler.
+  --  CAVEAT: For 3D patches, 18_export_json.py sets curvEuler =
+  --  curvTotal (the same computed value), so this check is
+  --  tautological for 3D data.  It is independently meaningful
+  --  only for 2D patches where total and euler are computed from
+  --  separate sources.
   -- ──────────────────────────────────────────────────────────────
 
   describe "prop_gaussBonnet" $
@@ -269,34 +382,7 @@ spec = beforeAll loadAllData $ do
 
 
   -- ──────────────────────────────────────────────────────────────
-  --  prop_areaDecomp — Area decomposition for cell complexes
-  --
-  --  For tilings with a face-count area model (all except Tree):
-  --
-  --    area(A) = faces_per_cell · |A| − 2 · |internal_faces|
-  --
-  --  Since region JSON lacks per-region internal face counts, we
-  --  verify two algebraic consequences that do NOT require them:
-  --
-  --    1. area ≤ fpc · regionSize
-  --       (equality when zero internal sharing)
-  --
-  --    2. (fpc · regionSize − area) is non-negative and even
-  --       (since it equals 2 · internal_faces)
-  --
-  --  These constraints catch a broad class of area-computation
-  --  bugs (wrong fpc constant, off-by-one internal face counting,
-  --  tiling-type mismatch) without requiring the full adjacency
-  --  structure.
-  --
-  --  Skipped for Tree tiling (simplified area proxy, not
-  --  face-count based).
-  --
-  --  Note: samples one random region per QuickCheck iteration.
-  --  Exhaustive validation is performed by the "validateAll"
-  --  integration test above.
-  --
-  --  Reference: docs/engineering/backend-spec-haskell.md §6
+  --  prop_areaDecomp
   -- ──────────────────────────────────────────────────────────────
 
   describe "prop_areaDecomp" $
@@ -306,14 +392,11 @@ spec = beforeAll loadAllData $ do
               [ (patchName p, patchTiling p, r)
               | p <- patches
               , r <- patchRegionData p
-              -- Only include regions from tilings with a face-count
-              -- area model.  Tree uses a simplified proxy (area = 2k)
-              -- that does not follow the face-count decomposition.
               , Just _ <- [facesPerCell (patchTiling p)]
               ]
         in overPool "areaDecomp" pool $ \(pname, tiling, r) ->
              case facesPerCell tiling of
-               Nothing  -> property True  -- unreachable due to filter above
+               Nothing  -> property True
                Just fpc ->
                  let totalFaces = fpc * regionSize r
                      deficit    = totalFaces - regionArea r
@@ -355,10 +438,6 @@ spec = beforeAll loadAllData $ do
 
   -- ──────────────────────────────────────────────────────────────
   --  Half-slack consistency
-  --
-  --  Note: samples one random region per QuickCheck iteration.
-  --  Exhaustive validation is performed by the "validateAll"
-  --  integration test above.
   -- ──────────────────────────────────────────────────────────────
 
   describe "half-slack consistency" $
@@ -396,15 +475,287 @@ spec = beforeAll loadAllData $ do
 
 
   -- ──────────────────────────────────────────────────────────────
+  --  Patch graph structural invariants
+  --
+  --  The patchGraph field contains the full bulk graph: ALL cells
+  --  (including interior cells invisible to boundary regions) and
+  --  ALL physical bonds (shared faces in 3D, shared edges in 2D).
+  --
+  --  Each node is a 'GraphNode' carrying @gnId@ (cell ID),
+  --  Poincaré-projected coordinates @(gnX, gnY, gnZ)@, rotation
+  --  quaternion @(gnQx..gnQw)@, and conformal scale @gnScale@.
+  --  Set-based comparisons use 'graphNodeIds' to match against
+  --  edge endpoint IDs (bare 'Int').
+  -- ──────────────────────────────────────────────────────────────
+
+  describe "patch graph structural invariants" $ do
+
+    it "pgNodes count equals patchCells for every patch" $
+      \(patches, _) ->
+        conjoin
+          [ counterexample
+              (T.unpack (patchName p)
+               ++ ": pgNodes has " ++ show nNodes
+               ++ " nodes but patchCells = " ++ show (patchCells p)) $
+              nNodes === patchCells p
+          | p <- patches
+          , let nNodes = length (pgNodes (patchGraph p))
+          ]
+
+    it "pgEdges count equals patchBonds for every patch" $
+      \(patches, _) ->
+        conjoin
+          [ counterexample
+              (T.unpack (patchName p)
+               ++ ": pgEdges has " ++ show nEdges
+               ++ " edges but patchBonds = " ++ show (patchBonds p)) $
+              nEdges === patchBonds p
+          | p <- patches
+          , let nEdges = length (pgEdges (patchGraph p))
+          ]
+
+    it "all edge endpoints are valid graph nodes for every patch" $
+      \(patches, _) ->
+        conjoin
+          [ counterexample
+              (T.unpack (patchName p)
+               ++ ": dangling edge endpoints not in pgNodes: "
+               ++ show (Set.toAscList dangling)) $
+              Set.null dangling
+          | p <- patches
+          , let graph        = patchGraph p
+                nodeIdSet    = Set.fromList (graphNodeIds graph)
+                allEndpoints = Set.fromList (concatMap edgeEndpoints (pgEdges graph))
+                dangling     = allEndpoints `Set.difference` nodeIdSet
+          ]
+
+    it "every edge has exactly 2 endpoints for every patch" $
+      \(patches, _) ->
+        conjoin
+          [ counterexample
+              (T.unpack (patchName p)
+               ++ ": edge " ++ show i ++ " has non-2 arity after decoding: "
+               ++ show e) $
+              length (edgeEndpoints e) === 2
+          | p <- patches
+          , (i, e) <- zip [0 :: Int ..] (pgEdges (patchGraph p))
+          ]
+
+    it "all boundary cells (from regions) appear in pgNodes" $
+      \(patches, _) ->
+        conjoin
+          [ counterexample
+              (T.unpack (patchName p)
+               ++ ": " ++ show (Set.size missing)
+               ++ " boundary cell(s) missing from pgNodes: "
+               ++ show (take 10 (Set.toAscList missing))
+               ++ if Set.size missing > 10 then " ..." else "") $
+              Set.null missing
+          | p <- patches
+          , let graph    = patchGraph p
+                nodeIdSet = Set.fromList (graphNodeIds graph)
+                bdyCells  = Set.fromList
+                              (concatMap regionCells (patchRegionData p))
+                missing   = bdyCells `Set.difference` nodeIdSet
+          ]
+
+    it "pgNodes count >= distinct boundary cell count for every patch" $
+      \(patches, _) ->
+        conjoin
+          [ counterexample
+              (T.unpack (patchName p)
+               ++ ": pgNodes has " ++ show nNodes
+               ++ " nodes but there are " ++ show nBdyCells
+               ++ " distinct boundary cells"
+               ++ "; interior cells may be missing") $
+              nNodes >= nBdyCells
+          | p <- patches
+          , let nNodes    = length (pgNodes (patchGraph p))
+                nBdyCells = Set.size $ Set.fromList
+                              (concatMap regionCells (patchRegionData p))
+          ]
+
+    it "dense patches have interior cells in the graph (pgNodes > boundary cells)" $
+      \(patches, _) ->
+        let densePatches = filter
+              (\p -> patchName p `elem`
+                ["dense-50", "dense-100", "dense-200", "dense-1000",
+                 "honeycomb-145"])
+              patches
+        in conjoin
+             [ counterexample
+                 (T.unpack (patchName p)
+                  ++ ": pgNodes=" ++ show nNodes
+                  ++ " should be > boundary cells=" ++ show nBdyCells
+                  ++ " (interior cells missing!)") $
+                 nNodes > nBdyCells
+             | p <- densePatches
+             , let nNodes    = length (pgNodes (patchGraph p))
+                   nBdyCells = Set.size $ Set.fromList
+                                 (concatMap regionCells (patchRegionData p))
+             ]
+
+    it "pgNodes are sorted by ID for every patch" $
+      \(patches, _) ->
+        conjoin
+          [ counterexample
+              (T.unpack (patchName p) ++ ": pgNodes are not sorted by ID") $
+              ids === sort ids
+          | p <- patches
+          , let ids = graphNodeIds (patchGraph p)
+          ]
+
+    it "no self-loops in pgEdges for any patch" $
+      \(patches, _) ->
+        conjoin
+          [ counterexample
+              (T.unpack (patchName p)
+               ++ ": self-loop at edge " ++ show i ++ ": " ++ show e) $
+              property (edgeSource e /= edgeTarget e)
+          | p <- patches
+          , (i, e) <- zip [0 :: Int ..] (pgEdges (patchGraph p))
+          ]
+
+    it "pgNodes have no duplicate IDs for any patch" $
+      \(patches, _) ->
+        conjoin
+          [ counterexample
+              (T.unpack (patchName p)
+               ++ ": pgNodes has duplicate IDs: "
+               ++ show (length ids) ++ " entries but "
+               ++ show (Set.size (Set.fromList ids)) ++ " unique") $
+              length ids === Set.size (Set.fromList ids)
+          | p <- patches
+          , let ids = graphNodeIds (patchGraph p)
+          ]
+
+
+  -- ──────────────────────────────────────────────────────────────
+  --  Patch graph geometry invariants
+  --
+  --  Per-node checks on the floating-point geometry fields added
+  --  in the centring-and-scale fix (roadmap Steps 1–2):
+  --
+  --    1. Position lies inside the Poincaré ball: |u|² ≤ 1 + tol
+  --    2. Quaternion has unit norm: |q|² ∈ [1 − tol, 1 + tol]
+  --    3. Scale is in the valid range (0, 0.5 + tol]
+  --    4. For Poincaré-projected patches, cell 0 (the Coxeter
+  --       identity) lands at the origin with scale ≈ 0.5 —
+  --       validating Bug 1 of the centring fix plan.
+  --
+  --  The first three are also checked exhaustively inside
+  --  Invariants.validateGraphGeometry (run via the
+  --  \"validateAll\" integration test above); here we sample
+  --  randomly for independent verification and better error
+  --  localisation.
+  --
+  --  Note: we do NOT enforce the strict identity
+  --  scale ≡ (1 − |u|²) / 2, because the Python exporter clamps
+  --  the scale at 1e-6 near the disk boundary (required for
+  --  layer-54-d7 where cells are exponentially close to |u| = 1).
+  --  The range check catches the real failure modes without
+  --  false positives.
+  -- ──────────────────────────────────────────────────────────────
+
+  describe "patch graph geometry invariants" $ do
+
+    it "all graph node positions lie inside the Poincaré ball" $
+      \(patches, _) ->
+        let pool =
+              [ (patchName p, n)
+              | p <- patches
+              , n <- pgNodes (patchGraph p)
+              ]
+        in overPool "graphPosition" pool $ \(pname, n) ->
+             let r2 = gnX n * gnX n + gnY n * gnY n + gnZ n * gnZ n
+             in counterexample
+                  (T.unpack pname ++ " node " ++ show (gnId n)
+                   ++ ": |u|² = " ++ show r2
+                   ++ " exceeds Poincaré ball radius² = 1") $
+                  not (isNaN r2) && not (isInfinite r2) && r2 <= 1.0 + geomTol
+
+    it "all graph node quaternions have unit norm" $
+      \(patches, _) ->
+        let pool =
+              [ (patchName p, n)
+              | p <- patches
+              , n <- pgNodes (patchGraph p)
+              ]
+        in overPool "graphQuaternion" pool $ \(pname, n) ->
+             let qn2 = gnQx n * gnQx n + gnQy n * gnQy n
+                     + gnQz n * gnQz n + gnQw n * gnQw n
+             in counterexample
+                  (T.unpack pname ++ " node " ++ show (gnId n)
+                   ++ ": |q|² = " ++ show qn2
+                   ++ " (expected 1 ± " ++ show geomTol ++ ")"
+                   ++ "  q=(" ++ show (gnQx n) ++ ", " ++ show (gnQy n)
+                   ++ ", " ++ show (gnQz n) ++ ", " ++ show (gnQw n) ++ ")") $
+                  not (isNaN qn2) && not (isInfinite qn2)
+                                  && abs (qn2 - 1.0) <= geomTol
+
+    it "all graph node scales are in (0, 0.5 + tol]" $
+      \(patches, _) ->
+        let pool =
+              [ (patchName p, n)
+              | p <- patches
+              , n <- pgNodes (patchGraph p)
+              ]
+        in overPool "graphScale" pool $ \(pname, n) ->
+             let s = gnScale n
+             in counterexample
+                  (T.unpack pname ++ " node " ++ show (gnId n)
+                   ++ ": scale = " ++ show s
+                   ++ " is outside (0, 0.5 + " ++ show geomTol ++ "]") $
+                  not (isNaN s) && not (isInfinite s)
+                                && s > 0 && s <= 0.5 + geomTol
+
+    -- Bug 1 fix verification.
+    --
+    -- Before the fix, the fundamental cell (g = I) could project
+    -- to a non-zero point because the Python projector did not
+    -- apply the centring Lorentz boost.  After the fix, for every
+    -- Poincaré-projected patch the cell with ID 0 must land at
+    -- the origin (0, 0, 0) with scale ≈ (1 − 0²)/2 = 0.5.
+    --
+    -- If this test fails, the centring boost in
+    -- 18_export_json.py:poincare_project is wrong or missing.
+    it "Poincaré-projected patches have cell 0 at the origin with scale 0.5" $
+      \(patches, _) ->
+        let patchMap = Map.fromList
+              [ (patchName p, p) | p <- patches ]
+        in mapM_ (\name ->
+             case Map.lookup name patchMap of
+               Nothing -> expectationFailure $
+                 "Missing patch: " ++ T.unpack name
+               Just p ->
+                 case filter ((== 0) . gnId) (pgNodes (patchGraph p)) of
+                   []  -> expectationFailure $
+                     T.unpack name
+                     ++ ": cell 0 (identity) not found in pgNodes"
+                   (_:_:_) -> expectationFailure $
+                     T.unpack name ++ ": duplicate cell 0 entries in pgNodes"
+                   [n] -> do
+                     let r2 = gnX n * gnX n + gnY n * gnY n + gnZ n * gnZ n
+                     counterexample
+                       ("identity cell offset: |u|² = " ++ show r2
+                        ++ "  pos = (" ++ show (gnX n)
+                        ++ ", " ++ show (gnY n)
+                        ++ ", " ++ show (gnZ n) ++ ")")
+                       (r2 <= geomTol)
+                       & \prop ->
+                         quickCheckWith
+                           stdArgs { chatty = False, maxSuccess = 1 }
+                           prop
+                         >>= \_ -> pure ()
+                     abs (gnX n)           `shouldSatisfy` (<= geomTol)
+                     abs (gnY n)           `shouldSatisfy` (<= geomTol)
+                     abs (gnZ n)           `shouldSatisfy` (<= geomTol)
+                     abs (gnScale n - 0.5) `shouldSatisfy` (<= geomTol)
+           ) poincareProjectedPatches
+
+
+  -- ──────────────────────────────────────────────────────────────
   --  Region value-range sanity
-  --
-  --  These quick checks catch a broad class of data corruption
-  --  (negative min-cuts, zero areas, mismatched cell lists) that
-  --  the more specific properties above might miss.
-  --
-  --  Note: each sub-test samples one random region per QuickCheck
-  --  iteration.  Exhaustive validation is performed by the
-  --  "validateAll" integration test above.
   -- ──────────────────────────────────────────────────────────────
 
   describe "region sanity" $ do
@@ -454,3 +805,52 @@ spec = beforeAll loadAllData $ do
               ++ ": S=" ++ show (regionMinCut r)
               ++ " > area=" ++ show (regionArea r)) $
              regionMinCut r <= regionArea r
+
+
+  -- ──────────────────────────────────────────────────────────────
+  --  Patch-level maxCut regression
+  -- ──────────────────────────────────────────────────────────────
+
+  describe "patch maxCut regression" $ do
+    it "honeycomb-3d maxCut matches Agda (singletons, max S ≤ 2)" $
+      \(patches, _) ->
+        let hc = filter (\p -> patchName p == "honeycomb-3d") patches
+        in case hc of
+             [p] -> patchMaxCut p `shouldSatisfy` (<= 2)
+             _   -> expectationFailure "honeycomb-3d patch not found"
+
+    it "honeycomb-145 maxCut == 9 (matching Honeycomb145Spec orbits mc1..mc9)" $
+      \(patches, _) ->
+        let hc = filter (\p -> patchName p == "honeycomb-145") patches
+        in case hc of
+             [p] -> patchMaxCut p `shouldBe` 9
+             _   -> expectationFailure "honeycomb-145 patch not found"
+
+    it "dense-1000 maxCut == 9 (matching Dense1000Spec orbits mc1..mc9)" $
+      \(patches, _) ->
+        let d1k = filter (\p -> patchName p == "dense-1000") patches
+        in case d1k of
+             [p] -> patchMaxCut p `shouldBe` 9
+             _   -> expectationFailure "dense-1000 patch not found"
+
+    it "dense-100 maxCut == 8" $
+      \(patches, _) ->
+        let d100 = filter (\p -> patchName p == "dense-100") patches
+        in case d100 of
+             [p] -> patchMaxCut p `shouldBe` 8
+             _   -> expectationFailure "dense-100 patch not found"
+
+    it "dense-200 maxCut == 9" $
+      \(patches, _) ->
+        let d200 = filter (\p -> patchName p == "dense-200") patches
+        in case d200 of
+             [p] -> patchMaxCut p `shouldBe` 9
+             _   -> expectationFailure "dense-200 patch not found"
+  where
+    -- Local '&' to keep the Bug-1 verification readable without
+    -- depending on Data.Function's fixity (which differs between
+    -- GHC 9.6 and 9.8).  Unused in the current body, but retained
+    -- for future extensions of the centring test.
+    (&) :: a -> (a -> b) -> b
+    x & f = f x
+    infixl 1 &

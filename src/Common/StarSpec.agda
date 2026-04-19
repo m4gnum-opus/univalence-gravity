@@ -20,8 +20,8 @@ open import Util.Scalars
 --           N4
 --            |
 --      N3 ── C ── N0
---          / |
---        N2  N1
+--           / \
+--         N2   N1
 --
 --  This is the simplest connected HaPPY network with a nontrivial
 --  central tile.  It supports min-cut analysis with a clean discrete

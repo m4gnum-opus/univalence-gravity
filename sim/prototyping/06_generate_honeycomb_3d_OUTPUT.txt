@@ -1,7 +1,7 @@
 (venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python3 sim/prototyping/06_generate_honeycomb_3d.py
 ╔══════════════════════════════════════════════════════════╗
-║  Phase D.1: {4,3,5} Honeycomb — 3D Agda Code Generator ║
-║  Specification-Agreement Equivalence (like FilledEquiv) ║
+║  Phase D.1: {4,3,5} Honeycomb — 3D Agda Code Generator   ║
+║  Specification-Agreement Equivalence (like FilledEquiv)  ║
 ╚══════════════════════════════════════════════════════════╝
 
   Building {4,3,5} 3D star patch ...

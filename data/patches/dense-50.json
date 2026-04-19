@@ -19,6 +19,834 @@
   },
   "patchDensity": 2.72,
   "patchDimension": 3,
+  "patchGraph": {
+    "pgEdges": [
+      {
+        "source": 0,
+        "target": 1
+      },
+      {
+        "source": 0,
+        "target": 2
+      },
+      {
+        "source": 0,
+        "target": 3
+      },
+      {
+        "source": 0,
+        "target": 4
+      },
+      {
+        "source": 0,
+        "target": 5
+      },
+      {
+        "source": 0,
+        "target": 6
+      },
+      {
+        "source": 1,
+        "target": 7
+      },
+      {
+        "source": 1,
+        "target": 9
+      },
+      {
+        "source": 1,
+        "target": 11
+      },
+      {
+        "source": 1,
+        "target": 13
+      },
+      {
+        "source": 1,
+        "target": 15
+      },
+      {
+        "source": 2,
+        "target": 8
+      },
+      {
+        "source": 2,
+        "target": 16
+      },
+      {
+        "source": 2,
+        "target": 18
+      },
+      {
+        "source": 2,
+        "target": 20
+      },
+      {
+        "source": 2,
+        "target": 21
+      },
+      {
+        "source": 3,
+        "target": 10
+      },
+      {
+        "source": 3,
+        "target": 17
+      },
+      {
+        "source": 3,
+        "target": 23
+      },
+      {
+        "source": 3,
+        "target": 24
+      },
+      {
+        "source": 3,
+        "target": 26
+      },
+      {
+        "source": 4,
+        "target": 12
+      },
+      {
+        "source": 4,
+        "target": 19
+      },
+      {
+        "source": 4,
+        "target": 28
+      },
+      {
+        "source": 4,
+        "target": 29
+      },
+      {
+        "source": 4,
+        "target": 31
+      },
+      {
+        "source": 5,
+        "target": 33
+      },
+      {
+        "source": 5,
+        "target": 34
+      },
+      {
+        "source": 5,
+        "target": 14
+      },
+      {
+        "source": 5,
+        "target": 25
+      },
+      {
+        "source": 5,
+        "target": 30
+      },
+      {
+        "source": 6,
+        "target": 32
+      },
+      {
+        "source": 6,
+        "target": 35
+      },
+      {
+        "source": 6,
+        "target": 36
+      },
+      {
+        "source": 6,
+        "target": 22
+      },
+      {
+        "source": 6,
+        "target": 27
+      },
+      {
+        "source": 7,
+        "target": 37
+      },
+      {
+        "source": 7,
+        "target": 39
+      },
+      {
+        "source": 7,
+        "target": 8
+      },
+      {
+        "source": 7,
+        "target": 41
+      },
+      {
+        "source": 7,
+        "target": 42
+      },
+      {
+        "source": 9,
+        "target": 10
+      },
+      {
+        "source": 9,
+        "target": 38
+      },
+      {
+        "source": 11,
+        "target": 40
+      },
+      {
+        "source": 11,
+        "target": 12
+      },
+      {
+        "source": 13,
+        "target": 14
+      },
+      {
+        "source": 15,
+        "target": 43
+      },
+      {
+        "source": 8,
+        "target": 44
+      },
+      {
+        "source": 8,
+        "target": 47
+      },
+      {
+        "source": 16,
+        "target": 17
+      },
+      {
+        "source": 16,
+        "target": 45
+      },
+      {
+        "source": 18,
+        "target": 48
+      },
+      {
+        "source": 18,
+        "target": 19
+      },
+      {
+        "source": 21,
+        "target": 22
+      },
+      {
+        "source": 24,
+        "target": 25
+      },
+      {
+        "source": 26,
+        "target": 27
+      },
+      {
+        "source": 29,
+        "target": 30
+      },
+      {
+        "source": 31,
+        "target": 32
+      },
+      {
+        "source": 34,
+        "target": 35
+      },
+      {
+        "source": 37,
+        "target": 38
+      },
+      {
+        "source": 37,
+        "target": 46
+      },
+      {
+        "source": 39,
+        "target": 40
+      },
+      {
+        "source": 39,
+        "target": 49
+      },
+      {
+        "source": 42,
+        "target": 43
+      },
+      {
+        "source": 44,
+        "target": 45
+      },
+      {
+        "source": 44,
+        "target": 46
+      },
+      {
+        "source": 47,
+        "target": 49
+      },
+      {
+        "source": 47,
+        "target": 48
+      }
+    ],
+    "pgNodes": [
+      {
+        "id": 0,
+        "qw": 1.0,
+        "qx": 0.0,
+        "qy": -0.0,
+        "qz": 0.0,
+        "scale": 0.5,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      {
+        "id": 1,
+        "qw": 0.430704,
+        "qx": 0.0,
+        "qy": 0.638053,
+        "qz": 0.638265,
+        "scale": 0.381966,
+        "x": 0.209266,
+        "y": 0.310113,
+        "z": -0.31001
+      },
+      {
+        "id": 2,
+        "qw": -0.130688,
+        "qx": -0.570817,
+        "qy": -0.130338,
+        "qz": 0.800063,
+        "scale": 0.381966,
+        "x": 0.39385,
+        "y": 0.018077,
+        "z": 0.283943
+      },
+      {
+        "id": 3,
+        "qw": -0.396744,
+        "qx": 0.0,
+        "qy": -0.501359,
+        "qz": 0.768917,
+        "scale": 0.381966,
+        "x": 0.192765,
+        "y": -0.373592,
+        "z": -0.243595
+      },
+      {
+        "id": 4,
+        "qw": -0.396744,
+        "qx": -0.0,
+        "qy": -0.501359,
+        "qz": 0.768917,
+        "scale": 0.381966,
+        "x": -0.192765,
+        "y": 0.373592,
+        "z": 0.243595
+      },
+      {
+        "id": 5,
+        "qw": -0.216757,
+        "qx": -0.543993,
+        "qy": -0.251599,
+        "qz": 0.770575,
+        "scale": 0.381966,
+        "x": -0.39385,
+        "y": -0.018077,
+        "z": -0.283943
+      },
+      {
+        "id": 6,
+        "qw": 0.430704,
+        "qx": 0.0,
+        "qy": 0.638053,
+        "qz": 0.638265,
+        "scale": 0.381966,
+        "x": -0.209266,
+        "y": -0.310113,
+        "z": 0.31001
+      },
+      {
+        "id": 7,
+        "qw": -0.229753,
+        "qx": -0.38613,
+        "qy": 0.748348,
+        "qz": 0.487948,
+        "scale": 0.276393,
+        "x": 0.530005,
+        "y": 0.376167,
+        "z": -0.157502
+      },
+      {
+        "id": 8,
+        "qw": 0.229753,
+        "qx": -0.38613,
+        "qy": 0.748348,
+        "qz": 0.487948,
+        "scale": 0.276393,
+        "x": 0.612553,
+        "y": 0.245565,
+        "z": 0.108121
+      },
+      {
+        "id": 9,
+        "qw": -0.229753,
+        "qx": 0.788925,
+        "qy": 0.03621,
+        "qz": 0.56877,
+        "scale": 0.276393,
+        "x": 0.384499,
+        "y": 0.092752,
+        "z": -0.539232
+      },
+      {
+        "id": 10,
+        "qw": 0.229753,
+        "qx": 0.788925,
+        "qy": 0.03621,
+        "qz": 0.56877,
+        "scale": 0.276393,
+        "x": 0.377119,
+        "y": -0.21301,
+        "z": -0.509531
+      },
+      {
+        "id": 11,
+        "qw": 0.229753,
+        "qx": 0.788925,
+        "qy": 0.03621,
+        "qz": 0.56877,
+        "scale": 0.276393,
+        "x": 0.105526,
+        "y": 0.63342,
+        "z": -0.186699
+      },
+      {
+        "id": 12,
+        "qw": -0.229753,
+        "qx": 0.788925,
+        "qy": 0.03621,
+        "qz": 0.56877,
+        "scale": 0.276393,
+        "x": -0.074267,
+        "y": 0.661809,
+        "z": 0.060881
+      },
+      {
+        "id": 13,
+        "qw": 0.229753,
+        "qx": -0.38613,
+        "qy": 0.748348,
+        "qz": 0.487948,
+        "scale": 0.276393,
+        "x": -0.03998,
+        "y": 0.350006,
+        "z": -0.568429
+      },
+      {
+        "id": 14,
+        "qw": -0.229753,
+        "qx": -0.38613,
+        "qy": 0.748348,
+        "qz": 0.487948,
+        "scale": 0.276393,
+        "x": -0.309701,
+        "y": 0.203235,
+        "z": -0.556771
+      },
+      {
+        "id": 15,
+        "qw": 1.0,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 0.0,
+        "scale": 0.190983,
+        "x": 0.338599,
+        "y": 0.501773,
+        "z": -0.501606
+      },
+      {
+        "id": 16,
+        "qw": 0.229753,
+        "qx": 0.419183,
+        "qy": 0.621191,
+        "qz": -0.620984,
+        "scale": 0.276393,
+        "x": 0.600613,
+        "y": -0.249169,
+        "z": 0.15618
+      },
+      {
+        "id": 17,
+        "qw": -0.229753,
+        "qx": 0.419183,
+        "qy": 0.621191,
+        "qz": -0.620984,
+        "scale": 0.276393,
+        "x": 0.510686,
+        "y": -0.424329,
+        "z": -0.079742
+      },
+      {
+        "id": 18,
+        "qw": -0.229753,
+        "qx": 0.419183,
+        "qy": 0.621191,
+        "qz": -0.620984,
+        "scale": 0.276393,
+        "x": 0.321641,
+        "y": 0.291499,
+        "z": 0.508713
+      },
+      {
+        "id": 19,
+        "qw": 0.229753,
+        "qx": 0.419183,
+        "qy": 0.621191,
+        "qz": -0.620984,
+        "scale": 0.276393,
+        "x": 0.059299,
+        "y": 0.45049,
+        "z": 0.490669
+      },
+      {
+        "id": 20,
+        "qw": 1.0,
+        "qx": 0.0,
+        "qy": -0.0,
+        "qz": -0.0,
+        "scale": 0.190983,
+        "x": 0.637262,
+        "y": 0.029249,
+        "z": 0.45943
+      },
+      {
+        "id": 21,
+        "qw": -0.229753,
+        "qx": -0.38613,
+        "qy": 0.748348,
+        "qz": 0.487948,
+        "scale": 0.276393,
+        "x": 0.309701,
+        "y": -0.203235,
+        "z": 0.556771
+      },
+      {
+        "id": 22,
+        "qw": 0.229753,
+        "qx": -0.38613,
+        "qy": 0.748348,
+        "qz": 0.487948,
+        "scale": 0.276393,
+        "x": 0.03998,
+        "y": -0.350006,
+        "z": 0.568429
+      },
+      {
+        "id": 23,
+        "qw": 1.0,
+        "qx": -0.0,
+        "qy": -0.0,
+        "qz": 0.0,
+        "scale": 0.190983,
+        "x": 0.3119,
+        "y": -0.604485,
+        "z": -0.394144
+      },
+      {
+        "id": 24,
+        "qw": 0.229753,
+        "qx": 0.419183,
+        "qy": 0.621191,
+        "qz": -0.620984,
+        "scale": 0.276393,
+        "x": -0.059299,
+        "y": -0.45049,
+        "z": -0.490669
+      },
+      {
+        "id": 25,
+        "qw": -0.229753,
+        "qx": 0.419183,
+        "qy": 0.621191,
+        "qz": -0.620984,
+        "scale": 0.276393,
+        "x": -0.321641,
+        "y": -0.291499,
+        "z": -0.508713
+      },
+      {
+        "id": 26,
+        "qw": -0.229753,
+        "qx": 0.788925,
+        "qy": 0.03621,
+        "qz": 0.56877,
+        "scale": 0.276393,
+        "x": 0.074267,
+        "y": -0.661809,
+        "z": -0.060881
+      },
+      {
+        "id": 27,
+        "qw": 0.229753,
+        "qx": 0.788925,
+        "qy": 0.03621,
+        "qz": 0.56877,
+        "scale": 0.276393,
+        "x": -0.105526,
+        "y": -0.63342,
+        "z": 0.186699
+      },
+      {
+        "id": 28,
+        "qw": 1.0,
+        "qx": -0.0,
+        "qy": 0.0,
+        "qz": -0.0,
+        "scale": 0.190983,
+        "x": -0.3119,
+        "y": 0.604485,
+        "z": 0.394144
+      },
+      {
+        "id": 29,
+        "qw": -0.229753,
+        "qx": 0.419183,
+        "qy": 0.621191,
+        "qz": -0.620984,
+        "scale": 0.276393,
+        "x": -0.510686,
+        "y": 0.424329,
+        "z": 0.079742
+      },
+      {
+        "id": 30,
+        "qw": 0.229753,
+        "qx": 0.419183,
+        "qy": 0.621191,
+        "qz": -0.620984,
+        "scale": 0.276393,
+        "x": -0.600613,
+        "y": 0.249169,
+        "z": -0.15618
+      },
+      {
+        "id": 31,
+        "qw": 0.229753,
+        "qx": 0.788925,
+        "qy": 0.03621,
+        "qz": 0.56877,
+        "scale": 0.276393,
+        "x": -0.377119,
+        "y": 0.21301,
+        "z": 0.509531
+      },
+      {
+        "id": 32,
+        "qw": -0.229753,
+        "qx": 0.788925,
+        "qy": 0.03621,
+        "qz": 0.56877,
+        "scale": 0.276393,
+        "x": -0.384499,
+        "y": -0.092752,
+        "z": 0.539232
+      },
+      {
+        "id": 33,
+        "qw": 1.0,
+        "qx": -0.0,
+        "qy": -0.0,
+        "qz": 0.0,
+        "scale": 0.190983,
+        "x": -0.637262,
+        "y": -0.029249,
+        "z": -0.45943
+      },
+      {
+        "id": 34,
+        "qw": 0.229753,
+        "qx": -0.38613,
+        "qy": 0.748348,
+        "qz": 0.487948,
+        "scale": 0.276393,
+        "x": -0.612553,
+        "y": -0.245565,
+        "z": -0.108121
+      },
+      {
+        "id": 35,
+        "qw": -0.229753,
+        "qx": -0.38613,
+        "qy": 0.748348,
+        "qz": 0.487948,
+        "scale": 0.276393,
+        "x": -0.530005,
+        "y": -0.376167,
+        "z": 0.157502
+      },
+      {
+        "id": 36,
+        "qw": 1.0,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 0.0,
+        "scale": 0.190983,
+        "x": -0.338599,
+        "y": -0.501773,
+        "z": 0.501606
+      },
+      {
+        "id": 37,
+        "qw": -0.285287,
+        "qx": 0.641163,
+        "qy": 0.176879,
+        "qz": 0.690098,
+        "scale": 0.190983,
+        "x": 0.688946,
+        "y": 0.233771,
+        "z": -0.29789
+      },
+      {
+        "id": 38,
+        "qw": -0.264948,
+        "qx": -0.197441,
+        "qy": 0.934191,
+        "qz": -0.134562,
+        "scale": 0.190983,
+        "x": 0.626807,
+        "y": 0.112739,
+        "z": -0.460908
+      },
+      {
+        "id": 39,
+        "qw": 0.17426,
+        "qx": 0.28995,
+        "qy": 0.117028,
+        "qz": 0.933738,
+        "scale": 0.190983,
+        "x": 0.496181,
+        "y": 0.607364,
+        "z": -0.054296
+      },
+      {
+        "id": 40,
+        "qw": 0.015442,
+        "qx": 0.355036,
+        "qy": 0.330493,
+        "qz": 0.874349,
+        "scale": 0.190983,
+        "x": 0.314907,
+        "y": 0.717224,
+        "z": -0.066764
+      },
+      {
+        "id": 41,
+        "qw": -0.085579,
+        "qx": -0.601686,
+        "qy": 0.680864,
+        "qz": 0.408748,
+        "scale": 0.127322,
+        "x": 0.720329,
+        "y": 0.457386,
+        "z": -0.131454
+      },
+      {
+        "id": 42,
+        "qw": 0.968143,
+        "qx": -0.104644,
+        "qy": -0.165844,
+        "qz": 0.155707,
+        "scale": 0.145898,
+        "x": 0.582011,
+        "y": 0.512945,
+        "z": -0.32612
+      },
+      {
+        "id": 43,
+        "qw": 0.815241,
+        "qx": 0.099232,
+        "qy": -0.545822,
+        "qz": 0.166173,
+        "scale": 0.127322,
+        "x": 0.496526,
+        "y": 0.547283,
+        "z": -0.446429
+      },
+      {
+        "id": 44,
+        "qw": -0.174369,
+        "qx": 0.626105,
+        "qy": 0.201493,
+        "qz": 0.732795,
+        "scale": 0.190983,
+        "x": 0.781238,
+        "y": 0.087753,
+        "z": -0.000914
+      },
+      {
+        "id": 45,
+        "qw": 0.278282,
+        "qx": -0.178155,
+        "qy": 0.737899,
+        "qz": 0.588494,
+        "scale": 0.190983,
+        "x": 0.776139,
+        "y": -0.123523,
+        "z": 0.019609
+      },
+      {
+        "id": 46,
+        "qw": 0.175002,
+        "qx": -0.233872,
+        "qy": 0.808399,
+        "qz": -0.511048,
+        "scale": 0.160357,
+        "x": 0.79383,
+        "y": 0.10694,
+        "z": -0.19412
+      },
+      {
+        "id": 47,
+        "qw": -0.003679,
+        "qx": 0.925615,
+        "qy": -0.376668,
+        "qz": 0.036678,
+        "scale": 0.190983,
+        "x": 0.588473,
+        "y": 0.461346,
+        "z": 0.242681
+      },
+      {
+        "id": 48,
+        "qw": 0.102559,
+        "qx": 0.067868,
+        "qy": 0.370325,
+        "qz": 0.920725,
+        "scale": 0.190983,
+        "x": 0.464238,
+        "y": 0.480962,
+        "z": 0.413754
+      },
+      {
+        "id": 49,
+        "qw": 0.175002,
+        "qx": -0.129672,
+        "qy": -0.103825,
+        "qz": 0.970454,
+        "scale": 0.160357,
+        "x": 0.531945,
+        "y": 0.614491,
+        "z": 0.13682
+      }
+    ]
+  },
   "patchHalfBound": {
     "hbAchieverCount": 10,
     "hbAchieverSizes": [
@@ -49,6 +877,7 @@
       "regionCells": [
         8
       ],
+      "regionCurvature": 0.166667,
       "regionHalfSlack": 2,
       "regionId": 0,
       "regionMinCut": 2,
@@ -62,6 +891,7 @@
         8,
         47
       ],
+      "regionCurvature": 0.291667,
       "regionHalfSlack": 0,
       "regionId": 1,
       "regionMinCut": 5,
@@ -76,6 +906,7 @@
         47,
         49
       ],
+      "regionCurvature": 0.361111,
       "regionHalfSlack": 4,
       "regionId": 2,
       "regionMinCut": 5,
@@ -91,6 +922,7 @@
         48,
         49
       ],
+      "regionCurvature": 0.395834,
       "regionHalfSlack": 8,
       "regionId": 3,
       "regionMinCut": 5,
@@ -107,6 +939,7 @@
         48,
         49
       ],
+      "regionCurvature": 0.4,
       "regionHalfSlack": 10,
       "regionId": 4,
       "regionMinCut": 6,
@@ -123,6 +956,7 @@
         48,
         49
       ],
+      "regionCurvature": 0.391667,
       "regionHalfSlack": 10,
       "regionId": 5,
       "regionMinCut": 6,
@@ -139,6 +973,7 @@
         48,
         49
       ],
+      "regionCurvature": 0.391667,
       "regionHalfSlack": 10,
       "regionId": 6,
       "regionMinCut": 6,
@@ -154,6 +989,7 @@
         47,
         49
       ],
+      "regionCurvature": 0.375,
       "regionHalfSlack": 6,
       "regionId": 7,
       "regionMinCut": 6,
@@ -170,6 +1006,7 @@
         47,
         49
       ],
+      "regionCurvature": 0.4,
       "regionHalfSlack": 10,
       "regionId": 8,
       "regionMinCut": 6,
@@ -186,6 +1023,7 @@
         47,
         49
       ],
+      "regionCurvature": 0.4,
       "regionHalfSlack": 10,
       "regionId": 9,
       "regionMinCut": 6,
@@ -202,6 +1040,7 @@
         47,
         49
       ],
+      "regionCurvature": 0.375,
       "regionHalfSlack": 8,
       "regionId": 10,
       "regionMinCut": 7,
@@ -217,6 +1056,7 @@
         47,
         49
       ],
+      "regionCurvature": 0.364584,
       "regionHalfSlack": 6,
       "regionId": 11,
       "regionMinCut": 6,
@@ -233,6 +1073,7 @@
         47,
         49
       ],
+      "regionCurvature": 0.391667,
       "regionHalfSlack": 10,
       "regionId": 12,
       "regionMinCut": 6,
@@ -247,6 +1088,7 @@
         47,
         48
       ],
+      "regionCurvature": 0.361111,
       "regionHalfSlack": 4,
       "regionId": 13,
       "regionMinCut": 5,
@@ -262,6 +1104,7 @@
         47,
         48
       ],
+      "regionCurvature": 0.375,
       "regionHalfSlack": 6,
       "regionId": 14,
       "regionMinCut": 6,
@@ -278,6 +1121,7 @@
         47,
         48
       ],
+      "regionCurvature": 0.4,
       "regionHalfSlack": 10,
       "regionId": 15,
       "regionMinCut": 6,
@@ -294,6 +1138,7 @@
         47,
         48
       ],
+      "regionCurvature": 0.4,
       "regionHalfSlack": 10,
       "regionId": 16,
       "regionMinCut": 6,
@@ -310,6 +1155,7 @@
         47,
         48
       ],
+      "regionCurvature": 0.375,
       "regionHalfSlack": 8,
       "regionId": 17,
       "regionMinCut": 7,
@@ -325,6 +1171,7 @@
         47,
         48
       ],
+      "regionCurvature": 0.364584,
       "regionHalfSlack": 6,
       "regionId": 18,
       "regionMinCut": 6,
@@ -341,6 +1188,7 @@
         47,
         48
       ],
+      "regionCurvature": 0.383333,
       "regionHalfSlack": 10,
       "regionId": 19,
       "regionMinCut": 6,
@@ -355,6 +1203,7 @@
         44,
         47
       ],
+      "regionCurvature": 0.333334,
       "regionHalfSlack": 2,
       "regionId": 20,
       "regionMinCut": 6,
@@ -370,6 +1219,7 @@
         46,
         47
       ],
+      "regionCurvature": 0.375,
       "regionHalfSlack": 6,
       "regionId": 21,
       "regionMinCut": 6,
@@ -386,6 +1236,7 @@
         46,
         47
       ],
+      "regionCurvature": 0.4,
       "regionHalfSlack": 10,
       "regionId": 22,
       "regionMinCut": 6,
@@ -402,6 +1253,7 @@
         46,
         47
       ],
+      "regionCurvature": 0.375,
       "regionHalfSlack": 8,
       "regionId": 23,
       "regionMinCut": 7,
@@ -417,6 +1269,7 @@
         45,
         47
       ],
+      "regionCurvature": 0.375,
       "regionHalfSlack": 6,
       "regionId": 24,
       "regionMinCut": 6,
@@ -433,6 +1286,7 @@
         45,
         47
       ],
+      "regionCurvature": 0.375,
       "regionHalfSlack": 8,
       "regionId": 25,
       "regionMinCut": 7,
@@ -446,6 +1300,7 @@
         8,
         44
       ],
+      "regionCurvature": 0.291667,
       "regionHalfSlack": 0,
       "regionId": 26,
       "regionMinCut": 5,
@@ -460,6 +1315,7 @@
         44,
         46
       ],
+      "regionCurvature": 0.361111,
       "regionHalfSlack": 4,
       "regionId": 27,
       "regionMinCut": 5,
@@ -475,6 +1331,7 @@
         45,
         46
       ],
+      "regionCurvature": 0.395834,
       "regionHalfSlack": 8,
       "regionId": 28,
       "regionMinCut": 5,
@@ -491,6 +1348,7 @@
         45,
         46
       ],
+      "regionCurvature": 0.391667,
       "regionHalfSlack": 10,
       "regionId": 29,
       "regionMinCut": 6,
@@ -507,6 +1365,7 @@
         45,
         46
       ],
+      "regionCurvature": 0.391667,
       "regionHalfSlack": 10,
       "regionId": 30,
       "regionMinCut": 6,
@@ -522,6 +1381,7 @@
         44,
         46
       ],
+      "regionCurvature": 0.364584,
       "regionHalfSlack": 6,
       "regionId": 31,
       "regionMinCut": 6,
@@ -538,6 +1398,7 @@
         44,
         46
       ],
+      "regionCurvature": 0.391667,
       "regionHalfSlack": 10,
       "regionId": 32,
       "regionMinCut": 6,
@@ -552,6 +1413,7 @@
         44,
         45
       ],
+      "regionCurvature": 0.361111,
       "regionHalfSlack": 4,
       "regionId": 33,
       "regionMinCut": 5,
@@ -567,6 +1429,7 @@
         44,
         45
       ],
+      "regionCurvature": 0.364584,
       "regionHalfSlack": 6,
       "regionId": 34,
       "regionMinCut": 6,
@@ -583,6 +1446,7 @@
         44,
         45
       ],
+      "regionCurvature": 0.383333,
       "regionHalfSlack": 10,
       "regionId": 35,
       "regionMinCut": 6,
@@ -595,6 +1459,7 @@
       "regionCells": [
         9
       ],
+      "regionCurvature": 0.375,
       "regionHalfSlack": 0,
       "regionId": 36,
       "regionMinCut": 3,
@@ -608,6 +1473,7 @@
         9,
         38
       ],
+      "regionCurvature": 0.4375,
       "regionHalfSlack": 4,
       "regionId": 37,
       "regionMinCut": 3,
@@ -622,6 +1488,7 @@
         37,
         38
       ],
+      "regionCurvature": 0.416667,
       "regionHalfSlack": 6,
       "regionId": 38,
       "regionMinCut": 4,
@@ -637,6 +1504,7 @@
         38,
         46
       ],
+      "regionCurvature": 0.4375,
       "regionHalfSlack": 10,
       "regionId": 39,
       "regionMinCut": 4,
@@ -653,6 +1521,7 @@
         44,
         46
       ],
+      "regionCurvature": 0.433333,
       "regionHalfSlack": 12,
       "regionId": 40,
       "regionMinCut": 5,
@@ -669,6 +1538,7 @@
         38,
         46
       ],
+      "regionCurvature": 0.441667,
       "regionHalfSlack": 14,
       "regionId": 41,
       "regionMinCut": 4,
@@ -684,6 +1554,7 @@
         37,
         38
       ],
+      "regionCurvature": 0.427083,
       "regionHalfSlack": 10,
       "regionId": 42,
       "regionMinCut": 4,
@@ -698,6 +1569,7 @@
         10,
         38
       ],
+      "regionCurvature": 0.444444,
       "regionHalfSlack": 8,
       "regionId": 43,
       "regionMinCut": 3,
@@ -711,6 +1583,7 @@
         9,
         10
       ],
+      "regionCurvature": 0.416666,
       "regionHalfSlack": 4,
       "regionId": 44,
       "regionMinCut": 3,
@@ -723,6 +1596,7 @@
       "regionCells": [
         10
       ],
+      "regionCurvature": 0.458333,
       "regionHalfSlack": 2,
       "regionId": 45,
       "regionMinCut": 2,
@@ -735,6 +1609,7 @@
       "regionCells": [
         11
       ],
+      "regionCurvature": 0.375,
       "regionHalfSlack": 0,
       "regionId": 46,
       "regionMinCut": 3,
@@ -748,6 +1623,7 @@
         11,
         40
       ],
+      "regionCurvature": 0.4375,
       "regionHalfSlack": 4,
       "regionId": 47,
       "regionMinCut": 3,
@@ -762,6 +1638,7 @@
         39,
         40
       ],
+      "regionCurvature": 0.416667,
       "regionHalfSlack": 6,
       "regionId": 48,
       "regionMinCut": 4,
@@ -777,6 +1654,7 @@
         40,
         49
       ],
+      "regionCurvature": 0.4375,
       "regionHalfSlack": 10,
       "regionId": 49,
       "regionMinCut": 4,
@@ -793,6 +1671,7 @@
         47,
         49
       ],
+      "regionCurvature": 0.433333,
       "regionHalfSlack": 12,
       "regionId": 50,
       "regionMinCut": 5,
@@ -809,6 +1688,7 @@
         40,
         49
       ],
+      "regionCurvature": 0.441667,
       "regionHalfSlack": 14,
       "regionId": 51,
       "regionMinCut": 4,
@@ -824,6 +1704,7 @@
         39,
         40
       ],
+      "regionCurvature": 0.427083,
       "regionHalfSlack": 10,
       "regionId": 52,
       "regionMinCut": 4,
@@ -838,6 +1719,7 @@
         12,
         40
       ],
+      "regionCurvature": 0.444444,
       "regionHalfSlack": 8,
       "regionId": 53,
       "regionMinCut": 3,
@@ -851,6 +1733,7 @@
         11,
         12
       ],
+      "regionCurvature": 0.416666,
       "regionHalfSlack": 4,
       "regionId": 54,
       "regionMinCut": 3,
@@ -863,6 +1746,7 @@
       "regionCells": [
         12
       ],
+      "regionCurvature": 0.458333,
       "regionHalfSlack": 2,
       "regionId": 55,
       "regionMinCut": 2,
@@ -875,6 +1759,7 @@
       "regionCells": [
         13
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 56,
       "regionMinCut": 2,
@@ -888,6 +1773,7 @@
         13,
         14
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 6,
       "regionId": 57,
       "regionMinCut": 2,
@@ -900,6 +1786,7 @@
       "regionCells": [
         14
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 58,
       "regionMinCut": 2,
@@ -912,6 +1799,7 @@
       "regionCells": [
         15
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 59,
       "regionMinCut": 2,
@@ -925,6 +1813,7 @@
         15,
         43
       ],
+      "regionCurvature": 0.510417,
       "regionHalfSlack": 6,
       "regionId": 60,
       "regionMinCut": 2,
@@ -939,6 +1828,7 @@
         42,
         43
       ],
+      "regionCurvature": 0.5,
       "regionHalfSlack": 10,
       "regionId": 61,
       "regionMinCut": 2,
@@ -951,6 +1841,7 @@
       "regionCells": [
         16
       ],
+      "regionCurvature": 0.375,
       "regionHalfSlack": 0,
       "regionId": 62,
       "regionMinCut": 3,
@@ -964,6 +1855,7 @@
         16,
         45
       ],
+      "regionCurvature": 0.4375,
       "regionHalfSlack": 4,
       "regionId": 63,
       "regionMinCut": 3,
@@ -978,6 +1870,7 @@
         44,
         45
       ],
+      "regionCurvature": 0.430556,
       "regionHalfSlack": 6,
       "regionId": 64,
       "regionMinCut": 4,
@@ -993,6 +1886,7 @@
         45,
         46
       ],
+      "regionCurvature": 0.447917,
       "regionHalfSlack": 10,
       "regionId": 65,
       "regionMinCut": 4,
@@ -1009,6 +1903,7 @@
         45,
         46
       ],
+      "regionCurvature": 0.433333,
       "regionHalfSlack": 12,
       "regionId": 66,
       "regionMinCut": 5,
@@ -1025,6 +1920,7 @@
         45,
         46
       ],
+      "regionCurvature": 0.45,
       "regionHalfSlack": 14,
       "regionId": 67,
       "regionMinCut": 4,
@@ -1040,6 +1936,7 @@
         44,
         45
       ],
+      "regionCurvature": 0.4375,
       "regionHalfSlack": 10,
       "regionId": 68,
       "regionMinCut": 4,
@@ -1054,6 +1951,7 @@
         17,
         45
       ],
+      "regionCurvature": 0.444444,
       "regionHalfSlack": 8,
       "regionId": 69,
       "regionMinCut": 3,
@@ -1067,6 +1965,7 @@
         16,
         17
       ],
+      "regionCurvature": 0.416666,
       "regionHalfSlack": 4,
       "regionId": 70,
       "regionMinCut": 3,
@@ -1079,6 +1978,7 @@
       "regionCells": [
         17
       ],
+      "regionCurvature": 0.458333,
       "regionHalfSlack": 2,
       "regionId": 71,
       "regionMinCut": 2,
@@ -1091,6 +1991,7 @@
       "regionCells": [
         18
       ],
+      "regionCurvature": 0.375,
       "regionHalfSlack": 0,
       "regionId": 72,
       "regionMinCut": 3,
@@ -1104,6 +2005,7 @@
         18,
         48
       ],
+      "regionCurvature": 0.4375,
       "regionHalfSlack": 4,
       "regionId": 73,
       "regionMinCut": 3,
@@ -1118,6 +2020,7 @@
         47,
         48
       ],
+      "regionCurvature": 0.430556,
       "regionHalfSlack": 6,
       "regionId": 74,
       "regionMinCut": 4,
@@ -1133,6 +2036,7 @@
         48,
         49
       ],
+      "regionCurvature": 0.447917,
       "regionHalfSlack": 10,
       "regionId": 75,
       "regionMinCut": 4,
@@ -1149,6 +2053,7 @@
         48,
         49
       ],
+      "regionCurvature": 0.433333,
       "regionHalfSlack": 12,
       "regionId": 76,
       "regionMinCut": 5,
@@ -1165,6 +2070,7 @@
         48,
         49
       ],
+      "regionCurvature": 0.45,
       "regionHalfSlack": 14,
       "regionId": 77,
       "regionMinCut": 4,
@@ -1180,6 +2086,7 @@
         47,
         48
       ],
+      "regionCurvature": 0.4375,
       "regionHalfSlack": 10,
       "regionId": 78,
       "regionMinCut": 4,
@@ -1194,6 +2101,7 @@
         19,
         48
       ],
+      "regionCurvature": 0.444444,
       "regionHalfSlack": 8,
       "regionId": 79,
       "regionMinCut": 3,
@@ -1207,6 +2115,7 @@
         18,
         19
       ],
+      "regionCurvature": 0.416666,
       "regionHalfSlack": 4,
       "regionId": 80,
       "regionMinCut": 3,
@@ -1219,6 +2128,7 @@
       "regionCells": [
         19
       ],
+      "regionCurvature": 0.458333,
       "regionHalfSlack": 2,
       "regionId": 81,
       "regionMinCut": 2,
@@ -1231,6 +2141,7 @@
       "regionCells": [
         20
       ],
+      "regionCurvature": 0.583333,
       "regionHalfSlack": 4,
       "regionId": 82,
       "regionMinCut": 1,
@@ -1243,6 +2154,7 @@
       "regionCells": [
         21
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 83,
       "regionMinCut": 2,
@@ -1256,6 +2168,7 @@
         21,
         22
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 6,
       "regionId": 84,
       "regionMinCut": 2,
@@ -1268,6 +2181,7 @@
       "regionCells": [
         22
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 85,
       "regionMinCut": 2,
@@ -1280,6 +2194,7 @@
       "regionCells": [
         23
       ],
+      "regionCurvature": 0.583333,
       "regionHalfSlack": 4,
       "regionId": 86,
       "regionMinCut": 1,
@@ -1292,6 +2207,7 @@
       "regionCells": [
         24
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 87,
       "regionMinCut": 2,
@@ -1305,6 +2221,7 @@
         24,
         25
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 6,
       "regionId": 88,
       "regionMinCut": 2,
@@ -1317,6 +2234,7 @@
       "regionCells": [
         25
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 89,
       "regionMinCut": 2,
@@ -1329,6 +2247,7 @@
       "regionCells": [
         26
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 90,
       "regionMinCut": 2,
@@ -1342,6 +2261,7 @@
         26,
         27
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 6,
       "regionId": 91,
       "regionMinCut": 2,
@@ -1354,6 +2274,7 @@
       "regionCells": [
         27
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 92,
       "regionMinCut": 2,
@@ -1366,6 +2287,7 @@
       "regionCells": [
         28
       ],
+      "regionCurvature": 0.583333,
       "regionHalfSlack": 4,
       "regionId": 93,
       "regionMinCut": 1,
@@ -1378,6 +2300,7 @@
       "regionCells": [
         29
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 94,
       "regionMinCut": 2,
@@ -1391,6 +2314,7 @@
         29,
         30
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 6,
       "regionId": 95,
       "regionMinCut": 2,
@@ -1403,6 +2327,7 @@
       "regionCells": [
         30
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 96,
       "regionMinCut": 2,
@@ -1415,6 +2340,7 @@
       "regionCells": [
         31
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 97,
       "regionMinCut": 2,
@@ -1428,6 +2354,7 @@
         31,
         32
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 6,
       "regionId": 98,
       "regionMinCut": 2,
@@ -1440,6 +2367,7 @@
       "regionCells": [
         32
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 99,
       "regionMinCut": 2,
@@ -1452,6 +2380,7 @@
       "regionCells": [
         33
       ],
+      "regionCurvature": 0.583333,
       "regionHalfSlack": 4,
       "regionId": 100,
       "regionMinCut": 1,
@@ -1464,6 +2393,7 @@
       "regionCells": [
         34
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 101,
       "regionMinCut": 2,
@@ -1477,6 +2407,7 @@
         34,
         35
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 6,
       "regionId": 102,
       "regionMinCut": 2,
@@ -1489,6 +2420,7 @@
       "regionCells": [
         35
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 103,
       "regionMinCut": 2,
@@ -1501,6 +2433,7 @@
       "regionCells": [
         36
       ],
+      "regionCurvature": 0.583333,
       "regionHalfSlack": 4,
       "regionId": 104,
       "regionMinCut": 1,
@@ -1513,6 +2446,7 @@
       "regionCells": [
         37
       ],
+      "regionCurvature": 0.375,
       "regionHalfSlack": 0,
       "regionId": 105,
       "regionMinCut": 3,
@@ -1526,6 +2460,7 @@
         37,
         46
       ],
+      "regionCurvature": 0.4375,
       "regionHalfSlack": 4,
       "regionId": 106,
       "regionMinCut": 3,
@@ -1540,6 +2475,7 @@
         44,
         46
       ],
+      "regionCurvature": 0.430556,
       "regionHalfSlack": 6,
       "regionId": 107,
       "regionMinCut": 4,
@@ -1555,6 +2491,7 @@
         45,
         46
       ],
+      "regionCurvature": 0.447917,
       "regionHalfSlack": 10,
       "regionId": 108,
       "regionMinCut": 4,
@@ -1571,6 +2508,7 @@
         45,
         46
       ],
+      "regionCurvature": 0.458333,
       "regionHalfSlack": 14,
       "regionId": 109,
       "regionMinCut": 4,
@@ -1586,6 +2524,7 @@
         44,
         46
       ],
+      "regionCurvature": 0.447917,
       "regionHalfSlack": 10,
       "regionId": 110,
       "regionMinCut": 4,
@@ -1600,6 +2539,7 @@
         38,
         46
       ],
+      "regionCurvature": 0.458333,
       "regionHalfSlack": 8,
       "regionId": 111,
       "regionMinCut": 3,
@@ -1613,6 +2553,7 @@
         37,
         38
       ],
+      "regionCurvature": 0.4375,
       "regionHalfSlack": 4,
       "regionId": 112,
       "regionMinCut": 3,
@@ -1625,6 +2566,7 @@
       "regionCells": [
         38
       ],
+      "regionCurvature": 0.5,
       "regionHalfSlack": 2,
       "regionId": 113,
       "regionMinCut": 2,
@@ -1637,6 +2579,7 @@
       "regionCells": [
         39
       ],
+      "regionCurvature": 0.375,
       "regionHalfSlack": 0,
       "regionId": 114,
       "regionMinCut": 3,
@@ -1650,6 +2593,7 @@
         39,
         49
       ],
+      "regionCurvature": 0.4375,
       "regionHalfSlack": 4,
       "regionId": 115,
       "regionMinCut": 3,
@@ -1664,6 +2608,7 @@
         47,
         49
       ],
+      "regionCurvature": 0.430556,
       "regionHalfSlack": 6,
       "regionId": 116,
       "regionMinCut": 4,
@@ -1679,6 +2624,7 @@
         48,
         49
       ],
+      "regionCurvature": 0.447917,
       "regionHalfSlack": 10,
       "regionId": 117,
       "regionMinCut": 4,
@@ -1695,6 +2641,7 @@
         48,
         49
       ],
+      "regionCurvature": 0.458333,
       "regionHalfSlack": 14,
       "regionId": 118,
       "regionMinCut": 4,
@@ -1710,6 +2657,7 @@
         47,
         49
       ],
+      "regionCurvature": 0.447917,
       "regionHalfSlack": 10,
       "regionId": 119,
       "regionMinCut": 4,
@@ -1724,6 +2672,7 @@
         40,
         49
       ],
+      "regionCurvature": 0.458333,
       "regionHalfSlack": 8,
       "regionId": 120,
       "regionMinCut": 3,
@@ -1737,6 +2686,7 @@
         39,
         40
       ],
+      "regionCurvature": 0.4375,
       "regionHalfSlack": 4,
       "regionId": 121,
       "regionMinCut": 3,
@@ -1749,6 +2699,7 @@
       "regionCells": [
         40
       ],
+      "regionCurvature": 0.5,
       "regionHalfSlack": 2,
       "regionId": 122,
       "regionMinCut": 2,
@@ -1761,6 +2712,7 @@
       "regionCells": [
         41
       ],
+      "regionCurvature": 0.583333,
       "regionHalfSlack": 4,
       "regionId": 123,
       "regionMinCut": 1,
@@ -1773,6 +2725,7 @@
       "regionCells": [
         42
       ],
+      "regionCurvature": 0.479167,
       "regionHalfSlack": 2,
       "regionId": 124,
       "regionMinCut": 2,
@@ -1786,6 +2739,7 @@
         42,
         43
       ],
+      "regionCurvature": 0.510417,
       "regionHalfSlack": 6,
       "regionId": 125,
       "regionMinCut": 2,
@@ -1798,6 +2752,7 @@
       "regionCells": [
         43
       ],
+      "regionCurvature": 0.541667,
       "regionHalfSlack": 2,
       "regionId": 126,
       "regionMinCut": 2,
@@ -1810,6 +2765,7 @@
       "regionCells": [
         44
       ],
+      "regionCurvature": 0.416667,
       "regionHalfSlack": 0,
       "regionId": 127,
       "regionMinCut": 3,
@@ -1823,6 +2779,7 @@
         44,
         46
       ],
+      "regionCurvature": 0.458334,
       "regionHalfSlack": 4,
       "regionId": 128,
       "regionMinCut": 3,
@@ -1837,6 +2794,7 @@
         45,
         46
       ],
+      "regionCurvature": 0.472222,
       "regionHalfSlack": 8,
       "regionId": 129,
       "regionMinCut": 3,
@@ -1850,6 +2808,7 @@
         44,
         45
       ],
+      "regionCurvature": 0.458334,
       "regionHalfSlack": 4,
       "regionId": 130,
       "regionMinCut": 3,
@@ -1862,6 +2821,7 @@
       "regionCells": [
         45
       ],
+      "regionCurvature": 0.5,
       "regionHalfSlack": 2,
       "regionId": 131,
       "regionMinCut": 2,
@@ -1874,6 +2834,7 @@
       "regionCells": [
         46
       ],
+      "regionCurvature": 0.5,
       "regionHalfSlack": 2,
       "regionId": 132,
       "regionMinCut": 2,
@@ -1886,6 +2847,7 @@
       "regionCells": [
         47
       ],
+      "regionCurvature": 0.416667,
       "regionHalfSlack": 0,
       "regionId": 133,
       "regionMinCut": 3,
@@ -1899,6 +2861,7 @@
         47,
         49
       ],
+      "regionCurvature": 0.458334,
       "regionHalfSlack": 4,
       "regionId": 134,
       "regionMinCut": 3,
@@ -1913,6 +2876,7 @@
         48,
         49
       ],
+      "regionCurvature": 0.472222,
       "regionHalfSlack": 8,
       "regionId": 135,
       "regionMinCut": 3,
@@ -1926,6 +2890,7 @@
         47,
         48
       ],
+      "regionCurvature": 0.458334,
       "regionHalfSlack": 4,
       "regionId": 136,
       "regionMinCut": 3,
@@ -1938,6 +2903,7 @@
       "regionCells": [
         48
       ],
+      "regionCurvature": 0.5,
       "regionHalfSlack": 2,
       "regionId": 137,
       "regionMinCut": 2,
@@ -1950,6 +2916,7 @@
       "regionCells": [
         49
       ],
+      "regionCurvature": 0.5,
       "regionHalfSlack": 2,
       "regionId": 138,
       "regionMinCut": 2,

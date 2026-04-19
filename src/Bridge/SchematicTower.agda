@@ -18,50 +18,9 @@ open import Bridge.BridgeWitness
 open import Bridge.HalfBound
   using (HalfBoundWitness)
 
--- ════════════════════════════════════════════════════════════════════
---  §1–§24:  ALL EXISTING CONTENT PRESERVED VERBATIM
--- ════════════════════════════════════════════════════════════════════
---
---  (The ~700 lines from §1 through §24 of the current file remain
---   exactly as they are.  Nothing is removed or renamed.  The full
---   content of §1–§24 is elided here for brevity but is unchanged.)
---
---  §1   TowerLevel, mkTowerLevel
---  §2   mkTowerLevel smart constructor
---  §3   LayerStep
---  §4   AreaLawForPatch
---  §5   RichLayerStep
---  §6–§8   Dense-100/200 instances, d100→d200, d100→d200-rich
---  §9–§11  {5,4} layer imports and OrbitReducedPatches
---  §12  TowerLevel instances for {5,4} layers
---  §13  BridgeWitness extraction
---  §14  LayerStep instances for {5,4}
---  §15  Tower packaging (TwoLevelTower, Layer54Tower)
---  §16  ResolutionStep (absorbed from ResolutionTower)
---  §17  Dense ResolutionStep instances
---  §18  ResolutionTower data type
---  §19  Spectrum monotonicity
---  §20  AreaLawLevel
---  §21  ConvergenceCertificate, ConvergenceCertificate3L
---  §22  ContinuumLimitEvidence
---  §23  ResolutionStep regression tests
---  §24  Summary and design notes
---
--- ════════════════════════════════════════════════════════════════════
 
 -- ════════════════════════════════════════════════════════════════════
 --  §1.  TowerLevel — A single verified holographic slice
--- ════════════════════════════════════════════════════════════════════
---
---  A TowerLevel bundles an oracle-generated OrbitReducedPatch with
---  the fully proof-carrying BridgeWitness extracted from the generic
---  bridge theorem.  The  maxCut  field records the maximum min-cut
---  value among the orbit representatives — the "holographic depth"
---  of this resolution level.
---
---  Reference:
---    docs/formal/11-generic-bridge.md §5  (The SchematicTower
---                                          Infrastructure)
 -- ════════════════════════════════════════════════════════════════════
 
 record TowerLevel : Type₁ where
@@ -73,11 +32,6 @@ record TowerLevel : Type₁ where
 
 -- ════════════════════════════════════════════════════════════════════
 --  §2.  mkTowerLevel — Smart constructor (forces generic bridge)
--- ════════════════════════════════════════════════════════════════════
---
---  Derives the bridge witness from  orbit-bridge-witness , ensuring
---  topological consistency: every level uses the same generic proof
---  schema, parameterized only by the oracle-generated data.
 -- ════════════════════════════════════════════════════════════════════
 
 mkTowerLevel : OrbitReducedPatch → ℚ≥0 → TowerLevel
@@ -99,7 +53,6 @@ record LayerStep (lo hi : TowerLevel) : Type₀ where
 
 -- ════════════════════════════════════════════════════════════════════
 --  §4.  AreaLawForPatch — Discrete isoperimetric inequality
---       tied to a specific PatchData
 -- ════════════════════════════════════════════════════════════════════
 
 record AreaLawForPatch (pd : PatchData) : Type₀ where
@@ -109,7 +62,7 @@ record AreaLawForPatch (pd : PatchData) : Type₀ where
 
 
 -- ════════════════════════════════════════════════════════════════════
---  §5. RichLayerStep
+--  §5.  RichLayerStep
 -- ════════════════════════════════════════════════════════════════════
 
 record RichLayerStep (lo hi : TowerLevel) : Type₁ where
@@ -119,50 +72,76 @@ record RichLayerStep (lo hi : TowerLevel) : Type₁ where
 
 
 -- ════════════════════════════════════════════════════════════════════
---  §6.  Dense-100 and Dense-200 — Existing orbit-reduced patches
--- ════════════════════════════════════════════════════════════════════
---
---  These are imported from Bridge/GenericValidation.agda, which
---  already constructs OrbitReducedPatch instances from the existing
---  Dense-100 (8 orbits, max S=8) and Dense-200 (9 orbits, max S=9)
---  infrastructure.
+--  §6.  Dense + Honeycomb orbit-reduced patches and tower levels
 -- ════════════════════════════════════════════════════════════════════
 
 open import Bridge.GenericValidation
-  using (d100OrbitPatch ; d200OrbitPatch ; h145OrbitPatch)
+  using ( d100OrbitPatch ; d200OrbitPatch
+        ; h145OrbitPatch ; d1000OrbitPatch )
+
+-- ── Dense-100 (717 regions, 8 orbits, maxCut = 8) ─────────────────
 
 d100-tower-level : TowerLevel
 d100-tower-level = mkTowerLevel d100OrbitPatch 8
 
+-- ── Dense-200 (1246 regions, 9 orbits, maxCut = 9) ────────────────
+
 d200-tower-level : TowerLevel
 d200-tower-level = mkTowerLevel d200OrbitPatch 9
 
--- ════════════════════════════════════════════════════════════════════
---  Honeycomb-145 tower level  (1008 regions, 9 orbits, maxCut = 9)
--- ════════════════════════════════════════════════════════════════════
+-- ── Honeycomb-145 (1008 regions, 9 orbits, maxCut = 9) ────────────
+--
+--  A 145-cell Dense patch of the {4,3,5} hyperbolic honeycomb.
+--  maxS = 9 matches Dense-200, confirming the half-bound at an
+--  independent patch size on the same tiling.
 
 h145-tower-level : TowerLevel
 h145-tower-level = mkTowerLevel h145OrbitPatch 9
 
--- Bridge witness extraction (for downstream consumption)
 h145-bridge : BridgeWitness
 h145-bridge = TowerLevel.bridge h145-tower-level
 
-
--- ════════════════════════════════════════════════════════════════════
---  §7.  Dense-100 → Dense-200 Layer Step
--- ════════════════════════════════════════════════════════════════════
+-- ── Dense-1000 (6880 regions, 8 orbits, maxCut = 8) ───────────────
 --
---  The max min-cut grew from 8 to 9.
---  1 + 8 = 9 judgmentally.
+--  A 1000-cell Dense patch of the {4,3,5} hyperbolic honeycomb
+--  with 1597 internal faces and 2806 boundary faces.  The 6880
+--  regions are classified into 8 orbits (860× reduction).
+--
+--  maxS = 8 matches Dense-100.  At fixed max_region_cells=5,
+--  deeply-embedded boundary cells from smaller patches become
+--  interior cells in Dense-1000, and the new boundary is further
+--  from the dense core — so bounded-size regions achieve lower
+--  min-cuts than Dense-200 (maxS=9).
+--
+--  The tower extends from Dense-100 (not Dense-200).
+--  Monotonicity witness: (0 , refl) since 0 + 8 = 8.
+
+d1000-tower-level : TowerLevel
+d1000-tower-level = mkTowerLevel d1000OrbitPatch 8
+
+d1000-bridge : BridgeWitness
+d1000-bridge = TowerLevel.bridge d1000-tower-level
+
+
+-- ════════════════════════════════════════════════════════════════════
+--  §7.  LayerStep instances (Dense + Honeycomb monotonicity)
 -- ════════════════════════════════════════════════════════════════════
 
+-- Dense-100 → Dense-200:  maxS grows 8 → 9
 d100→d200 : LayerStep d100-tower-level d200-tower-level
 d100→d200 .LayerStep.monotone = 1 , refl
 
+-- Dense-100 → Honeycomb-145:  maxS grows 8 → 9
+d100→h145 : LayerStep d100-tower-level h145-tower-level
+d100→h145 .LayerStep.monotone = 1 , refl
+
+-- Dense-100 → Dense-1000:  maxS flat 8 → 8
+d100→d1000 : LayerStep d100-tower-level d1000-tower-level
+d100→d1000 .LayerStep.monotone = 0 , refl
+
 
 -- ════════════════════════════════════════════════════════════════════
---  §8.  Dense-100 → Dense-200 Rich Layer Step  (with area law)
+--  §8.  Dense-100 → Dense-200 Rich Layer Step (with area law)
 -- ════════════════════════════════════════════════════════════════════
 
 import Boundary.Dense200AreaLaw as D200AL
@@ -177,34 +156,6 @@ d100→d200-rich .RichLayerStep.area-law = record
 
 -- ════════════════════════════════════════════════════════════════════
 --  §9.  {5,4} Layer Imports  (Depth 2 through Depth 7)
--- ════════════════════════════════════════════════════════════════════
---
---  Each depth-N patch of the {5,4} hyperbolic pentagonal tiling
---  is generated by sim/prototyping/13_generate_layerN.py and
---  produces 4 Agda modules: Spec, Cut, Chain, Obs.
---
---  Qualified imports prevent name clashes on  S-cut-rep  and
---  L-min-rep  (each depth defines its own versions).
---
---  From 13_generate_layerN_OUTPUT.txt:
---
---    Depth | Tiles | Regions | Orbits | Max S
---    ──────┼───────┼─────────┼────────┼──────
---      2   |   21  |    15   |    2   |   2
---      3   |   61  |    40   |    2   |   2
---      4   |  166  |   105   |    2   |   2
---      5   |  441  |   275   |    2   |   2
---      6   | 1161  |   720   |    2   |   2
---      7   | 3046  |  1885   |    2   |   2
---
---  The exponential boundary growth is the hallmark of hyperbolic
---  geometry: each layer ring adds ~2.6× more tiles than the
---  previous one.  The orbit count stays at 2 (min-cut values
---  are always 1 or 2 for BFS-grown {5,4} patches).
---
---  Reference:
---    docs/instances/layer-54-tower.md   (instance data sheet)
---    docs/engineering/oracle-pipeline.md (script 13)
 -- ════════════════════════════════════════════════════════════════════
 
 -- ── Depth 2 ────────────────────────────────────────────────────────
@@ -248,8 +199,6 @@ import Bridge.Layer54d7Obs     as L7Obs
 --  §10.  OrbitReducedPatch instances for each {5,4} layer
 -- ════════════════════════════════════════════════════════════════════
 
--- ── Depth 2:  21 tiles, 15 regions → 2 orbits ─────────────────────
-
 layer54d2-orbit : OrbitReducedPatch
 layer54d2-orbit .OrbitReducedPatch.RegionTy  = L2S.Layer54d2Region
 layer54d2-orbit .OrbitReducedPatch.OrbitTy   = L2S.Layer54d2OrbitRep
@@ -257,8 +206,6 @@ layer54d2-orbit .OrbitReducedPatch.classify  = L2S.classifyLayer54d2
 layer54d2-orbit .OrbitReducedPatch.S-rep     = L2Cut.S-cut-rep
 layer54d2-orbit .OrbitReducedPatch.L-rep     = L2Chain.L-min-rep
 layer54d2-orbit .OrbitReducedPatch.rep-agree = L2Obs.layer54d2-pointwise-rep
-
--- ── Depth 3:  61 tiles, 40 regions → 2 orbits ─────────────────────
 
 layer54d3-orbit : OrbitReducedPatch
 layer54d3-orbit .OrbitReducedPatch.RegionTy  = L3S.Layer54d3Region
@@ -268,8 +215,6 @@ layer54d3-orbit .OrbitReducedPatch.S-rep     = L3Cut.S-cut-rep
 layer54d3-orbit .OrbitReducedPatch.L-rep     = L3Chain.L-min-rep
 layer54d3-orbit .OrbitReducedPatch.rep-agree = L3Obs.layer54d3-pointwise-rep
 
--- ── Depth 4:  166 tiles, 105 regions → 2 orbits ───────────────────
-
 layer54d4-orbit : OrbitReducedPatch
 layer54d4-orbit .OrbitReducedPatch.RegionTy  = L4S.Layer54d4Region
 layer54d4-orbit .OrbitReducedPatch.OrbitTy   = L4S.Layer54d4OrbitRep
@@ -277,8 +222,6 @@ layer54d4-orbit .OrbitReducedPatch.classify  = L4S.classifyLayer54d4
 layer54d4-orbit .OrbitReducedPatch.S-rep     = L4Cut.S-cut-rep
 layer54d4-orbit .OrbitReducedPatch.L-rep     = L4Chain.L-min-rep
 layer54d4-orbit .OrbitReducedPatch.rep-agree = L4Obs.layer54d4-pointwise-rep
-
--- ── Depth 5:  441 tiles, 275 regions → 2 orbits ───────────────────
 
 layer54d5-orbit : OrbitReducedPatch
 layer54d5-orbit .OrbitReducedPatch.RegionTy  = L5S.Layer54d5Region
@@ -288,8 +231,6 @@ layer54d5-orbit .OrbitReducedPatch.S-rep     = L5Cut.S-cut-rep
 layer54d5-orbit .OrbitReducedPatch.L-rep     = L5Chain.L-min-rep
 layer54d5-orbit .OrbitReducedPatch.rep-agree = L5Obs.layer54d5-pointwise-rep
 
--- ── Depth 6:  1161 tiles, 720 regions → 2 orbits ──────────────────
-
 layer54d6-orbit : OrbitReducedPatch
 layer54d6-orbit .OrbitReducedPatch.RegionTy  = L6S.Layer54d6Region
 layer54d6-orbit .OrbitReducedPatch.OrbitTy   = L6S.Layer54d6OrbitRep
@@ -297,8 +238,6 @@ layer54d6-orbit .OrbitReducedPatch.classify  = L6S.classifyLayer54d6
 layer54d6-orbit .OrbitReducedPatch.S-rep     = L6Cut.S-cut-rep
 layer54d6-orbit .OrbitReducedPatch.L-rep     = L6Chain.L-min-rep
 layer54d6-orbit .OrbitReducedPatch.rep-agree = L6Obs.layer54d6-pointwise-rep
-
--- ── Depth 7:  3046 tiles, 1885 regions → 2 orbits ─────────────────
 
 layer54d7-orbit : OrbitReducedPatch
 layer54d7-orbit .OrbitReducedPatch.RegionTy  = L7S.Layer54d7Region
@@ -311,14 +250,6 @@ layer54d7-orbit .OrbitReducedPatch.rep-agree = L7Obs.layer54d7-pointwise-rep
 
 -- ════════════════════════════════════════════════════════════════════
 --  §11.  TowerLevel instances for each {5,4} layer
--- ════════════════════════════════════════════════════════════════════
---
---  Each call to  mkTowerLevel  invokes  orbit-bridge-witness ,
---  which composes  orbit-to-patch  with  GenericEnriched  to
---  produce the full enriched equivalence + Univalence path +
---  verified transport.  No per-layer proof engineering is needed.
---
---  All {5,4} BFS-grown layers have max min-cut = 2.
 -- ════════════════════════════════════════════════════════════════════
 
 layer54d2-level : TowerLevel
@@ -344,15 +275,14 @@ layer54d7-level = mkTowerLevel layer54d7-orbit 2
 --  §12.  BridgeWitness extraction — the immutable registry
 -- ════════════════════════════════════════════════════════════════════
 
--- ── Dense patches (3D {4,3,5} honeycomb) ───────────────────────────
-
 dense100-bridge : BridgeWitness
 dense100-bridge = TowerLevel.bridge d100-tower-level
 
 dense200-bridge : BridgeWitness
 dense200-bridge = TowerLevel.bridge d200-tower-level
 
--- ── {5,4} tiling layers (2D hyperbolic pentagonal tiling) ──────────
+dense1000-bridge : BridgeWitness
+dense1000-bridge = TowerLevel.bridge d1000-tower-level
 
 layer54d2-bridge : BridgeWitness
 layer54d2-bridge = TowerLevel.bridge layer54d2-level
@@ -397,8 +327,6 @@ step-d6→d7 .LayerStep.monotone = 0 , refl
 --  §14.  Tower packaging records
 -- ════════════════════════════════════════════════════════════════════
 
--- ── Two-level Dense tower (Dense-100 → Dense-200) ──────────────────
-
 record TwoLevelTower : Type₁ where
   field
     lo-level  : TowerLevel
@@ -409,8 +337,6 @@ dense-two-level-tower : TwoLevelTower
 dense-two-level-tower .TwoLevelTower.lo-level = d100-tower-level
 dense-two-level-tower .TwoLevelTower.hi-level = d200-tower-level
 dense-two-level-tower .TwoLevelTower.step     = d100→d200
-
--- ── Full {5,4} layer tower (depth 2 through 7) ────────────────────
 
 record Layer54Tower : Type₁ where
   field
@@ -451,6 +377,12 @@ private
   check-d200-maxCut : TowerLevel.maxCut d200-tower-level ≡ 9
   check-d200-maxCut = refl
 
+  check-h145-maxCut : TowerLevel.maxCut h145-tower-level ≡ 9
+  check-h145-maxCut = refl
+
+  check-d1000-maxCut : TowerLevel.maxCut d1000-tower-level ≡ 8
+  check-d1000-maxCut = refl
+
   check-d2-maxCut : TowerLevel.maxCut layer54d2-level ≡ 2
   check-d2-maxCut = refl
 
@@ -462,6 +394,12 @@ private
 
   check-dense-monotone : LayerStep.monotone d100→d200 ≡ (1 , refl)
   check-dense-monotone = refl
+
+  check-h145-monotone : LayerStep.monotone d100→h145 ≡ (1 , refl)
+  check-h145-monotone = refl
+
+  check-d1000-monotone : LayerStep.monotone d100→d1000 ≡ (0 , refl)
+  check-d1000-monotone = refl
 
   check-54-monotone : LayerStep.monotone step-d2→d3 ≡ (0 , refl)
   check-54-monotone = refl
@@ -475,20 +413,20 @@ private
   check-dense-bridge : BridgeWitness
   check-dense-bridge = dense200-bridge
 
+  check-d1000-bridge : BridgeWitness
+  check-d1000-bridge = dense1000-bridge
+
+  check-h145-bridge : BridgeWitness
+  check-h145-bridge = h145-bridge
+
 
 -- ════════════════════════════════════════════════════════════════════
---  ABSORBED FROM Bridge/ResolutionTower.agda
+--  §16–§24:  ABSORBED FROM Bridge/ResolutionTower.agda
 -- ════════════════════════════════════════════════════════════════════
 
-
 -- ════════════════════════════════════════════════════════════════════
---  Imports — Dense-100 / Dense-200 Infrastructure for ResolutionStep
+--  Imports — Dense-100 / Dense-200 / Dense-1000 infrastructure
 -- ════════════════════════════════════════════════════════════════════
---
---  IMPORTANT: Boundary.Dense100AreaLaw is imported QUALIFIED (as
---  D100AL) rather than opened, to avoid clashing the bare name
---  "area-law" with identically-named record fields in FullLayerStep
---  and AreaLawForPatch.
 
 open import Common.Dense100Spec
   using ( D100Region ; D100OrbitRep ; classify100 )
@@ -506,74 +444,30 @@ import Boundary.Dense200Cut as D200Cut
 
 open import Bridge.Dense200Obs
   using ( d200-pointwise ; S∂D200 ; LBD200 )
+
+open import Common.Dense1000Spec
+  using ( D1000Region ; D1000OrbitRep ; classify1000 )
+
+import Boundary.Dense1000Cut as D1000Cut
+
+import Bridge.Dense1000Obs as D1000Obs
+
+import Boundary.Dense1000AreaLaw as D1000AL
 
 
 -- ════════════════════════════════════════════════════════════════════
 --  §16.  ResolutionStep
 -- ════════════════════════════════════════════════════════════════════
---
--- ════════════════════════════════════════════════════════════════════
---  Imports — Dense-100 / Dense-200 Infrastructure for ResolutionStep
---  (repeated from the block above for historical reasons — the
---  duplicated open-imports are harmless in Agda 2.8.0 because
---  the same names are brought into scope again with identical
---  bindings.)
--- ════════════════════════════════════════════════════════════════════
-
-open import Common.Dense100Spec
-  using ( D100Region ; D100OrbitRep ; classify100 )
-open import Boundary.Dense100Cut
-  using ( S-cut-rep )
-open import Bridge.Dense100Obs
-  using ( d100-pointwise ; S∂D100 ; LBD100 )
-
--- ← CHANGED: qualified import instead of open import
-import Boundary.Dense100AreaLaw as D100AL
-
-open import Common.Dense200Spec
-  using ( D200Region ; D200OrbitRep ; classify200 )
-
-import Boundary.Dense200Cut as D200Cut
-
-open import Bridge.Dense200Obs
-  using ( d200-pointwise ; S∂D200 ; LBD200 )
-
---  A resolution step pairs two resolution levels (fine and coarse)
---  with a projection from the finer to the coarser, together with:
---
---    • Observable functions at each level  (S-fine, L-fine, S-coarse)
---    • The RT correspondence at the fine level  (rt-fine)
---    • A placeholder RT at the coarse level  (rt-coarse)
---    • A compatibility witness certifying that the fine-level
---      observable factors through the projection  (compat)
---
---  This is exactly  CoarseGrainWitness  from  Bridge/CoarseGrain.agda
---  augmented with the RT correspondence at the fine level.
---
---  The record lives in  Type₁  because it stores types as fields.
---
---  Reference:
---    docs/formal/09-thermodynamics.md §4  (The Resolution Tower)
---    docs/formal/11-generic-bridge.md §6  (Resolution Steps and
---                                          Convergence Certificates)
--- ════════════════════════════════════════════════════════════════════
 
 record ResolutionStep : Type₁ where
   field
-    -- The two resolution levels
     FineRegion   : Type₀
     CoarseRegion : Type₀
-
-    -- Observables at each level
     S-fine       : FineRegion → ℚ≥0
     L-fine       : FineRegion → ℚ≥0
     S-coarse     : CoarseRegion → ℚ≥0
-
-    -- RT correspondence at each level
     rt-fine      : (r : FineRegion) → S-fine r ≡ L-fine r
     rt-coarse    : (o : CoarseRegion) → S-coarse o ≡ S-coarse o
-
-    -- The coarse-graining factorization
     project      : FineRegion → CoarseRegion
     compat       : (r : FineRegion) →
                    S-fine r ≡ S-coarse (project r)
@@ -605,19 +499,20 @@ dense200-resolution-step .ResolutionStep.rt-coarse _  = refl
 dense200-resolution-step .ResolutionStep.project      = classify200
 dense200-resolution-step .ResolutionStep.compat _     = refl
 
+dense1000-resolution-step : ResolutionStep
+dense1000-resolution-step .ResolutionStep.FineRegion   = D1000Region
+dense1000-resolution-step .ResolutionStep.CoarseRegion = D1000OrbitRep
+dense1000-resolution-step .ResolutionStep.S-fine       = D1000Obs.S∂D1000
+dense1000-resolution-step .ResolutionStep.L-fine       = D1000Obs.LBD1000
+dense1000-resolution-step .ResolutionStep.S-coarse     = D1000Cut.S-cut-rep
+dense1000-resolution-step .ResolutionStep.rt-fine      = D1000Obs.d1000-pointwise
+dense1000-resolution-step .ResolutionStep.rt-coarse _  = refl
+dense1000-resolution-step .ResolutionStep.project      = classify1000
+dense1000-resolution-step .ResolutionStep.compat _     = refl
+
 
 -- ════════════════════════════════════════════════════════════════════
 --  §18.  ResolutionTower — ℕ-indexed list of resolution steps
--- ════════════════════════════════════════════════════════════════════
---
---  A tower is a sequence of resolution steps indexed by ℕ.  The
---  base case holds a single step; each subsequent step extends the
---  tower.  The index counts the number of  step  constructors used.
---
---  Reference:
---    docs/formal/09-thermodynamics.md §4  (The Resolution Tower)
---    docs/formal/11-generic-bridge.md §6  (Resolution Steps and
---                                          Convergence Certificates)
 -- ════════════════════════════════════════════════════════════════════
 
 data ResolutionTower : ℕ → Type₁ where
@@ -633,20 +528,7 @@ two-step-tower = step dense200-resolution-step single-step-tower
 
 
 -- ════════════════════════════════════════════════════════════════════
---  §19.  Spectrum monotonicity — The growing min-cut spectrum
--- ════════════════════════════════════════════════════════════════════
---
---  The min-cut spectrum grows monotonically with resolution:
---
---    Dense-50:   max min-cut = 7
---    Dense-100:  max min-cut = 8
---    Dense-200:  max min-cut = 9
---
---  Each transition is a concrete inequality witnessed by (k , refl).
---
---  Reference:
---    docs/formal/09-thermodynamics.md §4  (Spectrum Monotonicity)
---    docs/formal/11-generic-bridge.md §6  (Spectrum Monotonicity)
+--  §19.  Spectrum monotonicity
 -- ════════════════════════════════════════════════════════════════════
 
 spectrum-grows-50-100 : 7 ≤ℚ 8
@@ -655,24 +537,17 @@ spectrum-grows-50-100 = 1 , refl
 spectrum-grows-100-200 : 8 ≤ℚ 9
 spectrum-grows-100-200 = 1 , refl
 
+-- Dense-100 → Dense-1000: flat (both maxS = 8)
+spectrum-flat-100-1000 : 8 ≤ℚ 8
+spectrum-flat-100-1000 = 0 , refl
+
+-- Dense-100 → Honeycomb-145: grows (8 → 9)
+spectrum-grows-100-h145 : 8 ≤ℚ 9
+spectrum-grows-100-h145 = 1 , refl
+
 
 -- ════════════════════════════════════════════════════════════════════
---  §20.  AreaLawLevel — The discrete area law at a single level
--- ════════════════════════════════════════════════════════════════════
---
---  At each finite resolution level, the min-cut entropy is bounded
---  by the boundary surface area of the region:
---
---    S_cut(A)  ≤  area(A)
---
---  This record stores types as fields (RegionTy), so it lives in
---  Type₁.  Compare with  AreaLawForPatch  (§4 above), which is
---  tied to a specific  PatchData  and lives in Type₀.
---
---  Reference:
---    docs/formal/09-thermodynamics.md §3  (The Discrete Area Law)
---    docs/formal/11-generic-bridge.md §6  (AreaLawLevel and
---                                          HalfBoundLevel)
+--  §20.  AreaLawLevel
 -- ════════════════════════════════════════════════════════════════════
 
 record AreaLawLevel : Type₁ where
@@ -694,24 +569,16 @@ dense200-area-law-level .AreaLawLevel.S-obs      = S∂D200
 dense200-area-law-level .AreaLawLevel.area       = D200AL.regionArea
 dense200-area-law-level .AreaLawLevel.area-bound = D200AL.area-law
 
+dense1000-area-law-level : AreaLawLevel
+dense1000-area-law-level .AreaLawLevel.RegionTy   = D1000Region
+dense1000-area-law-level .AreaLawLevel.S-obs      = D1000Obs.S∂D1000
+dense1000-area-law-level .AreaLawLevel.area       = D1000AL.regionArea
+dense1000-area-law-level .AreaLawLevel.area-bound = D1000AL.area-law
+
 
 -- ════════════════════════════════════════════════════════════════════
 --  §21.  ConvergenceCertificate, ConvergenceCertificate3L
 -- ════════════════════════════════════════════════════════════════════
---
---  These records package the complete convergence evidence at
---  different tower heights.  The 2-level certificate is retained
---  for backward compatibility; the 3-level one extends it with
---  Dense-200.
---
---  Reference:
---    docs/formal/09-thermodynamics.md §4  (Resolution Tower and
---                                          Convergence Certificates)
---    docs/formal/11-generic-bridge.md §6  (The 3-Level Convergence
---                                          Certificate)
--- ════════════════════════════════════════════════════════════════════
-
--- ── 2-level certificate (Dense-50 → Dense-100) ────────────────────
 
 record ConvergenceCertificate : Type₁ where
   field
@@ -726,22 +593,13 @@ convergence-certificate .ConvergenceCertificate.tower          = single-step-tow
 convergence-certificate .ConvergenceCertificate.monotone       = spectrum-grows-50-100
 convergence-certificate .ConvergenceCertificate.area-law-level = dense100-area-law-level
 
--- ── 3-level certificate (Dense-50 → Dense-100 → Dense-200) ────────
-
 record ConvergenceCertificate3L : Type₁ where
   field
-    -- The two resolution steps (orbit reductions at each level)
     step-100         : ResolutionStep
     step-200         : ResolutionStep
-
-    -- The 2-step resolution tower packaging both steps
     tower            : ResolutionTower (suc zero)
-
-    -- Monotonicity: the max min-cut grows between consecutive levels
     monotone-50-100  : 7 ≤ℚ 8
     monotone-100-200 : 8 ≤ℚ 9
-
-    -- Area law holds at both verified levels
     area-law-100     : AreaLawLevel
     area-law-200     : AreaLawLevel
 
@@ -756,22 +614,7 @@ convergence-certificate-3L .ConvergenceCertificate3L.area-law-200     = dense200
 
 
 -- ════════════════════════════════════════════════════════════════════
---  §22.  ContinuumLimitEvidence — The fully formalized statement
--- ════════════════════════════════════════════════════════════════════
---
---  The resolution tower for the {4,3,5} honeycomb factors through
---  the orbit reduction at each level, the RT correspondence holds
---  at every resolution, the area-law bound holds at every
---  resolution, and the min-cut spectrum grows monotonically:
---
---    7 ≤ 8 ≤ 9
---
---  Reference:
---    docs/formal/09-thermodynamics.md §5
---      (The Discrete Bekenstein–Hawking Half-Bound — tower
---       integration supersedes this weaker type alias)
---    docs/formal/11-generic-bridge.md §7
---      (The Discrete Bekenstein–Hawking Capstone)
+--  §22.  ContinuumLimitEvidence
 -- ════════════════════════════════════════════════════════════════════
 
 ContinuumLimitEvidence : Type₁
@@ -789,7 +632,6 @@ open import Common.Dense100Spec using (d100r0 ; d100r15)
 open import Common.Dense200Spec using (d200r0 ; d200r9)
 
 private
-  -- ── Dense-100 compat checks ──────────────────────────────────
   compat-check-d100-0 :
     ResolutionStep.S-fine dense-resolution-step d100r0
     ≡ ResolutionStep.S-coarse dense-resolution-step
@@ -802,7 +644,6 @@ private
         (ResolutionStep.project dense-resolution-step d100r15)
   compat-check-d100-15 = refl
 
-  -- ── Dense-100 RT checks ──────────────────────────────────────
   rt-check-d100-0 :
     ResolutionStep.S-fine dense-resolution-step d100r0
     ≡ ResolutionStep.L-fine dense-resolution-step d100r0
@@ -813,7 +654,6 @@ private
     ≡ ResolutionStep.L-fine dense-resolution-step d100r15
   rt-check-d100-15 = ResolutionStep.rt-fine dense-resolution-step d100r15
 
-  -- ── Dense-200 compat checks ──────────────────────────────────
   compat-check-d200-0 :
     ResolutionStep.S-fine dense200-resolution-step d200r0
     ≡ ResolutionStep.S-coarse dense200-resolution-step
@@ -826,7 +666,6 @@ private
         (ResolutionStep.project dense200-resolution-step d200r9)
   compat-check-d200-9 = refl
 
-  -- ── Dense-200 RT checks ──────────────────────────────────────
   rt-check-d200-0 :
     ResolutionStep.S-fine dense200-resolution-step d200r0
     ≡ ResolutionStep.L-fine dense200-resolution-step d200r0
@@ -837,156 +676,30 @@ private
     ≡ ResolutionStep.L-fine dense200-resolution-step d200r9
   rt-check-d200-9 = ResolutionStep.rt-fine dense200-resolution-step d200r9
 
-  -- ── Monotonicity witnesses ────────────────────────────────────
   mono-check-50-100 : spectrum-grows-50-100 ≡ (1 , refl)
   mono-check-50-100 = refl
 
   mono-check-100-200 : spectrum-grows-100-200 ≡ (1 , refl)
   mono-check-100-200 = refl
 
+  mono-check-100-1000 : spectrum-flat-100-1000 ≡ (0 , refl)
+  mono-check-100-1000 = refl
+
+  mono-check-100-h145 : spectrum-grows-100-h145 ≡ (1 , refl)
+  mono-check-100-h145 = refl
+
 
 -- ════════════════════════════════════════════════════════════════════
---  §24.  Summary and design notes
--- ════════════════════════════════════════════════════════════════════
---
---  This module is the SINGLE CANONICAL tower module for the
---  repository, consolidating the former Bridge/SchematicTower.agda
---  and Bridge/ResolutionTower.agda into one location.
---
---  Exports:
---
---    -- Tower infrastructure (§1-§5)
---    TowerLevel            — OrbitReducedPatch + maxCut + BridgeWitness
---    mkTowerLevel          : OrbitReducedPatch → ℚ≥0 → TowerLevel
---    LayerStep             — monotonicity witness between levels
---    AreaLawForPatch       — area-law bound linked to PatchData
---    RichLayerStep         — LayerStep + AreaLawForPatch at hi level
---
---    -- Dense {4,3,5} honeycomb patches (§6-§8)
---    d100-tower-level      : TowerLevel  (Dense-100, maxCut = 8)
---    d200-tower-level      : TowerLevel  (Dense-200, maxCut = 9)
---    d100→d200             : LayerStep
---    d100→d200-rich        : RichLayerStep
---    dense100-bridge       : BridgeWitness
---    dense200-bridge       : BridgeWitness
---
---    -- {5,4} tiling layers depth 2–7 (§9-§13)
---    layer54d2-orbit .. layer54d7-orbit   : OrbitReducedPatch
---    layer54d2-level .. layer54d7-level   : TowerLevel  (all maxCut = 2)
---    layer54d2-bridge .. layer54d7-bridge : BridgeWitness
---    step-d2→d3 .. step-d6→d7            : LayerStep  (all flat: 2 ≤ 2)
---
---    -- Tower packaging (§14)
---    dense-two-level-tower : TwoLevelTower
---    layer54-tower         : Layer54Tower
---
---    -- Resolution infrastructure (absorbed from ResolutionTower, §16-§22)
---    ResolutionStep             — coarse-graining step record
---    dense-resolution-step      — Dense-100 orbit reduction
---    dense200-resolution-step   — Dense-200 orbit reduction
---    ResolutionTower            — ℕ-indexed tower data type
---    single-step-tower          — 1-step (Dense-100)
---    two-step-tower             — 2-step (Dense-100 + Dense-200)
---    spectrum-grows-50-100      — 7 ≤ℚ 8
---    spectrum-grows-100-200     — 8 ≤ℚ 9
---    AreaLawLevel               — area-law at a standalone level
---    dense100-area-law-level    — Dense-100 area-law instance
---    dense200-area-law-level    — Dense-200 area-law instance
---    ConvergenceCertificate     — 2-level certificate
---    convergence-certificate    — concrete 2-level certificate
---    ConvergenceCertificate3L   — 3-level certificate
---    convergence-certificate-3L — concrete 3-level certificate
---    ContinuumLimitEvidence     — type alias (= ConvergenceCertificate3L)
---    continuum-limit-evidence   — the concrete evidence term
---
---  Architecture:
---
---    Bridge/ResolutionTower.agda is now architecturally redundant.
---    All downstream code should import tower infrastructure from
---    this module instead.  ResolutionTower.agda remains valid and
---    can serve as a historical record, but it is no longer on the
---    critical path.
---
---  Resolution tower summary:
---
---    Level   Patch      Regions  Orbits  Max S  Monotone   Area law
---    ─────   ─────────  ───────  ──────  ─────  ─────────  ────────
---      0     Dense-50     139      —       7      —          —
---      1     Dense-100    717      8       8    (1,refl)   717 cases
---      2     Dense-200   1246      9       9    (1,refl)  1246 cases
---
---  Reference:
---    docs/formal/09-thermodynamics.md  (area law, coarse-graining,
---                                       resolution tower)
---    docs/formal/11-generic-bridge.md  (SchematicTower infrastructure,
---                                       convergence certificates)
---    docs/formal/12-bekenstein-hawking.md  (half-bound, tower form)
---    docs/formal/01-theorems.md §Thm 3    (Discrete Bekenstein–Hawking)
--- ════════════════════════════════════════════════════════════════════
-
--- ════════════════════════════════════════════════════════════════════
--- ════════════════════════════════════════════════════════════════════
---
 --  §25.  HALFBOUND INTEGRATION
---
---  The discrete Bekenstein–Hawking bound  S(A) ≤ area(A)/2  is
---  stronger than the area law  S(A) ≤ area(A)  from §20.  It is
---  proven generically in  Bridge/HalfBound.agda  (via the two-cut
---  decomposition  area = n_cross + n_bdy) and instantiated per-
---  patch by the Python oracle in  Boundary/Dense{N}HalfBound.agda.
---
---  This section integrates the half-bound into the tower:
---
---    (a) Concrete half-bound references for Dense-100 and Dense-200
---    (b) A FullLayerStep carrying monotone + area-law + half-bound
---    (c) A ConvergenceCertificate3L-HB extending the 3-level
---        certificate with half-bounds at each verified level
---
---  The key architectural consequence (docs/formal/12-bekenstein-hawking.md):
---  the old  ConvergenceWitness  (which required constructive reals
---  and Cauchy completeness for the η_N limit) is REPLACED by the
---  sharp half-bound at each level (which requires only ℕ arithmetic
---  and refl).  This eliminates the constructive-reals wall for the
---  entropy-area relationship.
---
---  Reference:
---    docs/formal/12-bekenstein-hawking.md  (formal treatment of the
---      discrete Bekenstein–Hawking bound, from-two-cuts, tower form)
---    docs/physics/discrete-bekenstein-hawking.md  (physics
---      interpretation of the sharp 1/2 bound)
---    docs/physics/five-walls.md  (constructive-reals wall — now
---      partially bypassed for the entropy-area relationship)
---
--- ════════════════════════════════════════════════════════════════════
--- ════════════════════════════════════════════════════════════════════
-
-
--- ════════════════════════════════════════════════════════════════════
---  §25.1  Imports — Per-instance half-bound witnesses
--- ════════════════════════════════════════════════════════════════════
---
---  Each generated module exports  denseNHalfBound : HalfBoundWitness pd
---  where  pd = orbit-to-patch dNOrbitPatch .  Since  TowerLevel.patch
---  of the corresponding tower level is definitionally the same
---  OrbitReducedPatch, the types align:
---
---    HalfBoundWitness (orbit-to-patch (TowerLevel.patch d100-tower-level))
---    = HalfBoundWitness (orbit-to-patch d100OrbitPatch)
---    = type of D100HB.dense100HalfBound
 -- ════════════════════════════════════════════════════════════════════
 
 import Boundary.Dense100HalfBound as D100HB
 import Boundary.Dense200HalfBound as D200HB
+import Boundary.Dense1000HalfBound as D1000HB
 
 
 -- ════════════════════════════════════════════════════════════════════
 --  §25.2  Concrete half-bound references
--- ════════════════════════════════════════════════════════════════════
---
---  Re-exported at the tower level for downstream consumption.
---  The type of each reference is:
---    HalfBoundWitness (orbit-to-patch (TowerLevel.patch dN-tower-level))
---  which Agda verifies definitionally.
 -- ════════════════════════════════════════════════════════════════════
 
 dense100-half-bound : HalfBoundWitness (orbit-to-patch d100OrbitPatch)
@@ -995,17 +708,12 @@ dense100-half-bound = D100HB.dense100HalfBound
 dense200-half-bound : HalfBoundWitness (orbit-to-patch d200OrbitPatch)
 dense200-half-bound = D200HB.dense200HalfBound
 
+dense1000-half-bound : HalfBoundWitness (orbit-to-patch d1000OrbitPatch)
+dense1000-half-bound = D1000HB.dense1000HalfBound
+
 
 -- ════════════════════════════════════════════════════════════════════
 --  §25.3  FullLayerStep — Monotonicity + area law + half-bound
--- ════════════════════════════════════════════════════════════════════
---
---  Extends  RichLayerStep  (§5) with the sharp half-bound at the
---  higher level.  The half-bound SUBSUMES the area law (since
---  2·S ≤ area implies S ≤ area), but we keep both fields for
---  backward compatibility: existing code consuming area-law
---  continues to work, and the half-bound provides the strictest
---  constraint.
 -- ════════════════════════════════════════════════════════════════════
 
 record FullLayerStep (lo hi : TowerLevel) : Type₁ where
@@ -1016,14 +724,7 @@ record FullLayerStep (lo hi : TowerLevel) : Type₁ where
 
 
 -- ════════════════════════════════════════════════════════════════════
---  §25.4  Dense-100 → Dense-200 FullLayerStep
--- ════════════════════════════════════════════════════════════════════
---
---  The complete layer step from Dense-100 to Dense-200, carrying:
---    • monotone:    8 ≤ 9  via  (1 , refl)
---    • area-law:    S ≤ area  for all 1246 Dense-200 regions
---    • half-bound:  2·S ≤ area  for all 1246 Dense-200 regions
---      with a tight achiever where 2·S = area
+--  §25.4  FullLayerStep instances
 -- ════════════════════════════════════════════════════════════════════
 
 d100→d200-full : FullLayerStep d100-tower-level d200-tower-level
@@ -1034,13 +735,17 @@ d100→d200-full .FullLayerStep.area-law   = record
   }
 d100→d200-full .FullLayerStep.half-bound = dense200-half-bound
 
+d100→d1000-full : FullLayerStep d100-tower-level d1000-tower-level
+d100→d1000-full .FullLayerStep.monotone   = 0 , refl
+d100→d1000-full .FullLayerStep.area-law   = record
+  { area       = D1000AL.regionArea
+  ; area-bound = D1000AL.area-law
+  }
+d100→d1000-full .FullLayerStep.half-bound = dense1000-half-bound
+
 
 -- ════════════════════════════════════════════════════════════════════
 --  §25.5  HalfBoundLevel — Standalone half-bound at one level
--- ════════════════════════════════════════════════════════════════════
---
---  Like  AreaLawLevel  (§20), but with the sharp half-bound.
---  Stores the region type and observable as fields (lives in Type₁).
 -- ════════════════════════════════════════════════════════════════════
 
 record HalfBoundLevel : Type₁ where
@@ -1050,6 +755,7 @@ record HalfBoundLevel : Type₁ where
     area       : RegionTy → ℚ≥0
     half-bound : (r : RegionTy) → (S-obs r +ℚ S-obs r) ≤ℚ area r
     tight      : Σ[ r ∈ RegionTy ] (S-obs r +ℚ S-obs r ≡ area r)
+
 
 -- ════════════════════════════════════════════════════════════════════
 --  §25.6  Concrete HalfBoundLevel instances
@@ -1062,6 +768,10 @@ open import Boundary.Dense100HalfBound
 open import Boundary.Dense200HalfBound
   using ()
   renaming (half-bound-proof to d200-hb-proof ; tight-witness to d200-tight)
+
+open import Boundary.Dense1000HalfBound
+  using ()
+  renaming (half-bound-proof to d1000-hb-proof ; tight-witness to d1000-tight)
 
 dense100-half-bound-level : HalfBoundLevel
 dense100-half-bound-level .HalfBoundLevel.RegionTy   = D100Region
@@ -1077,53 +787,25 @@ dense200-half-bound-level .HalfBoundLevel.area       = D200AL.regionArea
 dense200-half-bound-level .HalfBoundLevel.half-bound = d200-hb-proof
 dense200-half-bound-level .HalfBoundLevel.tight      = d200-tight
 
+dense1000-half-bound-level : HalfBoundLevel
+dense1000-half-bound-level .HalfBoundLevel.RegionTy   = D1000Region
+dense1000-half-bound-level .HalfBoundLevel.S-obs      = D1000Obs.S∂D1000
+dense1000-half-bound-level .HalfBoundLevel.area       = D1000AL.regionArea
+dense1000-half-bound-level .HalfBoundLevel.half-bound = d1000-hb-proof
+dense1000-half-bound-level .HalfBoundLevel.tight      = d1000-tight
+
 
 -- ════════════════════════════════════════════════════════════════════
---  §25.7  ConvergenceCertificate3L-HB — 3-level certificate with
---         half-bounds (the "sharp" version)
--- ════════════════════════════════════════════════════════════════════
---
---  This extends  ConvergenceCertificate3L  (§21) with the sharp
---  half-bound at each verified level.  The old certificate carries
---  AreaLawLevel  (S ≤ area);  this one carries  HalfBoundLevel
---  (2·S ≤ area, with a tight achiever).
---
---  The key consequence (docs/formal/12-bekenstein-hawking.md):
---
---    OLD:  EntropicConvergence = Σ[family] Σ[bridges] Σ[areas]
---            Σ[mono] ConvergenceWitness
---
---    NEW:  DiscreteBekensteinHawking = Σ[family] Σ[bridges]
---            Σ[halfBounds] Σ[mono] ⊤
---
---  The  ConvergenceWitness  (requiring constructive reals and
---  Cauchy completeness) is replaced by  HalfBoundLevel  at each
---  level (requiring only ℕ arithmetic and refl).  The discrete
---  Newton's constant is exactly 1/2 in bond-dimension-1 units,
---  verified by refl on closed ℕ terms at every resolution level.
---
---  Reference:
---    docs/formal/12-bekenstein-hawking.md §5
---      (Tower Integration — HalfBoundLevel, ConvergenceCertificate3L-HB)
---    docs/physics/discrete-bekenstein-hawking.md
---      (the sharp 1/2 bound and its significance)
+--  §25.7  ConvergenceCertificate3L-HB
 -- ════════════════════════════════════════════════════════════════════
 
 record ConvergenceCertificate3L-HB : Type₁ where
   field
-    -- Resolution steps (orbit reductions)
     step-100         : ResolutionStep
     step-200         : ResolutionStep
-
-    -- The 2-step resolution tower
     tower            : ResolutionTower (suc zero)
-
-    -- Monotonicity: max min-cut grows
     monotone-50-100  : 7 ≤ℚ 8
     monotone-100-200 : 8 ≤ℚ 9
-
-    -- SHARP half-bound at each verified level
-    --   (replaces the weaker AreaLawLevel from ConvergenceCertificate3L)
     half-bound-100   : HalfBoundLevel
     half-bound-200   : HalfBoundLevel
 
@@ -1152,21 +834,6 @@ convergence-certificate-3L-HB .ConvergenceCertificate3L-HB.half-bound-200
 -- ════════════════════════════════════════════════════════════════════
 --  §25.9  DiscreteBekensteinHawking — The sharp type alias
 -- ════════════════════════════════════════════════════════════════════
---
---  The type  DiscreteBekensteinHawking  replaces  ContinuumLimitEvidence
---  as the strongest statement about the entropy-area relationship.
---
---  The old type required a ConvergenceWitness (constructive reals).
---  The new type carries only half-bounds (ℕ arithmetic + refl).
---
---  Reference:
---    docs/formal/12-bekenstein-hawking.md §5
---      (DiscreteBekensteinHawking — The Capstone Type Alias)
---    docs/formal/01-theorems.md §Thm 3
---      (Discrete Bekenstein–Hawking — tower form)
---    docs/physics/discrete-bekenstein-hawking.md §7
---      (the machine-checked formalization)
--- ════════════════════════════════════════════════════════════════════
 
 DiscreteBekensteinHawking : Type₁
 DiscreteBekensteinHawking = ConvergenceCertificate3L-HB
@@ -1180,51 +847,65 @@ discrete-bekenstein-hawking = convergence-certificate-3L-HB
 -- ════════════════════════════════════════════════════════════════════
 
 private
-  -- The half-bound references have the expected types
   check-d100-hb : HalfBoundWitness (orbit-to-patch d100OrbitPatch)
   check-d100-hb = dense100-half-bound
 
   check-d200-hb : HalfBoundWitness (orbit-to-patch d200OrbitPatch)
   check-d200-hb = dense200-half-bound
 
-  -- The full layer step type-checks
+  check-d1000-hb : HalfBoundWitness (orbit-to-patch d1000OrbitPatch)
+  check-d1000-hb = dense1000-half-bound
+
   check-full-step : FullLayerStep d100-tower-level d200-tower-level
   check-full-step = d100→d200-full
 
-  -- The sharp certificate type-checks
+  check-full-step-d1000 : FullLayerStep d100-tower-level d1000-tower-level
+  check-full-step-d1000 = d100→d1000-full
+
   check-sharp-cert : DiscreteBekensteinHawking
   check-sharp-cert = discrete-bekenstein-hawking
 
 
 -- ════════════════════════════════════════════════════════════════════
---  §25.11  Summary
+--  §26.  Summary
 -- ════════════════════════════════════════════════════════════════════
 --
---  New exports (§25):
+--  Verified patch instances in this module:
 --
---    dense100-half-bound     : HalfBoundWitness (orbit-to-patch d100OrbitPatch)
---    dense200-half-bound     : HalfBoundWitness (orbit-to-patch d200OrbitPatch)
---    FullLayerStep           : TowerLevel → TowerLevel → Type₁
---    d100→d200-full          : FullLayerStep d100-tower-level d200-tower-level
---    HalfBoundLevel          : Type₁
---    dense100-half-bound-level : HalfBoundLevel
---    dense200-half-bound-level : HalfBoundLevel
---    ConvergenceCertificate3L-HB : Type₁
---    convergence-certificate-3L-HB : ConvergenceCertificate3L-HB
---    DiscreteBekensteinHawking     : Type₁  (= ConvergenceCertificate3L-HB)
---    discrete-bekenstein-hawking   : DiscreteBekensteinHawking
+--    Level   Patch         Regions  Orbits  MaxS  Monotone from D100
+--    ─────   ───────────   ───────  ──────  ────  ─────────────────
+--      0     Dense-50        139      —       7    —
+--      1     Dense-100       717      8       8    (1,refl) from D50
+--      2     Dense-200      1246      9       9    (1,refl) from D100
+--      —     Honeycomb-145  1008      9       9    (1,refl) from D100
+--      —     Dense-1000     6880      8       8    (0,refl) from D100
 --
---  All existing exports from §1–§24 are preserved unchanged.
---  No downstream module needs modification.
+--    {5,4} Layer Tower (depths 2–7):
+--      All maxCut = 2, all LayerSteps (0,refl)
+--      Depths: 2(21 tiles) → 3(61) → 4(166) → 5(441) → 6(1161) → 7(3046)
 --
---  The sharp half-bound  2·S ≤ area  at each level replaces the
---  need for constructive reals in the entropy-area relationship:
---  the discrete Newton's constant  1/(4G) = 1/2  is verified by
---  refl on closed ℕ terms, not by a limit argument.
+--  Half-bound verified instances (2·S ≤ area, abstract proofs):
+--    Dense-100:   717 cases,  40 achievers (k=1)
+--    Dense-200:  1246 cases,  88 achievers (k=1,2,3)
+--    Dense-1000: 6880 cases, 529 achievers (k=1,3)
 --
---  Reference:
---    docs/formal/11-generic-bridge.md   (SchematicTower architecture)
---    docs/formal/12-bekenstein-hawking.md (half-bound, tower form)
---    docs/formal/01-theorems.md §Thm 3  (theorem registry entry)
---    docs/reference/module-index.md     (module description)
+--  Bridge instances (all via orbit-bridge-witness):
+--    dense100-bridge, dense200-bridge, dense1000-bridge,
+--    h145-bridge, layer54d2-bridge .. layer54d7-bridge
+--
+--  The DiscreteBekensteinHawking capstone type carries:
+--    • 3-level Dense tower: D50 → D100 → D200
+--    • Monotonicity: 7 ≤ 8 ≤ 9
+--    • Sharp half-bounds at D100 and D200
+--
+--  Additionally verified (not in the core 3-level certificate):
+--    • Dense-1000 at 6880 regions with area law + half-bound
+--      (scaling confirmation — maxS=8 at fixed max_rc=5)
+--    • Honeycomb-145 at 1008 regions with maxS=9
+--      (independent confirmation at a different patch size)
+--    • 6-level {5,4} layer tower (2D scaling demonstration)
+--
+--  Total verified bridge instances: 14
+--    (Star, Filled, Honeycomb-26, Dense-50, Dense-100, Dense-200,
+--     Honeycomb-145, Dense-1000, {5,4} depths 2–7)
 -- ════════════════════════════════════════════════════════════════════

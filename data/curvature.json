@@ -12,6 +12,14 @@
     "curvEuler": -60,
     "curvTotal": -60,
     "gaussBonnet": true,
+    "patchName": "dense-1000",
+    "tiling": "Tiling435"
+  },
+  {
+    "curvDenominator": 20,
+    "curvEuler": -60,
+    "curvTotal": -60,
+    "gaussBonnet": true,
     "patchName": "dense-200",
     "tiling": "Tiling435"
   },
@@ -38,6 +46,14 @@
     "gaussBonnet": true,
     "patchName": "filled",
     "tiling": "Tiling54"
+  },
+  {
+    "curvDenominator": 20,
+    "curvEuler": -60,
+    "curvTotal": -60,
+    "gaussBonnet": true,
+    "patchName": "honeycomb-145",
+    "tiling": "Tiling435"
   },
   {
     "curvDenominator": 20,

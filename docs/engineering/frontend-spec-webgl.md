@@ -1,826 +1,692 @@
-# WebGL Frontend Specification
+# Frontend Specification — WebGL Visualization
 
-**Architecture, view design, data flow, and implementation plan for the Three.js + TypeScript visualization layer.**
+**A React + Three.js browser application rendering interactive 3D visualizations of Agda-verified holographic patch data.**
 
-**Audience:** Developers building the frontend; AI assistants generating TypeScript/React code; reviewers evaluating the UX architecture.
+**Audience:** Frontend developers, proof engineers integrating with the Haskell backend, and anyone deploying or extending the visualization layer.
 
-**Prerequisites:** Familiarity with the backend specification ([`engineering/backend-spec-haskell.md`](backend-spec-haskell.md)), the theorem registry ([`formal/01-theorems.md`](../formal/01-theorems.md)), and the repository architecture ([`getting-started/architecture.md`](../getting-started/architecture.md)).
+**Primary source tree:** `frontend/src/` (components, hooks, utils, API client, types)
 
----
-
-## 1. Architectural Position
-
-The frontend is a **static single-page application** (SPA) built with TypeScript, React, and Three.js. It consumes the JSON REST API served by the Haskell backend ([`backend-spec-haskell.md`](backend-spec-haskell.md)) and renders interactive 3D visualizations of the verified holographic patches, resolution towers, curvature data, and theorem dashboard.
-
-```
-┌────────────────────────────────┐
-│  Haskell Backend               │
-│  REST API (JSON)               │
-│  localhost:8080                 │
-└──────────┬─────────────────────┘
-           │  fetch() / REST
-           ▼
-┌────────────────────────────────┐
-│  TypeScript Frontend           │
-│  React + Three.js              │
-│  Vite build → static assets   │
-│  localhost:5173 (dev)          │
-└────────────────────────────────┘
-```
-
-The frontend provides **no computation** — all data is pre-computed by the Python oracle, verified by Agda, and served by the Haskell backend. The frontend's role is purely **visualization and navigation**.
+**Prerequisites:** Familiarity with the backend API specification ([`backend-spec-haskell.md`](backend-spec-haskell.md)), the data export pipeline ([`oracle-pipeline.md`](oracle-pipeline.md)), and the overall repository architecture ([`getting-started/architecture.md`](../getting-started/architecture.md)).
 
 ---
 
-## 2. Technology Stack
+## 1. Overview
 
-| Component | Choice | Rationale |
-|-----------|--------|-----------|
-| Language | TypeScript 5.x | Type safety, IDE support, ecosystem |
-| UI Framework | React 18+ | Component model, hooks, ecosystem |
-| 3D Engine | Three.js r160+ | Standard WebGL library, wide support |
-| React-Three bridge | @react-three/fiber 8+ | Declarative Three.js in React |
-| Controls | @react-three/drei | OrbitControls, Html overlays, helpers |
-| Build system | Vite 5+ | Fast HMR, TypeScript-native, ES modules |
-| Styling | Tailwind CSS 3+ | Utility-first, rapid prototyping |
-| Charts (2D) | Recharts or D3.js | Tower timeline, distribution charts |
-| State management | React Context + fetch | No Redux needed — data is read-only |
-| Testing | Vitest + React Testing Library | Unit tests for components |
-| Deployment | Static hosting (Netlify/Vercel/nginx) | No server-side rendering needed |
+The Univalence Gravity frontend is a single-page application (SPA) that consumes the Haskell backend REST API and renders interactive 3D visualizations of the 16 verified holographic patch instances, the resolution tower, and the theorem registry. All displayed data has been machine-checked by Cubical Agda 2.8.0; the frontend is a pure visualization layer with no proof content and performs no mathematical computation.
+
+**What this frontend is NOT:**
+
+- **Not a proof viewer.** It does not display or interact with Agda source code, proof terms, or type signatures beyond the informal statements in the theorem registry.
+- **Not a computation engine.** Min-cut values, curvature, orbit classifications, half-bound statistics, patch-graph coordinates, rotation quaternions, and conformal scales are pre-computed by the Python oracle, verified (or numerically checked) by the pipeline, and served by the Haskell backend. The frontend performs only geometric read-through + color mapping + (fallback-only) force-directed positioning.
+- **Not a database client.** All data is fetched from the backend's static, immutable JSON endpoints. No writes, no authentication, no user accounts.
+
+**Key design properties:**
+
+| Property | Value |
+|----------|-------|
+| Framework | React 18 + TypeScript 5 (strict mode) |
+| 3D Rendering | Three.js 0.170 via React Three Fiber 8 + Drei 9 |
+| Styling | Tailwind CSS 3 (utility-first) |
+| Charts | Recharts 2 (histogram distributions) |
+| Cell Layout (primary) | Poincaré projections read from `patchGraph.pgNodes` |
+| Cell Layout (fallback) | d3-force-3d 3 (Barnes-Hut force simulation) |
+| Build Tool | Vite 6 |
+| Testing | Vitest 1 + Testing Library |
+| Backend | `GET` requests to `http://localhost:8080` (Haskell/Servant) |
+| Total patches visualized | 16 (14 standard + honeycomb-145 + dense-1000) |
+| Largest patch rendered | Dense-1000 (1000 cells, 10,317 regions, ~3.5 MB JSON) |
 
 ---
 
-## 3. Data Flow
-
-All data originates from the Haskell backend's REST API. The frontend fetches JSON on mount and caches it in React state.
+## 2. Architecture
 
 ```
-User navigates to /patches/dense-100
-  │
-  ├──▶ React Router renders <PatchView name="dense-100" />
-  │
-  ├──▶ useEffect → fetch("http://localhost:8080/patches/dense-100")
-  │
-  ├──▶ JSON response parsed into TypeScript Patch type
-  │
-  ├──▶ Three.js scene populated with cell geometry
-  │    ├── Cells colored by min-cut value (orbit classification)
-  │    ├── Bonds rendered as translucent connectors
-  │    └── Boundary faces highlighted
-  │
-  └──▶ Side panel shows region table, curvature data, half-bound stats
+backend (Haskell/Servant)         frontend (React/Three.js)
+┌─────────────────────────┐      ┌─────────────────────────────────────┐
+│ GET /patches             │─────▶│ usePatches() → PatchList            │
+│ GET /patches/:name       │─────▶│ usePatch(name) → PatchView          │
+│ GET /tower               │─────▶│ useTower() → TowerView              │
+│ GET /theorems            │─────▶│ useTheorems() → TheoremDashboard    │
+│ GET /meta                │─────▶│ useMeta() → Footer, HomePage        │
+│ GET /curvature           │      │ (consumed by PatchView panels)      │
+│ GET /health              │      │ (monitoring only)                   │
+└─────────────────────────┘      └─────────────────────────────────────┘
 ```
 
-### 3.1 API Client
+### Module Dependency Structure
 
-A typed API client wraps all backend endpoints:
+```
+src/types/index.ts              ← TypeScript interfaces (dependency root)
+    │
+    ├── src/api/client.ts       ← Typed fetch wrappers (7 endpoints)
+    │       │
+    │       ├── src/hooks/usePatch.ts      ← GET /patches/:name
+    │       ├── src/hooks/usePatches.ts    ← GET /patches
+    │       ├── src/hooks/useTower.ts      ← GET /tower
+    │       ├── src/hooks/useTheorems.ts   ← GET /theorems
+    │       └── src/hooks/useMeta.ts       ← GET /meta
+    │
+    ├── src/utils/colors.ts     ← Viridis + diverging color scales
+    ├── src/utils/layout.ts     ← Poincaré read-through + force-directed fallback
+    └── src/utils/tiling.ts     ← Three.js geometry factories
+            │
+            └── src/components/  ← React component tree (see §6)
+                    │
+                    ├── common/     Loading, ErrorMessage, NotFound
+                    ├── layout/     Header, Footer, Layout
+                    ├── home/       HomePage, TheoremCard
+                    ├── patches/    PatchCard, PatchList, PatchView,
+                    │               PatchScene, CellMesh, BondConnector,
+                    │               BoundaryWireframe, BoundaryShell,
+                    │               DynamicsView, RegionInspector,
+                    │               CurvaturePanel, HalfBoundPanel,
+                    │               DistributionChart, ColorControls
+                    ├── tower/      TowerView, TowerTimeline, TowerLevel,
+                    │               TowerAnimation
+                    └── theorems/   TheoremDashboard, TheoremRow
+```
+
+---
+
+## 3. Technology Stack
+
+| Layer | Package | Version | Purpose |
+|-------|---------|---------|---------|
+| **UI Framework** | React | 18.3 | Component tree, hooks, concurrent rendering |
+| **Routing** | React Router | 6.28 | Client-side SPA routing (5 pages + 404) |
+| **3D Rendering** | Three.js | 0.170 | WebGL scene graph, materials, geometries |
+| **R3F** | @react-three/fiber | 8.17 | React reconciler for Three.js |
+| **Drei** | @react-three/drei | 9.114 | OrbitControls, scene helpers |
+| **Charts** | Recharts | 2.13 | Min-cut + S/area histograms |
+| **Layout (fallback)** | d3-force-3d | 3.0 | Barnes-Hut force simulation (O(n log n)) |
+| **Styling** | Tailwind CSS | 3.4 | Utility-first CSS framework |
+| **Build** | Vite | 6.4 | Dev server + production bundler |
+| **Language** | TypeScript | 5.6 | Static type checking (`strict: true`) |
+| **Testing** | Vitest | 1.6 | Test runner (Vite-native) |
+| **Testing** | @testing-library/react | 14.3 | Component + hook test utilities |
+| **Linting** | ESLint | 9.14 | Code quality (`@typescript-eslint/strict`) |
+| **CSS Processing** | PostCSS + Autoprefixer | 8.4 / 10.4 | Tailwind compilation + vendor prefixing |
+
+### TypeScript Strictness
+
+The project uses maximum TypeScript strictness (`tsconfig.json`):
+
+- `strict: true` — enables all strict-family flags
+- `noUncheckedIndexedAccess: true` — array access returns `T | undefined`
+- `noUnusedLocals: true` / `noUnusedParameters: true`
+- `@typescript-eslint/no-explicit-any: "error"` — no `any` types anywhere
+
+---
+
+## 4. API Integration
+
+### 4.1 Client Module
+
+All API access is centralized in `src/api/client.ts`, which provides one typed async function per backend endpoint:
+
+| Function | Endpoint | Return Type | Consumer |
+|----------|----------|-------------|----------|
+| `fetchPatches` | `GET /patches` | `PatchSummary[]` | `usePatches` |
+| `fetchPatch` | `GET /patches/:name` | `Patch` | `usePatch` |
+| `fetchTower` | `GET /tower` | `TowerLevel[]` | `useTower` |
+| `fetchTheorems` | `GET /theorems` | `Theorem[]` | `useTheorems` |
+| `fetchCurvature` | `GET /curvature` | `CurvatureSummary[]` | (reserved) |
+| `fetchMeta` | `GET /meta` | `Meta` | `useMeta` |
+| `fetchHealth` | `GET /health` | `Health` | (monitoring) |
+
+The base URL is read from `import.meta.env.VITE_API_URL` at build time, defaulting to `http://localhost:8080`.
+
+**Error handling:** Non-2xx responses throw `ApiError` (a custom `Error` subclass carrying `status` and `statusText`). Network failures propagate as `TypeError`. Aborted requests throw `DOMException` with `name === "AbortError"`.
+
+**Abort signals:** Every function accepts an optional `AbortSignal` parameter, forwarded to the underlying `fetch()`. Hooks use `AbortController` to cancel in-flight requests on component unmount or dependency change.
+
+### 4.2 Custom Hooks
+
+Each hook follows a uniform pattern:
 
 ```typescript
-// src/api/client.ts
-
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
-
-export async function fetchPatches(): Promise<PatchSummary[]> {
-  const res = await fetch(`${BASE_URL}/patches`);
-  return res.json();
-}
-
-export async function fetchPatch(name: string): Promise<Patch> {
-  const res = await fetch(`${BASE_URL}/patches/${name}`);
-  if (!res.ok) throw new Error(`Patch not found: ${name}`);
-  return res.json();
-}
-
-export async function fetchTower(): Promise<TowerLevel[]> {
-  const res = await fetch(`${BASE_URL}/tower`);
-  return res.json();
-}
-
-export async function fetchTheorems(): Promise<Theorem[]> {
-  const res = await fetch(`${BASE_URL}/theorems`);
-  return res.json();
-}
-
-export async function fetchMeta(): Promise<Meta> {
-  const res = await fetch(`${BASE_URL}/meta`);
-  return res.json();
+interface UseXResult {
+  data: T | null;       // null while loading or on error
+  loading: boolean;     // true during fetch
+  error: string | null; // human-readable error, or null on success
+  refetch: () => void;  // re-trigger the fetch (wired to ErrorMessage retry)
 }
 ```
 
-### 3.2 TypeScript Types
+| Hook | Dependency | Re-fetches When |
+|------|-----------|-----------------|
+| `usePatch(name)` | `name` | `name` changes, `refetch()` called |
+| `usePatches()` | — | `refetch()` called |
+| `useTower()` | — | `refetch()` called |
+| `useTheorems()` | — | `refetch()` called |
+| `useMeta()` | — | `refetch()` called |
 
-Mirror the Haskell domain types from `backend-spec-haskell.md` §3:
+The `refetch` mechanism uses a `useState<number>` counter in the effect dependency array. Incrementing the counter triggers the effect to re-run, aborting any in-flight request from the previous iteration.
 
-```typescript
-// src/types/index.ts
-
-export type Tiling = "Tiling54" | "Tiling435" | "Tiling53" | "Tiling44";
-
-export type GrowthStrategy = "BFS" | "Dense" | "Geodesic" | "Hemisphere";
-
-export interface PatchSummary {
-  psName: string;
-  psTiling: Tiling;
-  psDimension: number;
-  psCells: number;
-  psRegions: number;
-  psOrbits: number;
-  psMaxCut: number;
-  psStrategy: GrowthStrategy;
-}
-
-export interface Region {
-  regionId: number;
-  regionCells: number[];
-  regionSize: number;
-  regionMinCut: number;
-  regionArea: number;
-  regionOrbit: string;
-  regionHalfSlack: number | null;
-  regionRatio: number;
-}
-
-export interface CurvatureClass {
-  ccName: string;
-  ccCount: number;
-  ccValence: number;
-  ccKappa: number;
-  ccLocation: string;
-}
-
-export interface CurvatureData {
-  curvClasses: CurvatureClass[];
-  curvTotalTenths: number;
-  curvEulerTenths: number;
-  curvGaussBonnet: boolean;
-}
-
-export interface HalfBoundData {
-  hbRegionCount: number;
-  hbViolations: number;
-  hbAchieverCount: number;
-  hbAchieverSizes: [number, number][];
-  hbSlackRange: [number, number];
-  hbMeanSlack: number;
-}
-
-export interface Patch {
-  patchName: string;
-  patchTiling: Tiling;
-  patchDimension: number;
-  patchCells: number;
-  patchRegions: number;
-  patchOrbits: number;
-  patchMaxCut: number;
-  patchBonds: number;
-  patchBoundary: number;
-  patchDensity: number;
-  patchStrategy: GrowthStrategy;
-  patchRegionData: Region[];
-  patchCurvature: CurvatureData | null;
-  patchHalfBound: HalfBoundData | null;
-}
-
-export interface TowerLevel {
-  tlPatchName: string;
-  tlRegions: number;
-  tlOrbits: number;
-  tlMaxCut: number;
-  tlMonotone: [number, string] | null;
-  tlHasBridge: boolean;
-  tlHasAreaLaw: boolean;
-  tlHasHalfBound: boolean;
-}
-
-export type TheoremStatus = "Verified" | "Dead" | "Numerical";
-
-export interface Theorem {
-  thmNumber: number;
-  thmName: string;
-  thmModule: string;
-  thmStatement: string;
-  thmProofMethod: string;
-  thmStatus: TheoremStatus;
-}
-
-export interface Meta {
-  version: string;
-  buildDate: string;
-  agdaVersion: string;
-  dataHash: string;
-}
-```
+**AbortError handling:** When the effect cleanup fires (unmount or dependency change), the `AbortController` is aborted. The hook's catch block checks `err instanceof DOMException && err.name === "AbortError"` and silently returns — this is not a user-visible error. The `finally` block guards `setLoading(false)` behind `!controller.signal.aborted` to prevent state updates on unmounted components.
 
 ---
 
-## 4. Application Routes
+## 5. Application Routes
 
-| Route | Component | Data Source | Description |
-|-------|-----------|------------|-------------|
-| `/` | `<Home />` | `GET /meta`, `GET /theorems` | Landing page with project summary and theorem dashboard |
-| `/patches` | `<PatchList />` | `GET /patches` | Card grid of all available patches with summary stats |
-| `/patches/:name` | `<PatchView />` | `GET /patches/:name` | 3D patch viewer + region table + curvature + half-bound |
-| `/tower` | `<TowerView />` | `GET /tower` | Resolution tower timeline with monotonicity arrows |
-| `/theorems` | `<TheoremDashboard />` | `GET /theorems` | All 10+ theorems with status indicators and module links |
+| Path | Component | Data Source | Description |
+|------|-----------|-------------|-------------|
+| `/` | `HomePage` | `useMeta`, `useTheorems` | Project overview + theorem status grid |
+| `/patches` | `PatchList` | `usePatches` | Browsable card grid with sort + filter |
+| `/patches/:name` | `PatchView` | `usePatch(name)` | Interactive 3D patch viewer + panels |
+| `/tower` | `TowerView` | `useTower` | Resolution tower timeline |
+| `/theorems` | `TheoremDashboard` | `useTheorems` | Expandable accordion of all 10 theorems |
+| `*` | `NotFound` | — | 404 catch-all |
 
----
-
-## 5. View Specifications
-
-### 5.1 Home / Landing Page (`/`)
-
-**Purpose:** First impression — communicate what the project proves and how to explore it.
-
-**Layout:**
-
-```
-┌─────────────────────────────────────────────────────────┐
-│  Univalence Gravity — The Spacetime Compiler  v0.5.0    │
-│  A Constructive Formalization of Discrete               │
-│  Entanglement-Geometry Duality in Cubical Agda          │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐  │
-│  │ Thm 1   │  │ Thm 2   │  │ Thm 3   │  │ Thm 5   │  │
-│  │ RT ✓    │  │ GB ✓    │  │ BH ✓    │  │ NoCTC ✓ │  │
-│  └─────────┘  └─────────┘  └─────────┘  └─────────┘  │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐               │
-│  │ Thm 4   │  │ Thm 6   │  │ Thm 7   │               │
-│  │ Wick ✓  │  │ Matter ✓│  │ QBridge✓│               │
-│  └─────────┘  └─────────┘  └─────────┘               │
-│                                                         │
-│  [Explore Patches →]    [View Tower →]                  │
-│                                                         │
-│  Built with: Agda 2.8.0 • agda/cubical • MIT License   │
-│  Data hash: abc123...   Build: 2026-04-15               │
-└─────────────────────────────────────────────────────────┘
-```
-
-**Interactions:**
-- Click a theorem card → navigate to `/theorems` with that theorem highlighted
-- Click "Explore Patches" → navigate to `/patches`
-- Click "View Tower" → navigate to `/tower`
-
-**Data:** `GET /meta` for version info, `GET /theorems` for the 7 core theorem statuses
+All routes are nested under the `Layout` component (persistent Header + `<Outlet />` + Footer). The `BrowserRouter` wraps `App` in `main.tsx` — separated from `App.tsx` to allow `MemoryRouter` injection in tests.
 
 ---
 
-### 5.2 Patch List (`/patches`)
+## 6. Component Hierarchy
 
-**Purpose:** Browse all verified patch instances with key statistics.
+### 6.1 Layout Shell
 
-**Layout:** Responsive card grid (3 columns on desktop, 1 on mobile).
-
-Each card shows:
 ```
-┌───────────────────────────┐
-│  Dense-100                │
-│  {4,3,5} • 3D • Dense    │
-│                           │
-│  Cells:    100            │
-│  Regions:  717 → 8 orbits │
-│  Max S:    8              │
-│  Bridge:   ✓ Verified     │
-│                           │
-│  [View Details →]         │
-└───────────────────────────┘
+<Layout>
+  <Header />          — Persistent nav (Home, Patches, Tower, Theorems)
+  <main>
+    <Outlet />         — Matched route content
+  </main>
+  <Footer />           — Version, Agda version, data hash (from useMeta)
+</Layout>
 ```
 
-**Sorting/Filtering:**
-- Sort by: name, cells, regions, max cut, tiling
-- Filter by: tiling type, dimension, strategy
+### 6.2 Patch Viewer (`/patches/:name`)
 
-**Data:** `GET /patches`
+The heaviest page. Three-panel layout:
+
+```
+Desktop (lg+):
+┌──────────────────────────────────┬──────────────────────┐
+│                                  │  RegionInspector     │
+│         PatchScene (Canvas)      │  CurvaturePanel      │
+│         ├── CellMesh × N         │  HalfBoundPanel      │
+│         ├── BondConnector × M    │  DistributionChart   │
+│         ├── BoundaryWireframe    │                      │
+│         └── BoundaryShell        │                      │
+├──────────────────────────────────┤                      │
+│  ColorControls                   │                      │
+└──────────────────────────────────┴──────────────────────┘
+
+Mobile (<lg): vertical stack
+```
+
+**State management:** All visualization state (color mode, selected region, show bonds, show boundary wireframe, show boundary shell) is local `useState` in `PatchView`, passed down as props. No global state, no context, no Redux.
+
+### 6.3 Tower Timeline (`/tower`)
+
+```
+<TowerView>
+  <TowerTimeline levels={data}>
+    <SubTowerSection>      — One per sub-tower (Dense, Layer-54)
+      <TowerLevel />       — Card for each resolution level
+      <MonotonicityArrow /> — (k, refl) witness between levels
+    </SubTowerSection>
+  </TowerTimeline>
+
+  <TowerAnimation levels={data} />
+  ↳ Optional animated playback of sequential tower levels with
+    proper-time counter (τ = 0, 1, …) and 3D viewport per slice.
+</TowerView>
+```
+
+Sub-towers are identified by `tlMonotone === null` boundaries in the tower data. Hovering/focusing an arrow highlights its two adjacent level cards.
+
+### 6.4 Theorem Dashboard (`/theorems`)
+
+```
+<TheoremDashboard>
+  <TheoremRow />  × 10    — Expandable accordion rows
+</TheoremDashboard>
+```
+
+Supports `highlightTheorem` navigation state from `HomePage`'s `TheoremCard` links: the matching row starts expanded via `defaultExpanded={true}`.
+
+### 6.5 Dynamics View (`DynamicsView`)
+
+A self-contained star-patch demonstration of Theorem 9 (step invariance). Animates bond-weight perturbations via an 8-step predefined sequence, showing that `S = L` on all 10 star regions is preserved at every step. Rendered as a 2D SVG diagram (not Three.js) — cells, bonds, and weights are shown as circles, lines, and labels. Playback controls mirror those of `TowerAnimation`.
 
 ---
 
-### 5.3 Patch Viewer (`/patches/:name`)
+## 7. 3D Visualization Pipeline
 
-**Purpose:** The primary visualization — interactive 3D rendering of a holographic patch with region selection, min-cut coloring, curvature heatmaps, and the Bekenstein–Hawking half-bound data.
+### 7.1 Scene Structure
 
-**Layout (3-panel):**
+`PatchScene` renders inside a React Three Fiber `<Canvas>`:
 
 ```
-┌────────────────────────┬───────────────────────────────┐
-│                        │  Patch: Dense-100              │
-│                        │  {4,3,5} • 100 cells • Dense  │
-│    3D VIEWPORT         │                               │
-│    (Three.js Canvas)   │  ── Region Inspector ──       │
-│                        │  Selected: d100r15            │
-│    OrbitControls       │  Cells: {c14,c93,c95,c97,c98}│
-│    Click to select     │  Size: 5                     │
-│    region              │  Min-cut S: 8                 │
-│                        │  Area: 22                     │
-│                        │  S/area: 0.3636               │
-│                        │  Half-slack: 6                │
-│                        │  Orbit: mc8                   │
-├────────────────────────┤                               │
-│  Color by:             │  ── Curvature ──             │
-│  [Min-Cut ▼]           │  Edge class ev5: κ₂₀ = −5   │
-│  ○ Min-Cut value       │  12 edges × (−5) = −60      │
-│  ○ Region size         │  Gauss–Bonnet: ✓ refl       │
-│  ○ S/area ratio        │                               │
-│  ○ Curvature           │  ── Half-Bound ──            │
-│                        │  Regions: 717                 │
-│  Show:                 │  Violations: 0                │
-│  ☑ Cell boundaries     │  Achievers: 40               │
-│  ☑ Internal bonds      │  1/(4G) = 1/2 ✓             │
-│  ☐ Boundary legs       │                               │
-│  ☐ Orbit coloring      │  ── Distribution ──          │
-│                        │  [Histogram of S/area]       │
-└────────────────────────┴───────────────────────────────┘
-```
-
-#### 5.3.1 Three.js Scene Structure
-
-```typescript
-// Pseudocode for the 3D scene
-
-<Canvas camera={{ position: [0, 0, 50], fov: 60 }}>
+<Canvas>
   <ambientLight intensity={0.5} />
-  <directionalLight position={[10, 10, 10]} />
-  <OrbitControls enableDamping />
-  
-  {/* Cell meshes — one per boundary cell */}
-  {patch.patchRegionData
-    .filter(r => r.regionSize === 1)
-    .map(r => (
-      <CellMesh
-        key={r.regionId}
-        cellId={r.regionCells[0]}
-        minCut={r.regionMinCut}
-        color={colorScale(r.regionMinCut, patch.patchMaxCut)}
-        selected={selectedRegion?.regionId === r.regionId}
-        onClick={() => setSelectedRegion(r)}
-      />
-    ))}
+  <directionalLight position={[10, 10, 10]} intensity={1} />
+  <OrbitControls enableDamping dampingFactor={0.1} />
 
-  {/* Bond connectors — translucent cylinders between adjacent cells */}
-  {bonds.map(([c1, c2]) => (
-    <BondConnector key={`${c1}-${c2}`} from={cellPos(c1)} to={cellPos(c2)} />
-  ))}
+  {/* Cells: individual meshes OR InstancedMesh (≤ or > 500 cells) */}
+  <group name="cells">
+    <group position scale quaternion>    (per-cell transform wrapper)
+      <CellMesh /> × N                    (≤500 total cells)
+    </group>
+    — OR —
+    <instancedMesh />                     (>500 total cells)
+    <SelectionOverlay />                  (max 5 emissive meshes, instanced path only)
+  </group>
 
-  {/* Boundary faces — wireframe outlines */}
-  {showBoundary && <BoundaryWireframe cells={boundaryCells} />}
+  {/* Bond connectors — ALL physical bonds from pgEdges (toggle-able) */}
+  <group name="bonds">
+    <BondConnector /> × M
+  </group>
+
+  {/* Boundary wireframe — 1 merged draw call (toggle-able) */}
+  <BoundaryWireframe />
+
+  {/* Boundary shell — semi-transparent sphere at origin (toggle-able) */}
+  <BoundaryShell />
 </Canvas>
 ```
 
-#### 5.3.2 Cell Layout Algorithm
+**All cells are rendered** — not just boundary cells. Interior cells (cells with all faces shared, appearing in no region) are rendered in neutral gray at reduced opacity as structural context for the bulk. Boundary cells receive data-driven colors from the active color mode.
 
-Since the backend serves region data but not explicit 3D coordinates:
+### 7.2 Cell Geometry
 
-**For 2D patches ({5,4}, {5,3}, {4,4}):** Use a force-directed layout (d3-force-3d) seeded by the cell adjacency graph. Interior cells cluster at the center; boundary cells spread outward.
+| Tiling | Shape | Three.js Geometry | Notes |
+|--------|-------|-------------------|-------|
+| `{4,3,5}` | Cube | `BoxGeometry(1, 1, 1)` | 3D patches |
+| `{5,4}` | Pentagon | `ExtrudeGeometry(pentagonShape, depth=0.1)` | 2D hyperbolic |
+| `{5,3}` | Pentagon | Same as `{5,4}` | 2D spherical |
+| `{4,4}` | Square | `PlaneGeometry(1, 1)` | 2D Euclidean |
+| `Tree` | Sphere | `SphereGeometry(0.3, 16, 12)` | 1D graph nodes |
 
-**For 3D patches ({4,3,5}):** Same force-directed approach in 3D space, with bond lengths as spring targets.
+Geometries are cached at the module level in `utils/tiling.ts` — at most 5 instances exist (one per tiling variant). The cache persists for the page lifetime.
 
-**Alternative (simpler):** Render cells as spheres at positions derived from the adjacency graph via spectral embedding (eigenvalues of the graph Laplacian → coordinates). This is deterministic and reproducible.
+### 7.3 Cell Materials
 
-The cell positions are computed client-side on first load and cached.
+| Property | Boundary (unselected) | Boundary (selected) | Interior |
+|----------|----------------------|---------------------|----------|
+| Color | Data-driven (color mode) | Data-driven | Neutral gray `#6b7280` |
+| Metalness | 0.1 | 0.1 | 0.05 |
+| Roughness | 0.7 | 0.7 | 0.85 |
+| Opacity | 0.85 | 1.0 | 0.45 |
+| Emissive | Black (none) | Orange `#ffaa00` | Black (none) |
+| Emissive Intensity | 0 | 0.5 | 0 |
+| `depthWrite` | `false` | `false` | `false` |
 
-#### 5.3.3 Color Scales
+**`depthWrite: false` (critical).** All cell materials disable depth-buffer writes. This is necessary because bond endpoints (fixed at cell centres) frequently fall inside a cell's visual volume after the Lorentz-boost centring and per-cell conformal scaling pack cells tight near the centre of the Poincaré ball/disk. Without `depthWrite: false`, translucent cells would occlude the bonds passing through them. The same flag is set on the `InstancedMesh` material for consistency across the two rendering paths.
 
-| Mode | Domain | Scale | Interpretation |
-|------|--------|-------|----------------|
-| Min-Cut value | `[1, patchMaxCut]` | Sequential blue→red (Viridis) | Higher S = deeper holographic surface = warmer color |
-| Region size | `[1, max_region_cells]` | Sequential green→purple | Larger regions = more cells = darker |
-| S/area ratio | `[0, 0.5]` | Diverging blue→white→red | Ratio approaching 0.5 = approaching the Bekenstein–Hawking bound |
-| Curvature | `[κ_min, κ_max]` | Diverging blue→white→red | Negative (hyperbolic) = blue, zero (flat) = white, positive (spherical) = red |
+### 7.4 Bond Connectors
 
-#### 5.3.4 Region Selection
+All physical bonds from `patchGraph.pgEdges` (not inferred from regions) are rendered as translucent gray cylinders connecting adjacent cell centres:
 
-- **Click a cell** → highlight all regions containing that cell (outline glow)
-- **Click a region in the side panel** → highlight its constituent cells in the 3D view
-- **Hover** → tooltip with region ID, S, area, S/area
+- Color: `#888888`, opacity 0.3
+- Radius: `0.1` world units (shared unit-height `CylinderGeometry`, scaled per-bond along local Y to the bond length)
+- 8 radial segments
+- Positioned at the midpoint, rotated via quaternion from the Y-axis to the bond direction
+- `depthWrite: false` for correct transparency blending
 
-#### 5.3.5 Distribution Charts
+A single module-level `CylinderGeometry` is shared across all bond instances — `N` bonds produce 1 geometry object, not `N`.
 
-In the side panel, render:
+### 7.5 Boundary Wireframe
 
-1. **Histogram of min-cut values** — bar chart, one bar per distinct S value, height = region count
-2. **Histogram of S/area ratios** — continuous histogram with a vertical line at 0.5 (the Bekenstein–Hawking bound)
-3. **Orbit pie chart** — one slice per orbit representative, sized by region count
+All boundary cells' edge outlines merged into a **single `<lineSegments>` draw call**:
 
-Use Recharts (lightweight React chart library) for these 2D charts.
+1. Get the template `EdgesGeometry` for the tiling type (cached)
+2. For each boundary cell, multiply the template vertices by the cell's conformal scale factor, then offset by the cell's Poincaré-projected position
+3. Concatenate into one `Float32Array` → one `BufferGeometry`
+4. Render with `lineBasicMaterial` (color: `#93c5fd`, opacity: 0.6)
 
----
+Boundary cells are those that appear in at least one region's `regionCells` array (i.e. have at least one exposed face/leg). Interior cells are excluded. The per-cell scale matches the corresponding `CellMesh` / `InstancedMesh` so the wireframe outlines track the cells' actual on-screen size — including the conformal shrinking near the Poincaré boundary.
 
-### 5.4 Tower Timeline (`/tower`)
+Exactly 1 draw call regardless of cell count — critical for layer-54-d7 (1885 boundary cells) and dense-1000 (833+ boundary cells).
 
-**Purpose:** Visualize the resolution tower as a directed timeline, showing monotone growth of the min-cut spectrum across patch sizes.
+### 7.6 Boundary Shell
 
-**Layout:**
+A semi-transparent spherical shell enclosing all boundary cells, visualising the holographic boundary surface — the 2D surface that encodes the 3D bulk. Rendered by `BoundaryShell.tsx`:
 
-```
-┌─────────────────────────────────────────────────────────┐
-│  Resolution Tower — Monotone Convergence Certificate    │
-│                                                         │
-│   Dense-50        Dense-100       Dense-200             │
-│   ┌─────┐  (1,refl) ┌─────┐  (1,refl) ┌─────┐        │
-│   │ S≤7 │ ────────▶ │ S≤8 │ ────────▶ │ S≤9 │        │
-│   │139 r│           │717 r│           │1246r│          │
-│   │ — o │           │ 8 o │           │ 9 o │          │
-│   │  ✓  │           │ ✓ ✓ │           │ ✓ ✓ │          │
-│   └─────┘           └─────┘           └─────┘          │
-│                                                         │
-│   {5,4} Layer Tower (depths 2–7, all maxCut = 2)        │
-│   ┌──┐ ┌──┐ ┌──┐ ┌──┐ ┌──┐ ┌──┐                     │
-│   │d2│→│d3│→│d4│→│d5│→│d6│→│d7│  all (0,refl)        │
-│   │21│ │61│ │166││441││1161│3046│                     │
-│   └──┘ └──┘ └──┘ └──┘ └──┘ └──┘                     │
-│                                                         │
-│   Legend: r=regions, o=orbits, ✓=bridge, ✓✓=bridge+BH  │
-│                                                         │
-│   Click any level → opens that patch in /patches/:name  │
-└─────────────────────────────────────────────────────────┘
-```
+- **Geometry:** `SphereGeometry` centred at the scene origin `(0, 0, 0)` (i.e. the Lorentz-boosted position of the fundamental cell `g = I`), with radius equal to the maximum distance of any boundary cell from the origin plus a small padding (`SHELL_PADDING = 0.6`).
+- **Colour / opacity:** `#93c5fd` at opacity `0.12` — barely perceptible, a ghostly membrane enclosing the bulk graph.
+- **Material:** `DoubleSide` (visible from inside and outside), `depthWrite: false` (does not occlude interior cells / bonds / wireframe), fully diffuse (`metalness: 0`, `roughness: 1`).
 
-**Interactions:**
-- Click a tower level → navigate to `/patches/:name` for that patch
-- Hover a monotonicity arrow → tooltip showing the witness `(k, refl)`
-- Toggle between Dense tower and {5,4} Layer tower
+**Centring invariant.** The shell is anchored at the scene origin — not at the boundary-cell centroid. This is the physically correct reference because, after the Python exporter's Lorentz-boost centring, the fundamental cell projects to the origin of the Poincaré ball. Centering the shell at the origin guarantees that for symmetric patches (e.g. {5,4} layer BFS) the shell wraps the patch symmetrically, and for asymmetric patches (Dense-growth, layer-54-dX) the shell still visually encloses the entire structure instead of drifting off-centre.
 
-**Data:** `GET /tower`
+The shell is disabled (renders `null`) for patches with fewer than 3 boundary cells or when all boundary cells sit numerically at the origin.
 
 ---
 
-### 5.5 Theorem Dashboard (`/theorems`)
+## 8. Color Scales
 
-**Purpose:** Display all machine-checked theorems with their status, module paths, and proof methods.
+Four visualization modes, selectable via `ColorControls`:
 
-**Layout:**
+| Mode | Scale | Domain | Midpoint | Use |
+|------|-------|--------|----------|-----|
+| **Min-Cut** (default) | Viridis (sequential) | `[1, maxCut]` | — | Higher S = warmer |
+| **Region Size** | Green→Purple (sequential) | `[1, maxSize]` | — | Larger = darker purple |
+| **S/area Ratio** | Blue→White→Red (diverging) | `[0, 0.5]` | 0.25 (white) | 0.5 = BH bound (red) |
+| **Curvature** | Blue→White→Red (diverging) | `[−|max|, +|max|]` | 0 (white) | Negative=blue, Positive=red |
 
-```
-┌─────────────────────────────────────────────────────────┐
-│  Theorem Dashboard — All Machine-Checked Results        │
-│                                                         │
-│  #  │ Name                      │ Module        │ ✓/✗  │
-│  ───┼───────────────────────────┼───────────────┼──────│
-│  1  │ Discrete Ryu–Takayanagi   │ GenericBridge │  ✓   │
-│  2  │ Discrete Gauss–Bonnet     │ GaussBonnet   │  ✓   │
-│  3  │ Discrete Bekenstein–Hawking│ HalfBound    │  ✓   │
-│  4  │ Discrete Wick Rotation    │ WickRotation  │  ✓   │
-│  5  │ No Closed Timelike Curves │ NoCTC         │  ✓   │
-│  6  │ Matter as Topol. Defects  │ Holonomy      │  ✓   │
-│  7  │ Quantum Superpos. Bridge  │ QuantumBridge │  ✓   │
-│  8  │ Subadditivity & Monotone  │ StarSubadd    │  ✓   │
-│  9  │ Step Invariance & Loop    │ StepInvariance│  ✓   │
-│ 10  │ Enriched Step Invariance  │ EnrichedStep  │  ✓   │
-│                                                         │
-│  Click row → expand to show:                            │
-│    • Informal statement                                 │
-│    • Proof method                                       │
-│    • Agda type signature (monospace)                    │
-│    • Verification command                               │
-└─────────────────────────────────────────────────────────┘
-```
+All color functions return CSS hex strings (`#rrggbb`) accepted by Three.js and CSS. The Viridis palette uses 16 evenly-spaced control points from the canonical matplotlib colormap, linearly interpolated.
 
-**Interactions:**
-- Click a row → expand accordion with full theorem details
-- Status badge: green ✓ for Verified, gray for Dead, orange for Numerical
+**Colorblind safety:** Viridis is the default because it is perceptually uniform (equal data steps → equal visual steps), safe for deuteranopia and protanopia, and readable in grayscale.
 
-**Data:** `GET /theorems`
+**Curvature mode — per-region curvature:** The `regionCurvature` field (computed by `18_export_json.py` as a per-cell aggregation of adjacent vertex/edge curvature) is used directly. For patches without curvature data (tree, star, layer-54), all cells fall back to κ=0, rendering as white.
 
----
-
-## 6. 3D Rendering Details
-
-### 6.1 Cell Geometry
-
-| Tiling | Cell shape | Three.js geometry | Notes |
-|--------|-----------|-------------------|-------|
-| {4,3,5} | Cube | `BoxGeometry(1, 1, 1)` | Standard unit cube |
-| {5,4} | Pentagon | `ExtrudeGeometry` from pentagonal `Shape` | Flat extrusion with small depth |
-| {5,3} | Pentagon | Same as {5,4} | Shared geometry |
-| {4,4} | Square | `PlaneGeometry(1, 1)` | Flat square |
-
-### 6.2 Materials
-
-```typescript
-// Cell material — colored by min-cut, with selection highlight
-const cellMaterial = new MeshStandardMaterial({
-  color: colorFromMinCut(region.regionMinCut, patch.patchMaxCut),
-  metalness: 0.1,
-  roughness: 0.7,
-  transparent: true,
-  opacity: isSelected ? 1.0 : 0.85,
-});
-
-// Bond material — translucent connector
-const bondMaterial = new MeshStandardMaterial({
-  color: 0x888888,
-  transparent: true,
-  opacity: 0.3,
-});
-
-// Selected cell — emissive glow
-if (isSelected) {
-  cellMaterial.emissive = new Color(0xffaa00);
-  cellMaterial.emissiveIntensity = 0.5;
-}
-```
-
-### 6.3 Performance Considerations
-
-| Patch | Cells | Expected meshes | Strategy |
-|-------|-------|-----------------|----------|
-| Star (6) | 6 | ~6 | Direct rendering |
-| Filled (11) | 11 | ~11 | Direct rendering |
-| Dense-50 | 50 | ~42 boundary | Direct rendering |
-| Dense-100 | 100 | ~86 boundary | Direct rendering |
-| Dense-200 | 200 | ~166 boundary | Direct rendering |
-| Layer-54-d7 | 3046 | ~1885 boundary | **InstancedMesh** recommended |
-
-For patches with > 500 boundary cells, use `InstancedMesh` with a single geometry and per-instance color attributes. This reduces draw calls from ~1885 to 1.
-
----
-
-## 7. Project Structure
-
-```
-frontend/
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-├── tailwind.config.js
-├── postcss.config.js
-├── .env.example
-├── eslint.config.js
-├── index.html
-├── public/
-│   └── favicon.ico
-├── src/
-│   ├── main.tsx
-│   ├── App.tsx
-│   ├── api/
-│   │   └── client.ts
-│   ├── types/
-│   │   └── index.ts
-│   ├── hooks/
-│   │   ├── usePatch.ts
-│   │   ├── usePatches.ts
-│   │   ├── useTower.ts
-│   │   ├── useTheorems.ts
-│   │   ├── useMeta.ts
-│   │   └── useCurvature.ts
-│   ├── components/
-│   │   ├── common/
-│   │   │   ├── Loading.tsx
-│   │   │   ├── ErrorMessage.tsx
-│   │   │   └── NotFound.tsx
-│   │   ├── layout/
-│   │   │   ├── Header.tsx
-│   │   │   ├── Footer.tsx
-│   │   │   └── Layout.tsx
-│   │   ├── home/
-│   │   │   ├── TheoremCard.tsx
-│   │   │   └── HomePage.tsx
-│   │   ├── patches/
-│   │   │   ├── PatchCard.tsx
-│   │   │   ├── PatchList.tsx
-│   │   │   ├── PatchView.tsx
-│   │   │   ├── PatchScene.tsx
-│   │   │   ├── CellMesh.tsx
-│   │   │   ├── BondConnector.tsx
-│   │   │   ├── BoundaryWireframe.tsx
-│   │   │   ├── RegionInspector.tsx
-│   │   │   ├── CurvaturePanel.tsx
-│   │   │   ├── HalfBoundPanel.tsx
-│   │   │   ├── DistributionChart.tsx
-│   │   │   └── ColorControls.tsx
-│   │   ├── tower/
-│   │   │   ├── TowerTimeline.tsx
-│   │   │   ├── TowerLevel.tsx
-│   │   │   └── TowerView.tsx
-│   │   └── theorems/
-│   │       ├── TheoremRow.tsx
-│   │       └── TheoremDashboard.tsx
-│   ├── utils/
-│   │   ├── colors.ts
-│   │   ├── layout.ts
-│   │   └── tiling.ts
-│   └── styles/
-│       └── globals.css
-├── tests/
-│   ├── api.test.ts
-│   ├── types.test.ts
-│   ├── utils/
-│   │   └── colors.test.ts
-│   ├── hooks/
-│   │   └── usePatch.test.ts
-│   └── components/
-│       ├── PatchCard.test.tsx
-│       ├── PatchScene.test.tsx
-│       └── TheoremCard.test.tsx
-└── README.md
-```
-
----
-
-## 8. Key Dependencies
-
-```json
-{
-  "dependencies": {
-    "react": "^18.3",
-    "react-dom": "^18.3",
-    "react-router-dom": "^6.20",
-    "@react-three/fiber": "^8.15",
-    "@react-three/drei": "^9.90",
-    "three": "^0.160",
-    "recharts": "^2.10",
-    "tailwindcss": "^3.4"
-  },
-  "devDependencies": {
-    "typescript": "^5.3",
-    "vite": "^5.0",
-    "@vitejs/plugin-react": "^4.2",
-    "vitest": "^1.0",
-    "@testing-library/react": "^14.0",
-    "autoprefixer": "^10.4",
-    "postcss": "^8.4"
-  }
-}
-```
+**Interior cell colouring:** Interior cells (not in any region) receive a fixed neutral gray (`#6b7280`) independent of the active color mode. This provides a clear visual hierarchy: boundary cells are the data-bearing foreground, interior cells are the structural background.
 
 ---
 
 ## 9. Layout Algorithm
 
-### 9.1 Force-Directed (Default)
+### 9.1 Primary Path — Poincaré Projection Read-Through
 
-For patches without explicit 3D coordinates, compute cell positions using a force-directed simulation:
+Cell positions, rotation quaternions, and per-cell conformal scales are **pre-computed by the Python oracle** (`18_export_json.py`, see [`oracle-pipeline.md`](oracle-pipeline.md) §4.3) and served by the backend in `patchGraph.pgNodes`. The frontend reads these directly; no force simulation is required in the common case.
+
+For each cell, the oracle emits:
+
+| Field | Meaning |
+|-------|---------|
+| `x, y, z` | Poincaré ball (3D) or disk-with-`z=0` (2D) coordinates |
+| `qx, qy, qz, qw` | Unit quaternion encoding the cell's rotation relative to the fundamental cell |
+| `scale` | Conformal factor `s(u) = (1 − |u|²) / 2`, clamped at `1e-6` |
+
+Three roadmap-level corrections live inside the exporter and are **reflected unchanged** by the frontend:
+
+1. **Centring (Lorentz boost).** The fundamental cell `g = I` is mapped to the hyperboloid apex so it projects to the origin `(0, 0, 0)` of the Poincaré ball. The frontend's `OrbitControls` therefore orbit the correct point without any additional translation.
+2. **Per-cell conformal scale.** `s(u) = (1 − |u|²) / 2` gives cells near the centre `scale ≈ 0.5` and cells near the boundary `scale → 0` — the canonical Escher "Circle Limit" shrinking.
+3. **Per-cell rotation quaternion.** Extracted from the spatial block of each cell's boosted Lorentz matrix via SVD + Shepperd–Shuster. Aligns cells with the hyperbolic geodesics of the tiling; omitting it causes visible "squishing" on asymmetric patches (layer-54-dX, dense-growth patches).
+
+`computePatchLayout` in `utils/layout.ts` returns `Map<number, NodeTransform>` where:
 
 ```typescript
-// src/utils/layout.ts
-
-import { forceSimulation, forceLink, forceManyBody, forceCenter } from "d3-force-3d";
-
-export function computeCellPositions(
-  cellIds: number[],
-  bonds: [number, number][],
-  dimension: number,  // 2 or 3
-): Map<number, [number, number, number]> {
-  const nodes = cellIds.map(id => ({ id, x: 0, y: 0, z: 0 }));
-  const links = bonds.map(([s, t]) => ({ source: s, target: t }));
-
-  const sim = forceSimulation(nodes, dimension === 3 ? 3 : 2)
-    .force("link", forceLink(links).distance(2).strength(1))
-    .force("charge", forceManyBody().strength(-5))
-    .force("center", forceCenter(0, 0, 0))
-    .stop();
-
-  // Run 300 iterations
-  for (let i = 0; i < 300; i++) sim.tick();
-
-  const positions = new Map<number, [number, number, number]>();
-  for (const node of nodes) {
-    positions.set(node.id, [node.x, node.y, node.z ?? 0]);
-  }
-  return positions;
+interface NodeTransform {
+  pos: [number, number, number];                   // scene-space position
+  scale: number;                                    // conformal factor
+  quat: [number, number, number, number];           // (qx, qy, qz, qw)
 }
 ```
 
-### 9.2 Caching
+**Global scene scale.** The read-through applies a scene-wide magnification to the raw Poincaré coordinates:
 
-Cell positions are deterministic (same adjacency graph → same layout after fixed iterations). Cache the computed positions in `sessionStorage` keyed by patch name to avoid recomputation on revisit.
+```
+sceneScale = max(5, √(cellCount) × 2)
+```
 
----
+This preserves the relative geometry (origin stays at the origin, boundary stays near `|u| = 1`, conformal compression stays intact) and only picks a viewport-appropriate overall size. The earlier `targetExtent / maxRaw` formula (which stretched the outermost cell to a fixed extent) is **not** used — it would destroy the conformal structure and erase the Escher shrinking.
 
-## 10. Responsive Design
+Hand-written 2D layouts (tree, star, filled, desitter) follow the same schema: the Python helper `_make_patch_graph` synthesises the identity quaternion `(0, 0, 0, 1)` and derives `scale` from `(x, y, z)` via the same `s(u)` formula, so the frontend never has to branch on the source of the coordinates.
 
-| Breakpoint | Layout | 3D Viewport | Side Panel |
-|-----------|--------|-------------|------------|
-| Desktop (≥1280px) | 3-column: controls / canvas / inspector | 60% width | 30% width, scrollable |
-| Tablet (768–1279px) | 2-column: canvas / inspector | 65% width | 35% width |
-| Mobile (<768px) | Stacked: canvas on top, inspector below | 100% width, 50vh height | 100% width, scrollable |
+### 9.2 Fallback Path — Force-Directed Simulation
 
-The 3D viewport uses `<Canvas style={{ width: '100%', height: '100%' }}>` and fills its container. On mobile, touch gestures (pinch-zoom, two-finger rotate) are handled by `OrbitControls` from `@react-three/drei`.
+When the exported `pgNodes` contain all-zero coordinates (i.e. no geometric data was produced by the pipeline), `computePatchLayout` falls back to a force-directed layout using `d3-force-3d`:
 
----
+| Parameter | Value |
+|-----------|-------|
+| Link (spring) distance | 2 |
+| Link strength | 1 |
+| Charge (repulsion) strength | −30 |
+| Iterations | 300 (synchronous, blocking) |
+| Charge algorithm | Barnes-Hut octree (O(n log n)) |
 
-## 11. Accessibility
+On the fallback path every `NodeTransform` receives the identity quaternion `(0, 0, 0, 1)` and `scale = 1.0` — the simulation produces Euclidean positions with no hyperbolic structure, so there is no meaningful conformal factor or rotation to assign. The last-resort fallback (used only if `d3-force-3d` itself fails at runtime) is a uniform circular distribution (2D) or a Fibonacci sphere (3D).
 
-- **Keyboard navigation:** Tab through theorem cards, patch list, tower levels. Enter to expand/navigate.
-- **Screen reader:** ARIA labels on all interactive elements. Alt text on the Three.js canvas describing the patch statistics (since 3D content is not natively accessible).
-- **Color blindness:** All color scales include a colorblind-safe option (Viridis is the default — perceptually uniform and safe for deuteranopia/protanopia).
-- **Reduced motion:** Respect `prefers-reduced-motion` by disabling OrbitControls auto-rotation and chart animations.
+### 9.3 Caching
 
----
+The **fallback layout** caches computed positions in `sessionStorage` keyed by patch name and node count (`ugrav-layout-v5-{patchName}-{nodeCount}`). The cache stores the full `NodeTransform` objects (position + scale + quaternion) so future additions of non-trivial fallback rotations/scales do not require another schema bump. On subsequent visits, cached transforms are loaded directly without re-running the simulation.
 
-## 12. Testing Strategy
-
-### 12.1 Unit Tests (Vitest)
-
-- Color scale functions produce correct hex values
-- Type guards validate API response shapes
-- Layout algorithm produces finite, non-NaN coordinates
-- Component rendering (smoke tests with mock data)
-
-### 12.2 Component Tests (React Testing Library)
-
-- PatchCard renders correct statistics
-- TheoremRow expands on click and shows type signature
-- TowerTimeline renders correct number of levels
-
-### 12.3 Integration Tests
-
-- Mock the API with `msw` (Mock Service Worker)
-- Navigate through all routes and verify data renders
-- Verify no console errors or unhandled promise rejections
-
-### 12.4 Visual Regression (Optional)
-
-- Screenshot comparison of the Three.js viewport at known camera angles
-- Useful for catching unexpected geometry or color changes
+The **primary path** does not cache — the Poincaré read-through is essentially free (it's a `Map` build over `patchGraph.pgNodes`), and sessionStorage would only defer the work, not eliminate it.
 
 ---
 
-## 13. Deployment
+## 10. Performance
 
-### 13.1 Development
+### 10.1 InstancedMesh Threshold
+
+| Total Cells | Strategy | Draw Calls (cells) |
+|---------------|----------|--------------------|
+| ≤ 500 | Individual `<CellMesh>` wrapped in scaled + rotated `<group>` | N |
+| > 500 | Single `<instancedMesh>` + selection overlay | 1 + max 5 |
+
+The threshold is evaluated by `shouldUseInstancing(cellCount)` in `utils/tiling.ts` against the **total cell count** (boundary + interior), not just boundary cells. For the instanced path:
+
+- **Per-instance transforms** are set via `Object3D` matrix computation in a `useEffect`:
+  ```ts
+  dummy.position.set(...transform.pos);
+  dummy.quaternion.set(...transform.quat);
+  dummy.scale.setScalar(transform.scale);
+  dummy.updateMatrix();
+  mesh.setMatrixAt(i, dummy.matrix);
+  ```
+  Position **and** rotation **and** conformal scale are all baked into the instance matrix — no per-instance prop plumbing needed.
+- Per-instance colors are set via `setColorAt()` in a `useEffect`. Interior cells receive the neutral gray; selected cells receive the orange selection color.
+- `InstancedMesh` cannot support per-instance emissive glow with the standard material, so up to 5 individual `CellMesh` components are rendered as a **`SelectionOverlay`** — each wrapped in a `<group>` carrying the cell's position, scale, and quaternion so the glow tracks the cell's conformal size and hyperbolic orientation.
+
+Cursor cleanup: when the `InstancedMesh` is removed from the scene while the pointer is hovering over it, `onPointerOut` never fires. A `useEffect` cleanup resets `document.body.style.cursor` to `"auto"` on unmount.
+
+### 10.2 Geometry Caching
+
+- Cell geometries: cached at the module level in `utils/tiling.ts` (at most 5 instances, one per tiling variant).
+- Bond geometry: a single shared unit-height `CylinderGeometry` (module-level constant in `BondConnector.tsx`) used by every bond via mesh `scale={[1, length, 1]}`. `N` bonds → 1 geometry.
+- Wireframe template: `EdgesGeometry` cached per tiling type in `BoundaryWireframe.tsx`. The merged per-patch `BufferGeometry` is recomputed only when the cells list or tiling changes.
+- Shell geometry: a fresh `SphereGeometry` is created per patch (patch navigation triggers recomputation) and disposed on change/unmount.
+
+### 10.3 Merged Wireframe
+
+`BoundaryWireframe` produces exactly 1 draw call by merging all boundary cells' scaled edge segments into a single `BufferGeometry`. For dense-1000 (833+ boundary cells), this prevents 833+ separate draw calls. For layer-54-d7 (1885 boundary cells), 1 instead of 1885.
+
+### 10.4 Progressive Loading
+
+- `GET /patches` returns lightweight `PatchSummary[]` (no region data, no graph)
+- Full patch data (up to ~3.5 MB for dense-1000) is fetched only when the user navigates to `/patches/:name`
+- Fallback layout positions are cached in `sessionStorage`
+
+---
+
+## 11. Responsive Design
+
+| Breakpoint | Width | Layout |
+|------------|-------|--------|
+| Mobile | < 768px | Single column, 50vh viewport, vertical panels |
+| Tablet | 768–1279px | 2-column patch grid, side-by-side panels |
+| Desktop | ≥ 1280px | 3-column patch grid, viewport + side panel |
+
+The Patch Viewer (`PatchView`) adapts:
+- **Desktop (lg+):** Side-by-side layout (viewport left, panels right at 320–352px)
+- **Mobile (<lg):** Stacked layout (viewport → controls → panels)
+
+The Tower Timeline adapts:
+- **Desktop (md+):** Horizontal timeline with rightward arrows
+- **Mobile (<md):** Vertical timeline with downward arrows
+
+---
+
+## 12. Accessibility
+
+| Feature | Implementation |
+|---------|---------------|
+| **ARIA roles** | `role="img"` on Canvas wrapper, `role="list"`/`role="listitem"` on card grids and tower |
+| **ARIA labels** | Descriptive labels on all interactive elements (`aria-label`, `aria-expanded`, `aria-controls`). The PatchScene wrapper's `aria-label` reports cell count (with boundary/interior breakdown), physical bond count, max min-cut, tiling, and selection status. |
+| **Keyboard navigation** | All links, buttons, and toggles focusable via Tab; tower arrows focusable with `tabIndex={0}` |
+| **Focus rings** | Viridis-600 outline via `:focus-visible` (no rings on mouse click) |
+| **Screen readers** | Loading spinner uses `role="status"`; errors use `role="alert"` |
+| **Reduced motion** | `prefers-reduced-motion` disables CSS animations (Tailwind `motion-reduce:` variant), chart animations, TowerAnimation auto-play, and DynamicsView auto-play |
+| **Color contrast** | Viridis default (perceptually uniform); academic muted palette |
+| **Semantic HTML** | `<header>`, `<main>`, `<footer>`, `<nav>`, `<section>`, `<article>` throughout |
+
+**Cursor cleanup:** Both `CellMesh` and `InstancedCells` components reset `document.body.style.cursor` to `"auto"` on unmount via `useEffect` cleanup. This prevents the cursor from getting stuck on `"pointer"` when the component is removed while the pointer is hovering over it.
+
+---
+
+## 13. Testing Strategy
+
+### 13.1 Test Suites
+
+| Suite | File | What It Tests | Environment |
+|-------|------|---------------|-------------|
+| API client | `tests/api.test.ts` | URL construction, error handling, abort signals | `vi.fn()` mock fetch |
+| Type guards | `tests/types.test.ts` | 13 type guards (incl. `isGraphNode`, `isEdge`, `isPatchGraph`) against realistic + invalid data | Pure functions |
+| Color scales | `tests/utils/colors.test.ts` | Viridis endpoints, diverging midpoints, edge cases | Pure functions |
+| `usePatch` hook | `tests/hooks/usePatch.test.ts` | Loading→success, 404, abort, name change, refetch | `renderHook` + `vi.mock` |
+| PatchCard | `tests/components/PatchCard.test.tsx` | Tiling symbols, orbit formatting, links | `MemoryRouter` |
+| PatchScene | `tests/components/PatchScene.test.tsx` | Smoke tests: all tilings, all color modes, selection, `showBonds`/`showBoundary`/`showShell` toggles, boundary/interior breakdown, bond count in ARIA label | Mocked R3F Canvas |
+| TheoremCard | `tests/components/TheoremCard.test.tsx` | Status badges, ARIA labels, all 10 theorems | `MemoryRouter` |
+
+### 13.2 Mocking Approach
+
+- **API client tests:** Mock `fetch` globally via `vi.fn()`. No network requests.
+- **Hook tests:** `vi.mock("../../src/api/client")` replaces the API module. The `ApiError` class is replicated in the mock factory so `instanceof` checks work. Mock fixtures include the full `patchGraph` (as `GraphNode[]` and `Edge[]` objects) to match the real wire schema.
+- **Component tests:** `@testing-library/react` with `MemoryRouter` for routing context.
+- **PatchScene tests:** Mock `@react-three/fiber` Canvas and `@react-three/drei` OrbitControls since jsdom has no WebGL context. The Canvas mock renders a `<div>` (without reconciling R3F-specific children) instead of a WebGL canvas. All component logic (layout read-through, colors, adjacency, selection, ARIA labels, `showShell` toggle) still executes fully; only actual GPU rendering is bypassed.
+
+### 13.3 Test Commands
 
 ```bash
 cd frontend
-npm install
-npm run dev    # Vite dev server at localhost:5173
+npm run test      # Run all Vitest tests
+npm run lint      # ESLint with TypeScript strict rules
+npm run build     # tsc -b (type-check) + vite build
 ```
-
-Requires the Haskell backend running at `localhost:8080` (or configure `VITE_API_URL`).
-
-### 13.2 Production Build
-
-```bash
-npm run build    # outputs to frontend/dist/
-```
-
-The `dist/` directory contains static HTML/JS/CSS — serve with any static file server (nginx, Caddy, Netlify, Vercel, GitHub Pages).
-
-### 13.3 Docker (Optional)
-
-```dockerfile
-# Build stage
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-
-# Serve stage
-FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 3000
-```
-
-### 13.4 Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `VITE_API_URL` | `http://localhost:8080` | Backend API base URL |
 
 ---
 
-## 14. Milestones
+## 14. Build & Configuration
 
-| Milestone | Deliverable | Dependency |
-|-----------|-------------|------------|
-| F1 | TypeScript types + API client + mock data | Backend M2 (JSON schema) |
-| F2 | Patch list page with cards | Backend M3 (API serving) |
-| F3 | 3D patch viewer with force-directed layout + cell coloring | F2 |
-| F4 | Region selection + inspector panel | F3 |
-| F5 | Tower timeline + theorem dashboard | Backend M3 |
-| F6 | Half-bound statistics + distribution charts | F4 |
-| F7 | Responsive design + accessibility pass | F6 |
-| F8 | Production build + deployment configuration | F7 |
+### 14.1 Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VITE_API_URL` | `http://localhost:8080` | Backend API base URL (no trailing slash) |
+
+Set in `.env` or `.env.local`. Vite statically replaces `import.meta.env.VITE_API_URL` during bundling.
+
+### 14.2 Build Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start Vite dev server with HMR (`localhost:5173`) |
+| `npm run build` | Type-check (`tsc -b`) + production build → `dist/` |
+| `npm run preview` | Serve the production build locally |
+| `npm run test` | Run all Vitest tests |
+| `npm run lint` | ESLint with TypeScript strict rules |
+
+### 14.3 Production Deployment
+
+`npm run build` produces static files in `dist/` suitable for any static file server. The SPA requires a fallback to `index.html` for all routes:
+
+```nginx
+# nginx example
+location / {
+    try_files $uri $uri/ /index.html;
+}
+```
+
+### 14.4 Browser Requirements
+
+- **WebGL 2** support (required for Three.js)
+- **ES2022** support (target in `tsconfig.json`)
+- Chrome 94+, Firefox 93+, Safari 15+, Edge 94+
 
 ---
 
 ## 15. Design Principles
 
-1. **Data is read-only.** The frontend never modifies any data. All information is pre-computed, verified, and served by the backend. The frontend is a pure visualization layer.
-
-2. **Progressive disclosure.** Start with high-level summaries (patch cards, theorem badges). Drill down to details on click (region inspector, theorem expansion, tower level → patch view).
-
-3. **Academic credibility.** Typography, color palette, and layout should feel like an interactive paper, not a videogame. Serif headings, monospace for Agda type signatures, muted color palette with Viridis for data visualization.
-
-4. **Performance over features.** The 3D viewport must maintain 60 FPS even for the largest patches (Dense-2000 with ~1885 boundary cells). Use `InstancedMesh` aggressively. Defer loading of large region datasets until the user navigates to that patch.
-
-5. **Offline-capable.** Since the data is static, the frontend can bundle a service worker to cache all API responses after first load. This allows offline browsing after the initial page visit.
+| Principle | Implementation |
+|-----------|----------------|
+| **Academic credibility** | Serif headings (Georgia), monospace for Agda/module references, muted Viridis palette, clean whitespace — the audience is researchers |
+| **Progressive disclosure** | Listing shows `PatchSummary` (no region data); full patch loads on navigation; accordion rows expand on click |
+| **Colorblind safety** | Viridis default (perceptually uniform, deuteranopia-safe); blue→white→red diverging for curvature/ratio |
+| **Keyboard navigation** | All interactive elements focusable; ARIA labels throughout; focus rings on keyboard only |
+| **Reduced motion** | `prefers-reduced-motion` disables animations, auto-rotation, and auto-play in TowerAnimation / DynamicsView |
+| **No `any` types** | `@typescript-eslint/no-explicit-any: "error"` + `strict: true` + `noUncheckedIndexedAccess` |
+| **Named exports** | All components and hooks use named exports (not default exports) |
+| **Utility-first CSS** | Tailwind classes in JSX; no CSS-in-JS; `style={}` only for data-driven Three.js values |
+| **Geometric correctness** | Cell positions, rotations, and conformal scales come from the Agda-aligned Python oracle; the frontend never invents geometry for Coxeter patches, only reads it. |
 
 ---
 
-## 16. Cross-References
+## 16. TypeScript Types
+
+All TypeScript interfaces in `src/types/index.ts` mirror the Haskell backend's `Types.hs` and the JSON schema produced by `18_export_json.py`. Field names match the exact JSON keys from the API — they are not renamed.
+
+**Prefix conventions (matching Haskell Aeson derivation):**
+
+| Haskell Type | Haskell Field Prefix | JSON Key Prefix | TypeScript Field |
+|-------------|---------------------|-----------------|-----------------|
+| `Patch` | `patch` | `patch` | `patchName`, `patchTiling`, `patchGraph`, … |
+| `PatchSummary` | `ps` | `ps` | `psName`, `psTiling`, … |
+| `Region` | `region` | `region` | `regionId`, `regionMinCut`, … |
+| `GraphNode` | `gn` (stripped) | (none) | `id`, `x`, `y`, `z`, `qx`, `qy`, `qz`, `qw`, `scale` |
+| `Edge` | `edge` (stripped) | (none) | `source`, `target` |
+| `PatchGraph` | `pg` | `pg` | `pgNodes`, `pgEdges` |
+| `TowerLevel` | `tl` | `tl` | `tlPatchName`, `tlMaxCut`, … |
+| `Theorem` | `thm` | `thm` | `thmNumber`, `thmName`, … |
+| `CurvatureSummary` | `cs` (stripped) | (none) | `patchName`, `tiling`, … |
+| `Meta` | `meta` (stripped) | (none) | `version`, `buildDate`, … |
+
+**`GraphNode`:**
+
+```typescript
+interface GraphNode {
+  id: number;        // cell / tile identifier (also appears in pgEdges)
+  x: number;         // Poincaré ball/disk x
+  y: number;         // Poincaré ball/disk y
+  z: number;         // Poincaré ball z (0 for 2D patches)
+  qx: number;        // rotation quaternion — x
+  qy: number;        // rotation quaternion — y
+  qz: number;        // rotation quaternion — z
+  qw: number;        // rotation quaternion — w (real part)
+  scale: number;     // conformal factor s(u) = (1 − |u|²) / 2, clamped at 1e-6
+}
+```
+
+**`Edge`:**
+
+```typescript
+interface Edge {
+  source: number;    // lower-indexed endpoint (exporter guarantees source ≤ target)
+  target: number;
+}
+```
+
+**Type guards.** 13 type guards are provided for runtime validation: `isTiling`, `isGrowthStrategy`, `isTheoremStatus`, `isRegion`, `isGraphNode`, `isEdge`, `isPatchGraph`, `isPatchSummary`, `isPatch`, `isTowerLevel`, `isTheorem`, `isMeta`, `isHealth`, `isCurvatureSummary`.
+
+---
+
+## 17. Relationship to the Agda Formalization
+
+The frontend displays data that has been **verified** by the Agda type-checker but contains no proof content. The relationship:
+
+| What the frontend displays | What Agda verified |
+|---------------------------|-------------------|
+| Cell colors by `regionMinCut` | `Bridge/GenericBridge.agda`: S = L (Theorem 1) |
+| S/area ratio bar + half-slack | `Bridge/HalfBound.agda`: 2·S ≤ area (Theorem 3) |
+| Curvature panel classes + Gauss–Bonnet badge | `Bulk/GaussBonnet.agda`: Σκ = χ (Theorem 2) |
+| Tower monotonicity arrows `(k, refl)` | `Bridge/SchematicTower.agda` |
+| Theorem status badges (Verified ✓) | Each theorem's Agda module type-checks |
+| Orbit classification sidebar | `OrbitReducedPatch.classify` |
+| `patchHalfBoundVerified` badge | `Boundary/*HalfBound.agda`: abstract `(k, refl)` |
+| DynamicsView 8-step perturbation | `Bridge/StarStepInvariance.agda` + `Bridge/StarDynamicsLoop.agda` (Theorem 9) |
+| TowerAnimation proper-time counter | `Causal/CausalDiamond.agda` |
+| Poincaré cell positions / quaternions / scales | **Not Agda-verified** — geometric visualisation data produced by `18_export_json.py` (Lorentz boost + SVD + conformal formula) and runtime-checked by the Haskell backend's `validateGraphGeometry` invariants |
+
+The frontend adds **no mathematical content** — it is a visualization layer that renders pre-computed, pre-verified (or, for geometry, runtime-checked) data in a form that is explorable by researchers.
+
+---
+
+## 18. Cross-References
 
 | Topic | Document |
 |-------|----------|
-| Backend specification | [`engineering/backend-spec-haskell.md`](backend-spec-haskell.md) |
-| Theorem registry (served as JSON) | [`formal/01-theorems.md`](../formal/01-theorems.md) |
+| Backend API (data source) | [`engineering/backend-spec-haskell.md`](backend-spec-haskell.md) |
+| Oracle pipeline (data production) | [`engineering/oracle-pipeline.md`](oracle-pipeline.md) |
+| Orbit reduction (717 → 8 orbits) | [`engineering/orbit-reduction.md`](orbit-reduction.md) |
 | Scaling report (region counts, timings) | [`engineering/scaling-report.md`](scaling-report.md) |
-| Oracle pipeline (data source) | [`engineering/oracle-pipeline.md`](oracle-pipeline.md) |
+| Generic bridge (Theorem 1) | [`formal/11-generic-bridge.md`](../formal/11-generic-bridge.md) |
+| Bekenstein–Hawking half-bound (Theorem 3) | [`formal/12-bekenstein-hawking.md`](../formal/12-bekenstein-hawking.md) |
+| Gauss–Bonnet (Theorem 2) | [`formal/04-discrete-geometry.md`](../formal/04-discrete-geometry.md) |
+| Canonical theorem registry | [`formal/01-theorems.md`](../formal/01-theorems.md) |
 | Architecture (module dependency DAG) | [`getting-started/architecture.md`](../getting-started/architecture.md) |
-| Orbit reduction (region classification) | [`engineering/orbit-reduction.md`](orbit-reduction.md) |
-| Generic bridge pattern (PatchData interface) | [`engineering/generic-bridge-pattern.md`](generic-bridge-pattern.md) |
-| Bekenstein–Hawking half-bound | [`formal/12-bekenstein-hawking.md`](../formal/12-bekenstein-hawking.md) |
-| Holographic dictionary (physics context) | [`physics/holographic-dictionary.md`](../physics/holographic-dictionary.md) |
-| Instance data sheets | [`instances/`](../instances/) |
+| Repository overview | [`docs/README.md`](../README.md) |
+| Backend README | [`backend/README.md`](../../backend/README.md) |
+| Frontend README | [`frontend/README.md`](../../frontend/README.md) |
+| Per-instance data sheets | [`instances/`](../instances/) |

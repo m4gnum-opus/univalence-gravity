@@ -33,6 +33,98 @@
   },
   "patchDensity": 1.67,
   "patchDimension": 2,
+  "patchGraph": {
+    "pgEdges": [
+      {
+        "source": 0,
+        "target": 5
+      },
+      {
+        "source": 1,
+        "target": 5
+      },
+      {
+        "source": 2,
+        "target": 5
+      },
+      {
+        "source": 3,
+        "target": 5
+      },
+      {
+        "source": 4,
+        "target": 5
+      }
+    ],
+    "pgNodes": [
+      {
+        "id": 0,
+        "qw": 1.0,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 0.0,
+        "scale": 0.375,
+        "x": 0.0,
+        "y": -0.5,
+        "z": 0.0
+      },
+      {
+        "id": 1,
+        "qw": 1.0,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 0.0,
+        "scale": 0.375,
+        "x": 0.475528,
+        "y": -0.154508,
+        "z": 0.0
+      },
+      {
+        "id": 2,
+        "qw": 1.0,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 0.0,
+        "scale": 0.375,
+        "x": 0.293893,
+        "y": 0.404508,
+        "z": 0.0
+      },
+      {
+        "id": 3,
+        "qw": 1.0,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 0.0,
+        "scale": 0.375,
+        "x": -0.293893,
+        "y": 0.404508,
+        "z": 0.0
+      },
+      {
+        "id": 4,
+        "qw": 1.0,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 0.0,
+        "scale": 0.375,
+        "x": -0.475528,
+        "y": -0.154508,
+        "z": 0.0
+      },
+      {
+        "id": 5,
+        "qw": 1.0,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 0.0,
+        "scale": 0.5,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    ]
+  },
   "patchHalfBound": {
     "hbAchieverCount": 0,
     "hbAchieverSizes": [],
@@ -54,6 +146,7 @@
       "regionCells": [
         0
       ],
+      "regionCurvature": 0.04,
       "regionHalfSlack": 3,
       "regionId": 0,
       "regionMinCut": 1,
@@ -66,6 +159,7 @@
       "regionCells": [
         1
       ],
+      "regionCurvature": 0.04,
       "regionHalfSlack": 3,
       "regionId": 1,
       "regionMinCut": 1,
@@ -78,6 +172,7 @@
       "regionCells": [
         2
       ],
+      "regionCurvature": 0.04,
       "regionHalfSlack": 3,
       "regionId": 2,
       "regionMinCut": 1,
@@ -90,6 +185,7 @@
       "regionCells": [
         3
       ],
+      "regionCurvature": 0.04,
       "regionHalfSlack": 3,
       "regionId": 3,
       "regionMinCut": 1,
@@ -102,6 +198,7 @@
       "regionCells": [
         4
       ],
+      "regionCurvature": 0.04,
       "regionHalfSlack": 3,
       "regionId": 4,
       "regionMinCut": 1,
@@ -115,6 +212,7 @@
         0,
         1
       ],
+      "regionCurvature": 0.04,
       "regionHalfSlack": 6,
       "regionId": 5,
       "regionMinCut": 2,
@@ -128,6 +226,7 @@
         1,
         2
       ],
+      "regionCurvature": 0.04,
       "regionHalfSlack": 6,
       "regionId": 6,
       "regionMinCut": 2,
@@ -141,6 +240,7 @@
         2,
         3
       ],
+      "regionCurvature": 0.04,
       "regionHalfSlack": 6,
       "regionId": 7,
       "regionMinCut": 2,
@@ -154,6 +254,7 @@
         3,
         4
       ],
+      "regionCurvature": 0.04,
       "regionHalfSlack": 6,
       "regionId": 8,
       "regionMinCut": 2,
@@ -167,6 +268,7 @@
         0,
         4
       ],
+      "regionCurvature": 0.04,
       "regionHalfSlack": 6,
       "regionId": 9,
       "regionMinCut": 2,

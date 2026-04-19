@@ -384,10 +384,10 @@ ADS_CURVATURE = {
 # ════════════════════════════════════════════════════════════════════
 
 def main() -> None:
-    print("╔══════════════════════════════════════════════════════════╗")
+    print("╔═════════════════════════════════════════════════════════╗")
     print("║  Phase E.0:  de Sitter / Anti-de Sitter Translator      ║")
     print("║  {5,3} Dodecahedron Star Patch — Feasibility Prototype  ║")
-    print("╚══════════════════════════════════════════════════════════╝")
+    print("╚═════════════════════════════════════════════════════════╝")
 
     # ── Build the {5,3} star patch polygon complex ──────────────────
     print("\n  ── §1.  Building {5,3} Star Patch Polygon Complex ──")

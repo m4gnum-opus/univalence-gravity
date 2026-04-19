@@ -1,5 +1,5 @@
 ╔═══════════════════════════════════════════════════════════╗
-║  Phase G.1: Dense-200 {4,3,5} — Resolution Tower Level 3 ║
+║  Phase G.1: Dense-200 {4,3,5} — Resolution Tower Level 3  ║
 ║  Orbit reduction + area law • Convergence certificate     ║
 ╚═══════════════════════════════════════════════════════════╝
 

@@ -1,7 +1,7 @@
-╔═══════════════════════════════════════════════════════════╗
-║  §15.11 Phase A:  Per-Instance HalfBound Witnesses       ║
+╔═════════════════════════════════════════════════════════╗
+║  §15.11 Phase A:  Per-Instance HalfBound Witnesses      ║
 ║  2·S(A) ≤ area(A)  — Dense-100 and Dense-200 patches    ║
-╚═══════════════════════════════════════════════════════════╝
+╚═════════════════════════════════════════════════════════╝
 
   Building Dense-100 patch ...
   ✓  Reflections: involution, G-preservation, Coxeter relations.

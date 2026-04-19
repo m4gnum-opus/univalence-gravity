@@ -1,7 +1,7 @@
 (venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python3 sim/prototyping/05_honeycomb_3d_prototype.py
 ╔══════════════════════════════════════════════════════════╗
-║  Phase D.0:  {4,3,5} Honeycomb — 3D Feasibility Probe  ║
-║  5 cubes at every edge • Hyperbolic 3-space             ║
+║  Phase D.0:  {4,3,5} Honeycomb — 3D Feasibility Probe    ║
+║  5 cubes at every edge • Hyperbolic 3-space              ║
 ╚══════════════════════════════════════════════════════════╝
 
   Initializing Coxeter geometry for [4,3,5] ...

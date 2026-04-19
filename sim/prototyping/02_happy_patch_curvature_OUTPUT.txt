@@ -1,9 +1,9 @@
 ```bash
 (venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python3 sim/prototyping/02_happy_patch_curvature.py
-╔══════════════════════════════════════════════════════════════╗
+╔════════════════════════════════════════════════════════════╗
 ║  Phase 1.2(b):  Discrete Curvature & Gauss–Bonnet          ║
 ║  {5,4} Tiling — 11-Tile Filled Patch                       ║
-╚══════════════════════════════════════════════════════════════╝
+╚════════════════════════════════════════════════════════════╝
 
   Polygon complex:  V=30  E=40  F=11
   Euler characteristic:  χ = 30 − 40 + 11 = 1

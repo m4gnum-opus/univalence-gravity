@@ -1,4 +1,18 @@
+# VSC Settings
+.vscode/
+
+# Agda interface files
+src/**/*.agdai
+
+# Venv + py-scripts
 venv/
 sim/prototyping/__pycache__/
-.vscode/
+
+# Exported Data of `18_export_json.py`
+data/
+
+# Backend
 backend/dist-newstyle/
+
+# Frontend
+frontend/node_modules/

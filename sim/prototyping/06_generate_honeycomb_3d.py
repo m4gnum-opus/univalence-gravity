@@ -660,8 +660,8 @@ def main() -> None:
     args = parser.parse_args()
 
     print("╔══════════════════════════════════════════════════════════╗")
-    print("║  Phase D.1: {4,3,5} Honeycomb — 3D Agda Code Generator ║")
-    print("║  Specification-Agreement Equivalence (like FilledEquiv) ║")
+    print("║  Phase D.1: {4,3,5} Honeycomb — 3D Agda Code Generator   ║")
+    print("║  Specification-Agreement Equivalence (like FilledEquiv)  ║")
     print("╚══════════════════════════════════════════════════════════╝")
 
     # Step 1: Build the 3D patch

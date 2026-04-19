@@ -393,7 +393,7 @@ def main() -> None:
     max_cells = args.max_cells
 
     print("╔═══════════════════════════════════════════════════════════╗")
-    print("║  sup(S/area) = 1/2 ?  —  The Discrete Bekenstein–Hawking ║")
+    print("║  sup(S/area) = 1/2 ?  —  The Discrete Bekenstein–Hawking  ║")
     print("║  Sweep max_rc from {0} to {1} on Dense patches{2}║".format(
         rc_lo, rc_hi, " " * (14 - len(str(rc_lo)) - len(str(rc_hi)))))
     print("╚═══════════════════════════════════════════════════════════╝")

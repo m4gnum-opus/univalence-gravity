@@ -54,12 +54,12 @@ The generic bridge pattern factors the proof into:
 
 ```
 Per-instance (Python oracle):          Generic (proven ONCE):
-┌──────────────────────────┐          ┌──────────────────────────┐
-│  Common/*Spec.agda       │          │  Bridge/GenericBridge.agda│
-│  Boundary/*Cut.agda      │ ───────▶ │                          │
-│  Bulk/*Chain.agda        │  feeds   │  PatchData → BridgeWitness│
-│  Bridge/*Obs.agda        │  into    │  (proven once, ~30 lines)│
-└──────────────────────────┘          └──────────────────────────┘
+┌──────────────────────────┐          ┌────────────────────────────┐
+│  Common/*Spec.agda       │          │  Bridge/GenericBridge.agda │
+│  Boundary/*Cut.agda      │ ───────> │                            │
+│  Bulk/*Chain.agda        │  feeds   │  PatchData → BridgeWitness │
+│  Bridge/*Obs.agda        │  into    │  (proven once, ~30 lines)  │
+└──────────────────────────┘          └────────────────────────────┘
                                                 │
                                                 ▼
                                       ┌──────────────────────────┐

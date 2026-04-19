@@ -1,6 +1,6 @@
 ╔═══════════════════════════════════════════════════════════╗
-║  §15.10 Priority 1:  Discrete Bekenstein–Hawking Proof   ║
-║  S(A) ≤ area(A)/2  — Graph-Theoretic Characterization   ║
+║  §15.10 Priority 1:  Discrete Bekenstein–Hawking Proof    ║
+║  S(A) ≤ area(A)/2  — Graph-Theoretic Characterization     ║
 ╚═══════════════════════════════════════════════════════════╝
 
   ════════════════════════════════════════════════════════════════

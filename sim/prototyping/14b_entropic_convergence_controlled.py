@@ -481,7 +481,7 @@ def main() -> None:
     max_cells = args.max_cells
 
     print("╔═══════════════════════════════════════════════════════════╗")
-    print("║  Milestone I (Controlled): Entropic Convergence          ║")
+    print("║  Milestone I (Controlled): Entropic Convergence           ║")
     print("║  Fixed max_region_cells • Per-size tracking • {5,4} Dense ║")
     print("╚═══════════════════════════════════════════════════════════╝")
     print(f"\n  Parameters:")

@@ -443,10 +443,10 @@ def main() -> None:
                         help="Compute and verify without writing files")
     args = parser.parse_args()
 
-    print("╔═══════════════════════════════════════════════════════════╗")
+    print("╔═════════════════════════════════════════════════════════╗")
     print("║  11: Discrete Area Law — Dense-100 {4,3,5} Honeycomb    ║")
     print("║  S_cut(A) ≤ area(A)  for all 717 boundary regions       ║")
-    print("╚═══════════════════════════════════════════════════════════╝")
+    print("╚═════════════════════════════════════════════════════════╝")
 
     # ── Step 1: Build the Dense-100 patch ───────────────────────────
     print("\n  Building Dense-100 patch via greedy max-connectivity ...")

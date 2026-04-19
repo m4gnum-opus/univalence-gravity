@@ -385,10 +385,10 @@ def print_section(title: str) -> None:
 
 
 def main() -> None:
-    print("╔══════════════════════════════════════════════════════════════╗")
-    print("║  Phase 1.2(b):  Discrete Curvature & Gauss–Bonnet          ║")
-    print("║  {5,4} Tiling — 11-Tile Filled Patch                       ║")
-    print("╚══════════════════════════════════════════════════════════════╝")
+    print("╔═══════════════════════════════════════════════════════╗")
+    print("║  Phase 1.2(b):  Discrete Curvature & Gauss–Bonnet     ║")
+    print("║  {5,4} Tiling — 11-Tile Filled Patch                  ║")
+    print("╚═══════════════════════════════════════════════════════╝")
 
     cpx = build_11tile_complex()
     chi = euler_characteristic(cpx)

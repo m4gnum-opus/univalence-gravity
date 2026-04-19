@@ -1,6 +1,6 @@
 ╔══════════════════════════════════════════════════════════╗
-║  Phase E.0:  de Sitter / Anti-de Sitter Translator      ║
-║  {5,3} Dodecahedron Star Patch — Feasibility Prototype  ║
+║  Phase E.0:  de Sitter / Anti-de Sitter Translator       ║
+║  {5,3} Dodecahedron Star Patch — Feasibility Prototype   ║
 ╚══════════════════════════════════════════════════════════╝
 
   ── §1.  Building {5,3} Star Patch Polygon Complex ──

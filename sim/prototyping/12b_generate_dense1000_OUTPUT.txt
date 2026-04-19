@@ -1,0 +1,129 @@
+╔════════════════════════════════════════════════════════════╗
+║  Dense-1000 {4,3,5} — Formal Physics Oracle (Dense-1000)   ║
+║  Adaptive max_rc + orbit reduction + area law + half-bound ║
+╚════════════════════════════════════════════════════════════╝
+
+  Building Dense-1000 patch ...
+  ✓  Reflections: involution, G-preservation, Coxeter relations.
+  ✓  1000 cells, 1597 int.faces, 2806 bdy.faces  (127.3s)
+
+  Enumerating regions (max_rc=6) ...
+  ✓  10317 regions, maxS=9  (1580.9s)
+  ✓  maxS=9 ≥ target=9 — monotonicity with Dense-200 achieved!
+  ✓  Area law verified.  Half-bound verified.
+  ✓  9 orbits (10317→9, 1146×)
+  ✓  1 edge class(es)
+
+  ── Patch Topology ──
+  Cells:            1000
+  Internal faces:   1597
+  Boundary faces:   2806
+  Density:          3.19
+  max_region_cells: 6
+
+  ── Region Statistics (10317 total) ──
+  By size:
+    1-cell:     833 regions
+    2-cell:     850 regions
+    3-cell:     1066 regions
+    4-cell:     1660 regions
+    5-cell:     2471 regions
+    6-cell:     3437 regions
+  By min-cut value:
+    S =  1:           6 regions
+    S =  2:         445 regions
+    S =  3:         897 regions
+    S =  4:         930 regions
+    S =  5:        1238 regions
+    S =  6:        1875 regions
+    S =  7:        2130 regions
+    S =  8:        2792 regions
+    S =  9:           4 regions
+  Min-cut range:  1 – 9
+
+  ── Orbit Reduction ──
+  Orbits: 9
+    mc1 (S=1): 6 regions
+    mc2 (S=2): 445 regions
+    mc3 (S=3): 897 regions
+    mc4 (S=4): 930 regions
+    mc5 (S=5): 1238 regions
+    mc6 (S=6): 1875 regions
+    mc7 (S=7): 2130 regions
+    mc8 (S=8): 2792 regions
+    mc9 (S=9): 4 regions
+  Reduction: 10317 → 9 (1146×)
+
+  ── Half-slack distribution ──
+    k =  0:     529 regions
+    k =  2:     817 regions
+    k =  4:     1037 regions
+    k =  6:     1657 regions
+    k =  8:     2240 regions
+    k = 10:     3160 regions
+    k = 12:     561 regions
+    k = 14:     105 regions
+    k = 16:     211 regions
+
+  ── Achievers (2·S = area): 529 ──
+    k=1: 528 regions (e.g. S=3, area=6)
+    k=3: 1 regions (e.g. S=7, area=14)
+
+  ── Monotonicity (Dense-1000 vs all previous levels) ──
+  ✓  Dense-50 (maxS=7) ≤ Dense-1000 (maxS=9)   witness: (2 , refl)
+  ✓  Dense-100 (maxS=8) ≤ Dense-1000 (maxS=9)   witness: (1 , refl)
+  ✓  Dense-200 (maxS=9) ≤ Dense-1000 (maxS=9)   witness: (0 , refl)
+
+  Best predecessor for tower: Dense-200 (maxS=9)
+  Monotonicity witness: (0 , refl)
+
+  ── Edge Curvature ──
+    v=5 (×12): κ₂₀=-5 ← hyperbolic
+
+  Output directory: /home/zimablue/univalence-gravity/src
+
+  ✓  /home/zimablue/univalence-gravity/src/Common/Dense1000Spec.agda  (11379 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Dense1000Cut.agda  (30 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Dense1000Chain.agda  (30 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bulk/Dense1000Curvature.agda  (31 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Bridge/Dense1000Obs.agda  (56 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Dense1000AreaLaw.agda  (29736 lines)
+  ✓  /home/zimablue/univalence-gravity/src/Boundary/Dense1000HalfBound.agda  (19436 lines)
+
+  ── generated 7 files, ~60698 lines total ──
+
+  D1000Region constructors:     10317
+  D1000OrbitRep constructors:    9
+  classify1000 clauses:          10317
+  Pointwise-rep refl proofs:     9
+  AreaLaw abstract proofs:       10317
+  HalfBound abstract proofs:     10317
+  Achievers (2·S = area):        529
+  Max min-cut:                   9
+  max_region_cells used:         6
+
+  ── Tower Registration ──
+  Best predecessor: Dense-200 (maxS=9)
+  Dense-1000 maxS:  9
+  Witness: (0 , refl)
+
+  To register in Bridge/SchematicTower.agda:
+
+    open import Common.Dense1000Spec
+    import Boundary.Dense1000Cut as D1000Cut
+    import Bulk.Dense1000Chain   as D1000Chain
+    open import Bridge.Dense1000Obs using (d1000-pointwise-rep)
+
+    d1000OrbitPatch : OrbitReducedPatch
+    d1000OrbitPatch .OrbitReducedPatch.RegionTy  = D1000Region
+    d1000OrbitPatch .OrbitReducedPatch.OrbitTy   = D1000OrbitRep
+    d1000OrbitPatch .OrbitReducedPatch.classify  = classify1000
+    d1000OrbitPatch .OrbitReducedPatch.S-rep     = D1000Cut.S-cut-rep
+    d1000OrbitPatch .OrbitReducedPatch.L-rep     = D1000Chain.L-min-rep
+    d1000OrbitPatch .OrbitReducedPatch.rep-agree = d1000-pointwise-rep
+
+    d1000-tower-level : TowerLevel
+    d1000-tower-level = mkTowerLevel d1000OrbitPatch 9
+
+    -- Monotonicity: extends from Dense-200 (maxS=9)
+    -- Witness: (0 , refl)

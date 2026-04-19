@@ -1,6 +1,6 @@
 ╔═══════════════════════════════════════════════════════════╗
-║  Honeycomb-145 {4,3,5} — Orbit-Reduced Agda Generator   ║
-║  Greedy max-connectivity • 145 cells                     ║
+║  Honeycomb-145 {4,3,5} — Orbit-Reduced Agda Generator     ║
+║  Greedy max-connectivity • 145 cells                      ║
 ╚═══════════════════════════════════════════════════════════╝
 
   Building Dense-145 patch ...

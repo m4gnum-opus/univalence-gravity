@@ -1,6 +1,6 @@
 ╔═══════════════════════════════════════════════════════════╗
-║  Phase D.1b: Dense-50 {4,3,5} — Agda Code Generator     ║
-║  Greedy max-connectivity • Genuine holographic depth     ║
+║  Phase D.1b: Dense-50 {4,3,5} — Agda Code Generator       ║
+║  Greedy max-connectivity • Genuine holographic depth      ║
 ╚═══════════════════════════════════════════════════════════╝
 
   Building Dense-50 patch via greedy max-connectivity ...

@@ -39,8 +39,8 @@ The {5,3} star patch is extracted from the regular dodecahedron by selecting one
          N₄
           |
     N₃ ── C ── N₀
-        / |
-      N₂  N₁
+        /  \
+      N₂    N₁
 ```
 
 This is the same tile-adjacency diagram as the {5,4} star patch. The difference is invisible at the bond-graph level — it appears only in the polygon complex (vertex valence 3 vs 4) and in the curvature (positive vs negative).

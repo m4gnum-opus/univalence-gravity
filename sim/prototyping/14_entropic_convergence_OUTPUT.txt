@@ -1,6 +1,6 @@
 ╔═══════════════════════════════════════════════════════════╗
-║  Milestone I:  Entropic Convergence — η_N Tracking       ║
-║  §15.9.7 of docs/10-frontier.md                         ║
+║  Milestone I:  Entropic Convergence — η_N Tracking        ║
+║  §15.9.7 of docs/10-frontier.md                           ║
 ╚═══════════════════════════════════════════════════════════╝
 
   Parameters:

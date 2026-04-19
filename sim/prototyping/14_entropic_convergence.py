@@ -490,10 +490,10 @@ def main() -> None:
     user_max_rc = args.max_region_cells
     max_depth = args.max_depth_54
 
-    print("╔═══════════════════════════════════════════════════════════╗")
-    print("║  Milestone I:  Entropic Convergence — η_N Tracking       ║")
+    print("╔═════════════════════════════════════════════════════════╗")
+    print("║  Milestone I:  Entropic Convergence — η_N Tracking      ║")
     print("║  §15.9.7 of docs/10-frontier.md                         ║")
-    print("╚═══════════════════════════════════════════════════════════╝")
+    print("╚═════════════════════════════════════════════════════════╝")
     print(f"\n  Parameters:")
     print(f"    max-cells:        {max_cells}")
     print(f"    max-region-cells: "

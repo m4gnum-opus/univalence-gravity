@@ -15,8 +15,11 @@
 --
 --   Most types use Aeson's default generic derivation, where the Haskell
 --   field name IS the JSON key (e.g. @patchName@, @regionMinCut@).
---   Two types carry a Haskell-only prefix that is stripped for JSON:
+--   Three types carry a Haskell-only prefix that is stripped for JSON:
 --
+--     * 'GraphNode' — prefix @\"gn\"@ (2 chars), e.g.
+--       @gnId@ ↔ JSON @\"id\"@, @gnScale@ ↔ JSON @\"scale\"@,
+--       @gnQw@ ↔ JSON @\"qw\"@.
 --     * 'CurvatureSummary' — prefix @\"cs\"@ (2 chars), e.g.
 --       @csPatchName@ ↔ JSON @\"patchName\"@.
 --     * 'Meta' — prefix @\"meta\"@ (4 chars), e.g.
@@ -42,6 +45,11 @@ module Types
   , TheoremStatus(..)
     -- * Region-level data
   , Region(..)
+    -- * Bulk graph
+  , Edge(..)
+  , edgeEndpoints
+  , GraphNode(..)
+  , PatchGraph(..)
     -- * Curvature
   , CurvatureClass(..)
   , CurvatureData(..)
@@ -80,7 +88,8 @@ import GHC.Generics (Generic)
 -- ════════════════════════════════════════════════════════════════
 
 -- | Drop @n@ characters from a field-name string, then lowercase
---   the first remaining character.  Used by 'CurvatureSummary'
+--   the first remaining character.  Used by 'GraphNode'
+--   (prefix @\"gn\"@, n=2), 'CurvatureSummary'
 --   (prefix @\"cs\"@, n=2) and 'Meta' (prefix @\"meta\"@, n=4)
 --   whose Haskell field names carry a prefix absent from the
 --   JSON keys emitted by @18_export_json.py@.
@@ -169,20 +178,189 @@ instance FromJSON TheoremStatus
 --
 --   JSON keys match the Haskell field names verbatim:
 --   @regionId@, @regionCells@, @regionSize@, @regionMinCut@,
---   @regionArea@, @regionOrbit@, @regionHalfSlack@, @regionRatio@.
+--   @regionArea@, @regionOrbit@, @regionHalfSlack@, @regionRatio@,
+--   @regionCurvature@.
+--
+--   __@regionCurvature@:__  Average curvature of the cells in this
+--   region, computed by @18_export_json.py@ as a per-cell aggregation
+--   of adjacent vertex (2D) or edge (3D) curvature values.  For 3D
+--   ({4,3,5}) patches this is the mean of the 12 edge-curvature values
+--   (κ₂₀ / 20) for each cell in the region.  For 2D patches (filled,
+--   desitter) it is a hardcoded per-tile average derived from the
+--   known vertex-class curvatures.  @Nothing@ when curvature data is
+--   unavailable for the patch (e.g. tree, star, layer-54 patches).
 data Region = Region
-  { regionId        :: Int        -- ^ Unique index within the patch
-  , regionCells     :: [Int]      -- ^ Sorted cell IDs in this region
-  , regionSize      :: Int        -- ^ Number of cells  (= length regionCells)
-  , regionMinCut    :: Int        -- ^ S(A) — boundary min-cut entropy
-  , regionArea      :: Int        -- ^ Boundary surface area (face-count)
-  , regionOrbit     :: Text       -- ^ Orbit representative label, e.g. @\"mc3\"@
-  , regionHalfSlack :: Maybe Int  -- ^ @area − 2·S@; 'Nothing' if not computed
-  , regionRatio     :: Double     -- ^ @S / area@
+  { regionId        :: Int            -- ^ Unique index within the patch
+  , regionCells     :: [Int]          -- ^ Sorted cell IDs in this region
+  , regionSize      :: Int            -- ^ Number of cells  (= length regionCells)
+  , regionMinCut    :: Int            -- ^ S(A) — boundary min-cut entropy
+  , regionArea      :: Int            -- ^ Boundary surface area (face-count)
+  , regionOrbit     :: Text           -- ^ Orbit representative label, e.g. @\"mc3\"@
+  , regionHalfSlack :: Maybe Int      -- ^ @area − 2·S@; 'Nothing' if not computed
+  , regionRatio     :: Double         -- ^ @S / area@
+  , regionCurvature :: Maybe Double   -- ^ Average κ of adjacent vertices/edges
   } deriving (Show, Eq, Generic)
 
 instance ToJSON   Region
 instance FromJSON Region
+
+
+-- ════════════════════════════════════════════════════════════════
+--  GraphNode
+-- ════════════════════════════════════════════════════════════════
+
+-- | A single node in the bulk graph, carrying its cell ID,
+--   Poincaré-ball coordinates, a rotation quaternion, and the
+--   conformal scale factor at that point.
+--
+--   The coordinates are computed by @18_export_json.py@ via
+--   hyperboloid → Poincaré ball/disk projection of the Coxeter
+--   cell/tile centres.  The projection uses a Lorentz boost
+--   (@_lorentz_boost_to_apex@) so the fundamental cell lands at
+--   the origin of the ball — with this centring, @g = I@ projects
+--   to @(0, 0, 0)@ and the patch is visually centred on the
+--   viewport without relying on post-hoc rescaling.
+--
+--   __Field schema (uniform across all patches):__
+--
+--     [@gnId@]    Cell or tile identifier (matches entries in @pgEdges@).
+--     [@gnX, gnY, gnZ@]  Coordinates in the Poincaré ball (3D) or
+--                        disk embedded as @z = 0@ (2D).  Always in
+--                        the open unit ball: @x² + y² + z² < 1@.
+--     [@gnQx .. gnQw@]   Unit quaternion for the cell's rotation
+--                        relative to the fundamental cell.  For 2D
+--                        patches this is a z-axis rotation (only
+--                        @qz@ and @qw@ are non-zero); for 3D
+--                        patches it is the full Shepperd–Shuster
+--                        conversion of the rotation extracted from
+--                        the (boosted) Jacobian of the projection.
+--                        Hand-written 2D layouts (tree, star,
+--                        filled, desitter) use the identity
+--                        quaternion @(0, 0, 0, 1)@.
+--     [@gnScale@] Conformal scale factor @s(u) = (1 − |u|²) / 2@
+--                 where @u = (gnX, gnY, gnZ)@.  This is the
+--                 correct per-cell scaling for an Escher-style
+--                 Poincaré rendering: cells at the centre have
+--                 @s ≈ 0.5@, cells near the boundary have @s → 0@.
+--                 Clamped to @1e-6@ to avoid zero-scale degeneracy
+--                 at the boundary.
+--
+--   The JSON keys are @\"id\"@, @\"x\"@, @\"y\"@, @\"z\"@, @\"qx\"@,
+--   @\"qy\"@, @\"qz\"@, @\"qw\"@, @\"scale\"@ — the Haskell field
+--   prefix @\"gn\"@ is stripped by a custom 'Options' using
+--   'dropFieldPrefix'.
+data GraphNode = GraphNode
+  { gnId    :: Int       -- ^ Cell ID (matches entries in @pgEdges@)
+  , gnX     :: Double    -- ^ Poincaré x-coordinate
+  , gnY     :: Double    -- ^ Poincaré y-coordinate
+  , gnZ     :: Double    -- ^ Poincaré z-coordinate (0.0 for 2D patches)
+  , gnQx    :: Double    -- ^ Rotation quaternion — x component
+  , gnQy    :: Double    -- ^ Rotation quaternion — y component
+  , gnQz    :: Double    -- ^ Rotation quaternion — z component
+  , gnQw    :: Double    -- ^ Rotation quaternion — w (real) component
+  , gnScale :: Double    -- ^ Conformal scale factor @s(u) = (1 − |u|²) / 2@
+  } deriving (Show, Eq, Generic)
+
+graphNodeOptions :: Options
+graphNodeOptions = defaultOptions
+  { fieldLabelModifier = dropFieldPrefix 2 }
+
+instance ToJSON GraphNode where
+  toJSON     = genericToJSON     graphNodeOptions
+  toEncoding = genericToEncoding graphNodeOptions
+
+instance FromJSON GraphNode where
+  parseJSON = genericParseJSON graphNodeOptions
+
+-- ════════════════════════════════════════════════════════════════
+--  Edge
+-- ════════════════════════════════════════════════════════════════
+
+-- | A single undirected bond in a 'PatchGraph', represented on the
+--   wire as @{"source": <id>, "target": <id>}@.
+--
+--   The Python exporter (@18_export_json.py@, function
+--   @_make_patch_graph@) emits edges as objects rather than 2-element
+--   arrays so that the Haskell and TypeScript sides can share a single
+--   record schema.  Internally we keep the canonical
+--   @source ≤ target@ ordering produced by the exporter.
+--
+--   The Haskell field names carry the prefix @\"edge\"@ (4 chars),
+--   which is stripped by 'dropFieldPrefix' to yield the JSON keys
+--   @\"source\"@ and @\"target\"@.
+data Edge = Edge
+  { edgeSource :: !Int
+  , edgeTarget :: !Int
+  } deriving (Show, Eq, Generic)
+
+edgeOptions :: Options
+edgeOptions = defaultOptions
+  { fieldLabelModifier = dropFieldPrefix 4 }
+
+instance ToJSON Edge where
+  toJSON     = genericToJSON     edgeOptions
+  toEncoding = genericToEncoding edgeOptions
+
+instance FromJSON Edge where
+  parseJSON = genericParseJSON edgeOptions
+
+-- | Extract both endpoints as a two-element list.
+--
+--   Used by callers that previously treated each edge as a @[Int]@
+--   pair (graph validation, test spec iteration).
+edgeEndpoints :: Edge -> [Int]
+edgeEndpoints (Edge s t) = [s, t]
+
+-- ════════════════════════════════════════════════════════════════
+--  PatchGraph
+-- ════════════════════════════════════════════════════════════════
+
+-- | The full bulk graph of a patch: all cells as nodes (with
+--   projected spatial coordinates, rotations, and conformal
+--   scales) and all physical bonds (shared faces in 3D, shared
+--   edges in 2D) as edges.
+--
+--   This is the data the frontend needs to render the 3D
+--   holographic representation correctly.  Without it, the
+--   frontend can only infer nodes and edges from the boundary
+--   region data, which misses interior cells (cells with zero
+--   boundary legs that appear in no region) and misinterprets
+--   boundary adjacency as physical bonds.
+--
+--   __@pgNodes@:__  Sorted list of 'GraphNode' objects, each
+--   carrying a cell ID, Poincaré-projected @(x, y, z)@, a
+--   rotation quaternion @(qx, qy, qz, qw)@, and a conformal
+--   @scale@.  For a Dense-100 patch this contains 100 nodes.
+--   Includes both boundary cells (those appearing in at least
+--   one region's @regionCells@) and interior cells (those with
+--   all faces shared, appearing in no region).
+--
+--   __@pgEdges@:__  Sorted list of physical bonds, each
+--   represented as a sorted two-element list @[lo, hi]@ where
+--   @lo < hi@.  For 3D patches, each edge corresponds to a
+--   shared cube face; for 2D patches, a shared pentagon edge;
+--   for the tree, a weighted tree edge.
+--
+--   __Relationship to regions:__  The set of boundary cells is
+--   the union of all @regionCells@ across all regions.  The set
+--   of interior cells is @pgNodes \\\\ boundary_cells@ (by ID).
+--   The frontend uses this distinction to render boundary cells
+--   with data-driven colors (from region data) and interior
+--   cells with a neutral default.
+--
+--   __Invariant:__  Every endpoint of every edge in @pgEdges@
+--   appears as a @gnId@ in @pgNodes@.  The number of nodes
+--   equals @patchCells@.  These are checked by
+--   'Invariants.validateAll'.
+--
+--   Produced by @_make_patch_graph@ in @18_export_json.py@.
+data PatchGraph = PatchGraph
+  { pgNodes :: [GraphNode]  -- ^ All cells with spatial coordinates (sorted by ID)
+  , pgEdges :: [Edge]       -- ^ All physical bonds, one @{source,target}@ per bond
+  } deriving (Show, Eq, Generic)
+
+instance ToJSON   PatchGraph
+instance FromJSON PatchGraph
 
 
 -- ════════════════════════════════════════════════════════════════
@@ -296,9 +474,16 @@ instance FromJSON HalfBoundData
 --   __@patchHalfBoundVerified@:__  @True@ when a corresponding
 --   @Boundary\/*HalfBound.agda@ module exists that machine-checks
 --   @2·S(A) ≤ area(A)@ for every region via @abstract (k, refl)@
---   witnesses.  Currently @True@ only for @dense-100@ and
---   @dense-200@.  For all other patches, the half-bound data (if
---   present) is a Python-side numerical check only.
+--   witnesses.  Currently @True@ only for @dense-100@, @dense-200@,
+--   and @dense-1000@.  For all other patches, the half-bound data
+--   (if present) is a Python-side numerical check only.
+--
+--   __@patchGraph@:__  The full bulk graph containing ALL cells
+--   (including interior cells invisible to boundary regions) and
+--   ALL physical bonds (shared faces/edges between adjacent cells),
+--   with Poincaré-projected spatial coordinates, per-cell rotation
+--   quaternions, and conformal scale factors.  See 'PatchGraph'
+--   and 'GraphNode' for details.
 data Patch = Patch
   { patchName              :: Text
   , patchTiling            :: Tiling
@@ -315,6 +500,7 @@ data Patch = Patch
   , patchCurvature         :: Maybe CurvatureData
   , patchHalfBound         :: Maybe HalfBoundData
   , patchHalfBoundVerified :: Bool            -- ^ Agda-verified half-bound exists
+  , patchGraph             :: PatchGraph      -- ^ Full bulk graph (all cells + bonds)
   } deriving (Show, Eq, Generic)
 
 instance ToJSON   Patch

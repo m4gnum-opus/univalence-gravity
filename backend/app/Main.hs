@@ -12,7 +12,7 @@
 --
 --   Defaults:
 --
---   > --data-dir  ./data
+--   > --data-dir  ../data
 --   > --port      8080
 --
 --   Reference: docs\/engineering\/backend-spec-haskell.md §8
@@ -51,7 +51,7 @@ data Config = Config
 -- | Defaults: @./data@ on port 8080.
 defaultConfig :: Config
 defaultConfig = Config
-  { cfgDataDir = "./data"
+  { cfgDataDir = "../data"
   , cfgPort    = 8080
   }
 

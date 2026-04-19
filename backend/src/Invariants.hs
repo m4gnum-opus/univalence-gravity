@@ -24,6 +24,26 @@
 --   patches where no independent 3D Euler characteristic has been
 --   formalised.
 --
+--   __Graph geometry (2026-04-18):__  Since 'GraphNode' now carries
+--   Poincaré-projected coordinates @(gnX, gnY, gnZ)@, a rotation
+--   quaternion @(gnQx..gnQw)@, and a conformal @gnScale@, the
+--   'validateGraphGeometry' pass checks three floating-point
+--   invariants on each node:
+--
+--     1. Position lies inside the Poincaré ball: @|u|² ≤ 1@
+--     2. Quaternion is unit norm: @|q|² ≈ 1@
+--     3. Scale is in the valid range @(0, 0.5]@
+--
+--   A numeric tolerance of 1e-4 absorbs the 6-digit rounding applied
+--   by @18_export_json.py@ to all coordinates, quaternions, and
+--   scales.  We do not enforce the tight conformal identity
+--   @scale ≡ (1 − |u|²)/2@ because the Python exporter clamps the
+--   scale at 1e-6 near the disk boundary (this is required for
+--   layer-54-d7, where cells are exponentially close to @|u| = 1@).
+--   Consequently the strict identity is violated legitimately there;
+--   the range check catches the real failure modes
+--   (negative/zero/out-of-range scale) without false positives.
+--
 --   Reference: docs\/engineering\/backend-spec-haskell.md §6
 
 module Invariants
@@ -31,6 +51,7 @@ module Invariants
   ) where
 
 import qualified Data.Map.Strict as Map
+import qualified Data.Set        as Set
 import qualified Data.Text       as T
 
 import Types
@@ -62,6 +83,7 @@ validatePatch p =
   ++ validateOrbitConsistency p
   ++ validateGaussBonnet p
   ++ validateHalfBoundMeta p
+  ++ validateGraph p
   where
     pname   = T.unpack (patchName p)
     regions = patchRegionData p
@@ -299,6 +321,253 @@ validateHalfBoundMeta p = case patchHalfBound p of
           ++ show (hbViolations hb) ++ " violations (expected 0)" ]
   where
     pname = T.unpack (patchName p)
+
+
+-- ────────────────────────────────────────────────────────────────
+--  Patch graph validation
+-- ────────────────────────────────────────────────────────────────
+
+-- | Validate the bulk graph ('PatchGraph') of a patch.
+--
+--   The bulk graph contains ALL cells (including interior cells
+--   that appear in no boundary region) and ALL physical bonds
+--   (shared faces in 3D, shared edges in 2D).  It is the data
+--   the frontend needs to render the full 3D holographic
+--   representation correctly.
+--
+--   The following invariants are checked:
+--
+--   1. __Node count matches patchCells.__
+--      @length pgNodes == patchCells@.
+--
+--   2. __Edge count matches patchBonds.__
+--      @length pgEdges == patchBonds@.
+--
+--   3. __All edge endpoints are valid nodes.__
+--      Every cell ID appearing in any edge of @pgEdges@ must
+--      also appear as a @gnId@ in @pgNodes@.
+--
+--   4. __Every edge has exactly 2 endpoints.__
+--
+--   5. __Boundary cells are a subset of graph nodes.__
+--
+--   6. __Node count ≥ boundary cell count.__
+--
+--   7. __Per-node geometry is well-formed__
+--      (position in Poincaré ball, quaternion unit-norm,
+--       scale in valid range).
+--
+--   These checks ensure that the frontend can safely use the
+--   graph for 3D layout without encountering missing nodes,
+--   dangling edge references, invisible interior cells, or
+--   degenerate geometric fields.
+validateGraph :: Patch -> [String]
+validateGraph p =
+     validateGraphNodeCount p
+  ++ validateGraphEdgeCount p
+  ++ validateGraphEdgeEndpoints p
+  ++ validateGraphEdgeArity p
+  ++ validateGraphBoundaryCoverage p
+  ++ validateGraphBoundaryNodeCount p
+  ++ validateGraphGeometry p
+
+
+-- | @length pgNodes == patchCells@.
+validateGraphNodeCount :: Patch -> [String]
+validateGraphNodeCount p
+  | nNodes == patchCells p = []
+  | otherwise =
+      [ pname ++ ": graph node count mismatch: pgNodes has "
+        ++ show nNodes ++ " nodes but patchCells = "
+        ++ show (patchCells p) ]
+  where
+    pname  = T.unpack (patchName p)
+    nNodes = length (pgNodes (patchGraph p))
+
+
+-- | @length pgEdges == patchBonds@.
+validateGraphEdgeCount :: Patch -> [String]
+validateGraphEdgeCount p
+  | nEdges == patchBonds p = []
+  | otherwise =
+      [ pname ++ ": graph edge count mismatch: pgEdges has "
+        ++ show nEdges ++ " edges but patchBonds = "
+        ++ show (patchBonds p) ]
+  where
+    pname  = T.unpack (patchName p)
+    nEdges = length (pgEdges (patchGraph p))
+
+
+-- | Every endpoint of every edge must appear as a @gnId@ in @pgNodes@.
+validateGraphEdgeEndpoints :: Patch -> [String]
+validateGraphEdgeEndpoints p
+  | Set.null dangling = []
+  | otherwise =
+      [ pname ++ ": graph has dangling edge endpoints not in pgNodes: "
+        ++ show (Set.toAscList dangling) ]
+  where
+    pname        = T.unpack (patchName p)
+    graph        = patchGraph p
+    nodeIdSet    = Set.fromList (map gnId (pgNodes graph))
+    allEndpoints = Set.fromList (concatMap edgeEndpoints (pgEdges graph))
+    dangling     = allEndpoints `Set.difference` nodeIdSet
+
+
+-- | Every edge must have exactly 2 endpoints.
+validateGraphEdgeArity :: Patch -> [String]
+validateGraphEdgeArity p =
+  -- With @Edge@ as a two-field record this check is enforced by the
+  -- type system; we keep the function (and its call site in
+  -- 'validatePatch') so the behavioural surface of the validator is
+  -- unchanged, but the body is now vacuously satisfied.
+  const [] p
+
+
+-- | Every cell referenced by any region must appear as a @gnId@ in @pgNodes@.
+validateGraphBoundaryCoverage :: Patch -> [String]
+validateGraphBoundaryCoverage p
+  | Set.null missing = []
+  | otherwise =
+      [ pname ++ ": " ++ show (Set.size missing)
+        ++ " boundary cell(s) referenced by regions but missing from pgNodes: "
+        ++ show (take 10 (Set.toAscList missing))
+        ++ if Set.size missing > 10 then " ..." else "" ]
+  where
+    pname       = T.unpack (patchName p)
+    graph       = patchGraph p
+    nodeIdSet   = Set.fromList (map gnId (pgNodes graph))
+    bdyCells    = Set.fromList
+                    (concatMap regionCells (patchRegionData p))
+    missing     = bdyCells `Set.difference` nodeIdSet
+
+
+-- | @length pgNodes >= |⋃ regionCells|@.
+--
+--   The graph must contain at least as many nodes as there are
+--   distinct boundary cells.  Equality holds only when every cell
+--   in the patch is a boundary cell (no interior cells); strict
+--   inequality is the normal case for dense patches where many
+--   cells are fully interior.
+--
+--   This is a logical consequence of 'validateGraphBoundaryCoverage'
+--   but provides a more informative error message in the common
+--   failure mode where the graph was accidentally built from
+--   region data only (omitting interior cells).
+validateGraphBoundaryNodeCount :: Patch -> [String]
+validateGraphBoundaryNodeCount p
+  | nNodes >= nBdyCells = []
+  | otherwise =
+      [ pname ++ ": graph has fewer nodes (" ++ show nNodes
+        ++ ") than distinct boundary cells (" ++ show nBdyCells
+        ++ "); interior cells may be missing from the graph" ]
+  where
+    pname     = T.unpack (patchName p)
+    nNodes    = length (pgNodes (patchGraph p))
+    nBdyCells = Set.size $ Set.fromList
+                  (concatMap regionCells (patchRegionData p))
+
+
+-- ────────────────────────────────────────────────────────────────
+--  Graph geometry validation  (new: per-node Poincaré invariants)
+-- ────────────────────────────────────────────────────────────────
+
+-- | Numeric tolerance used by 'validateGraphGeometry'.
+--
+--   The Python exporter (@18_export_json.py@) rounds every
+--   floating-point field to 6 decimal digits before serialisation,
+--   so the worst-case per-coordinate error after re-reading is
+--   ≈5e-7.  We use 1e-4 to allow for accumulated rounding across
+--   squared-sum computations without admitting genuine bugs.
+graphGeomTol :: Double
+graphGeomTol = 1.0e-4
+
+
+-- | For every 'GraphNode' in the patch, verify:
+--
+--   1. Position lies inside the Poincaré ball (disk embedded as
+--      @z = 0@ for 2D patches): @|u|² ≤ 1 + tol@.
+--
+--   2. Quaternion has unit norm: @|q|² ∈ [1 − tol, 1 + tol]@.
+--      Identity quaternion @(0,0,0,1)@ (used by hand-written
+--      2D layouts) trivially satisfies this.
+--
+--   3. Scale is in the valid range @(0, 0.5 + tol]@.  The conformal
+--      factor @s(u) = (1 − |u|²) / 2@ is bounded above by 0.5
+--      (attained at the origin) and bounded below by 1e-6 (the
+--      Python exporter's clamp to avoid zero-scale degeneracy at
+--      the disk boundary).  We do NOT enforce the tight identity
+--      @scale ≡ (1 − |u|²) / 2@ because layer-54-d7 has cells
+--      exponentially close to @|u| = 1@ where the clamp legitimately
+--      kicks in — range-checking is the correct granularity.
+--
+--   Implementation note: we use an explicit tolerance rather than
+--   exact equality because every value has been rounded to 6
+--   decimal digits by the JSON exporter.  The tolerance is tight
+--   enough to flag genuine failures (NaN, infinity, negative scale,
+--   position outside the disk) without false positives on rounded
+--   boundary cells.
+validateGraphGeometry :: Patch -> [String]
+validateGraphGeometry p = concatMap checkNode (pgNodes (patchGraph p))
+  where
+    pname = T.unpack (patchName p)
+    tol   = graphGeomTol
+
+    checkNode :: GraphNode -> [String]
+    checkNode n =
+         checkPosition n
+      ++ checkQuaternion n
+      ++ checkScale n
+
+    -- ── (1) Position inside Poincaré ball ─────────────────────
+    checkPosition :: GraphNode -> [String]
+    checkPosition n
+      | isFinite r2 && r2 <= 1.0 + tol = []
+      | otherwise =
+          [ pname ++ " graph node " ++ show (gnId n)
+            ++ ": position outside Poincaré ball: |u|² = "
+            ++ show r2
+            ++ "  (x=" ++ show (gnX n)
+            ++ ", y="  ++ show (gnY n)
+            ++ ", z="  ++ show (gnZ n) ++ ")" ]
+      where
+        r2 = gnX n * gnX n + gnY n * gnY n + gnZ n * gnZ n
+
+    -- ── (2) Quaternion unit norm ──────────────────────────────
+    checkQuaternion :: GraphNode -> [String]
+    checkQuaternion n
+      | isFinite qn2 && abs (qn2 - 1.0) <= tol = []
+      | otherwise =
+          [ pname ++ " graph node " ++ show (gnId n)
+            ++ ": quaternion not unit norm: |q|² = "
+            ++ show qn2
+            ++ "  (qx=" ++ show (gnQx n)
+            ++ ", qy=" ++ show (gnQy n)
+            ++ ", qz=" ++ show (gnQz n)
+            ++ ", qw=" ++ show (gnQw n) ++ ")" ]
+      where
+        qn2 = gnQx n * gnQx n + gnQy n * gnQy n
+            + gnQz n * gnQz n + gnQw n * gnQw n
+
+    -- ── (3) Scale in range (0, 0.5 + tol] ─────────────────────
+    checkScale :: GraphNode -> [String]
+    checkScale n
+      | not (isFinite s) =
+          [ pname ++ " graph node " ++ show (gnId n)
+            ++ ": scale is not finite: " ++ show s ]
+      | s <= 0 =
+          [ pname ++ " graph node " ++ show (gnId n)
+            ++ ": scale not positive: " ++ show s ]
+      | s > 0.5 + tol =
+          [ pname ++ " graph node " ++ show (gnId n)
+            ++ ": scale exceeds 0.5: " ++ show s
+            ++ "  (conformal factor s(u) = (1 − |u|²)/2 ≤ 0.5)" ]
+      | otherwise = []
+      where
+        s = gnScale n
+
+    -- | Reject NaN / ±Infinity.
+    isFinite :: Double -> Bool
+    isFinite x = not (isNaN x) && not (isInfinite x)
 
 
 -- ════════════════════════════════════════════════════════════════

@@ -843,10 +843,10 @@ def main() -> None:
     depth = args.depth
     P = module_prefix(depth)
 
-    print("╔═══════════════════════════════════════════════════════════╗")
-    print(f"║  Phase C.1: {{5,4}} Layer Generator — BFS depth {depth:<13}║")
-    print("║  Coxeter [5,4] • pentagonal tiling • orbit reduction      ║")
-    print("╚═══════════════════════════════════════════════════════════╝")
+    print("╔═════════════════════════════════════════════════════════════╗")
+    print(f"║  Phase C.1: {{5,4}} Layer Generator — BFS depth {depth:<13} ║")
+    print("║  Coxeter [5,4] • pentagonal tiling • orbit reduction        ║")
+    print("╚═════════════════════════════════════════════════════════════╝")
 
     # ── Step 1: Initialize Coxeter geometry ─────────────────────────
     print("\n  Initializing Coxeter geometry for [5,4] ...")

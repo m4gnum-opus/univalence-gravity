@@ -689,8 +689,8 @@ def main() -> None:
     args = parser.parse_args()
 
     print("╔═════════════════════════════════════════════════════════╗")
-    print("║  04: Raw Structural Equivalence — 11-Tile Filled Patch ║")
-    print("║  Option 2 (Reconstruction Fiber) + Peeling Strategy    ║")
+    print("║  04: Raw Structural Equivalence — 11-Tile Filled Patch  ║")
+    print("║  Option 2 (Reconstruction Fiber) + Peeling Strategy     ║")
     print("╚═════════════════════════════════════════════════════════╝")
 
     # Step 1: compute regions

@@ -1,7 +1,7 @@
 (venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python3 sim/prototyping/04_generate_raw_equiv.py
 ╔═════════════════════════════════════════════════════════╗
-║  04: Raw Structural Equivalence — 11-Tile Filled Patch ║
-║  Option 2 (Reconstruction Fiber) + Peeling Strategy    ║
+║  04: Raw Structural Equivalence — 11-Tile Filled Patch  ║
+║  Option 2 (Reconstruction Fiber) + Peeling Strategy     ║
 ╚═════════════════════════════════════════════════════════╝
 
   Computing 90 regions with min-cut composition ...

@@ -1,5 +1,5 @@
 ╔═══════════════════════════════════════════════════════════╗
-║  Milestone I (Controlled): Entropic Convergence          ║
+║  Milestone I (Controlled): Entropic Convergence           ║
 ║  Fixed max_region_cells • Per-size tracking • {5,4} Dense ║
 ╚═══════════════════════════════════════════════════════════╝
 

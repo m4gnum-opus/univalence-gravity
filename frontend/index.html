@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Favicon — static asset served from public/ -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <!-- Primary meta tags -->
+    <title>Univalence Gravity — The Spacetime Compiler</title>
+    <meta
+      name="description"
+      content="Interactive visualization of machine-checked holographic duality in Cubical Agda. Explore 14 verified patch instances, discrete Ryu–Takayanagi correspondence, Gauss–Bonnet curvature, and the Bekenstein–Hawking half-bound."
+    />
+
+    <!-- Open Graph / social sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Univalence Gravity — The Spacetime Compiler" />
+    <meta
+      property="og:description"
+      content="A constructive formalization of discrete entanglement-geometry duality in Cubical Agda. WebGL visualization of Agda-verified holographic patch data."
+    />
+
+    <!-- Theme color — Viridis deep purple (brand color from tailwind.config.js) -->
+    <meta name="theme-color" content="#440154" />
+
+    <!--
+      Preconnect to the backend API origin to reduce latency on the
+      first fetch.  The default development URL is localhost:8080;
+      in production this should match VITE_API_URL.  Browsers
+      silently ignore preconnect hints that don't match actual
+      request origins, so this is safe to leave as the dev default.
+    -->
+    <link rel="preconnect" href="http://localhost:8080" />
+  </head>
+
+  <body class="min-h-screen bg-gray-50 text-gray-900 antialiased">
+    <!--
+      React mount point.  The entire SPA renders inside this div
+      via ReactDOM.createRoot() in src/main.tsx.
+
+      The noscript fallback ensures users with JavaScript disabled
+      see a meaningful message rather than a blank page.
+    -->
+    <div id="root"></div>
+    <noscript>
+      <div style="padding: 2rem; font-family: Georgia, serif; max-width: 40rem; margin: 0 auto;">
+        <h1>Univalence Gravity</h1>
+        <p>
+          This application requires JavaScript to render interactive 3D
+          visualizations of Agda-verified holographic patch data.
+        </p>
+        <p>
+          Please enable JavaScript in your browser, or visit the
+          <a href="https://github.com/sven-bichtemann/univalence-gravity">
+            GitHub repository
+          </a>
+          to explore the source code and documentation directly.
+        </p>
+      </div>
+    </noscript>
+
+    <!-- Vite entry point — processed by Vite's build pipeline -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -5,6 +5,343 @@
   "patchCurvature": null,
   "patchDensity": 2.38,
   "patchDimension": 2,
+  "patchGraph": {
+    "pgEdges": [
+      {
+        "source": 0,
+        "target": 1
+      },
+      {
+        "source": 0,
+        "target": 2
+      },
+      {
+        "source": 0,
+        "target": 3
+      },
+      {
+        "source": 0,
+        "target": 4
+      },
+      {
+        "source": 0,
+        "target": 5
+      },
+      {
+        "source": 1,
+        "target": 6
+      },
+      {
+        "source": 1,
+        "target": 7
+      },
+      {
+        "source": 1,
+        "target": 8
+      },
+      {
+        "source": 1,
+        "target": 9
+      },
+      {
+        "source": 2,
+        "target": 6
+      },
+      {
+        "source": 2,
+        "target": 10
+      },
+      {
+        "source": 2,
+        "target": 11
+      },
+      {
+        "source": 2,
+        "target": 12
+      },
+      {
+        "source": 3,
+        "target": 7
+      },
+      {
+        "source": 3,
+        "target": 13
+      },
+      {
+        "source": 3,
+        "target": 14
+      },
+      {
+        "source": 3,
+        "target": 15
+      },
+      {
+        "source": 4,
+        "target": 11
+      },
+      {
+        "source": 4,
+        "target": 16
+      },
+      {
+        "source": 4,
+        "target": 17
+      },
+      {
+        "source": 4,
+        "target": 18
+      },
+      {
+        "source": 5,
+        "target": 15
+      },
+      {
+        "source": 5,
+        "target": 18
+      },
+      {
+        "source": 5,
+        "target": 19
+      },
+      {
+        "source": 5,
+        "target": 20
+      }
+    ],
+    "pgNodes": [
+      {
+        "id": 0,
+        "qw": 1.0,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": -0.0,
+        "scale": 0.5,
+        "x": -0.0,
+        "y": -0.0,
+        "z": 0.0
+      },
+      {
+        "id": 1,
+        "qw": 0.781497,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 0.623908,
+        "scale": 0.345492,
+        "x": -0.434429,
+        "y": -0.346826,
+        "z": 0.0
+      },
+      {
+        "id": 2,
+        "qw": 0.834868,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": -0.55045,
+        "scale": 0.345492,
+        "x": -0.464097,
+        "y": 0.305991,
+        "z": 0.0
+      },
+      {
+        "id": 3,
+        "qw": 0.351876,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": -0.936047,
+        "scale": 0.345492,
+        "x": 0.195606,
+        "y": -0.520342,
+        "z": 0.0
+      },
+      {
+        "id": 4,
+        "qw": 0.964105,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": -0.265521,
+        "scale": 0.345492,
+        "x": 0.147601,
+        "y": 0.535939,
+        "z": 0.0
+      },
+      {
+        "id": 5,
+        "qw": 0.998969,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 0.0454,
+        "scale": 0.345492,
+        "x": 0.55532,
+        "y": 0.025237,
+        "z": 0.0
+      },
+      {
+        "id": 6,
+        "qw": 0.0,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 1.0,
+        "scale": 0.263932,
+        "x": -0.686413,
+        "y": -0.031195,
+        "z": 0.0
+      },
+      {
+        "id": 7,
+        "qw": 0.0,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": -1.0,
+        "scale": 0.263932,
+        "x": -0.182445,
+        "y": -0.662457,
+        "z": 0.0
+      },
+      {
+        "id": 8,
+        "qw": 0.885131,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": -0.465341,
+        "scale": 0.149627,
+        "x": -0.733069,
+        "y": -0.404172,
+        "z": 0.0
+      },
+      {
+        "id": 9,
+        "qw": 0.885131,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 0.465341,
+        "scale": 0.149627,
+        "x": -0.556493,
+        "y": -0.625349,
+        "z": 0.0
+      },
+      {
+        "id": 10,
+        "qw": 0.885131,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 0.465341,
+        "scale": 0.149627,
+        "x": -0.766708,
+        "y": 0.336012,
+        "z": 0.0
+      },
+      {
+        "id": 11,
+        "qw": 0.0,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": -1.0,
+        "scale": 0.263932,
+        "x": -0.241782,
+        "y": 0.643178,
+        "z": 0.0
+      },
+      {
+        "id": 12,
+        "qw": 0.885131,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": -0.465341,
+        "scale": 0.149627,
+        "x": -0.610922,
+        "y": 0.572294,
+        "z": 0.0
+      },
+      {
+        "id": 13,
+        "qw": 0.885131,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": -0.465341,
+        "scale": 0.149627,
+        "x": 0.15786,
+        "y": -0.822086,
+        "z": 0.0
+      },
+      {
+        "id": 14,
+        "qw": 0.885131,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 0.465341,
+        "scale": 0.149627,
+        "x": 0.422777,
+        "y": -0.722499,
+        "z": 0.0
+      },
+      {
+        "id": 15,
+        "qw": 0.0,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": -1.0,
+        "scale": 0.263932,
+        "x": 0.573656,
+        "y": -0.378226,
+        "z": 0.0
+      },
+      {
+        "id": 16,
+        "qw": 0.885131,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 0.465341,
+        "scale": 0.149627,
+        "x": 0.082641,
+        "y": 0.833016,
+        "z": 0.0
+      },
+      {
+        "id": 17,
+        "qw": 0.885131,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": -0.465341,
+        "scale": 0.149627,
+        "x": 0.355499,
+        "y": 0.75787,
+        "z": 0.0
+      },
+      {
+        "id": 18,
+        "qw": 0.0,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": -1.0,
+        "scale": 0.263932,
+        "x": 0.536984,
+        "y": 0.428701,
+        "z": 0.0
+      },
+      {
+        "id": 19,
+        "qw": 0.885131,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": -0.465341,
+        "scale": 0.149627,
+        "x": 0.830632,
+        "y": -0.103905,
+        "z": 0.0
+      },
+      {
+        "id": 20,
+        "qw": 0.885131,
+        "qx": 0.0,
+        "qy": 0.0,
+        "qz": 0.465341,
+        "scale": 0.149627,
+        "x": 0.817783,
+        "y": 0.17882,
+        "z": 0.0
+      }
+    ]
+  },
   "patchHalfBound": {
     "hbAchieverCount": 0,
     "hbAchieverSizes": [],
@@ -26,6 +363,7 @@
       "regionCells": [
         6
       ],
+      "regionCurvature": null,
       "regionHalfSlack": 1,
       "regionId": 0,
       "regionMinCut": 2,
@@ -38,6 +376,7 @@
       "regionCells": [
         7
       ],
+      "regionCurvature": null,
       "regionHalfSlack": 1,
       "regionId": 1,
       "regionMinCut": 2,
@@ -50,6 +389,7 @@
       "regionCells": [
         8
       ],
+      "regionCurvature": null,
       "regionHalfSlack": 3,
       "regionId": 2,
       "regionMinCut": 1,
@@ -62,6 +402,7 @@
       "regionCells": [
         9
       ],
+      "regionCurvature": null,
       "regionHalfSlack": 3,
       "regionId": 3,
       "regionMinCut": 1,
@@ -74,6 +415,7 @@
       "regionCells": [
         10
       ],
+      "regionCurvature": null,
       "regionHalfSlack": 3,
       "regionId": 4,
       "regionMinCut": 1,
@@ -86,6 +428,7 @@
       "regionCells": [
         11
       ],
+      "regionCurvature": null,
       "regionHalfSlack": 1,
       "regionId": 5,
       "regionMinCut": 2,
@@ -98,6 +441,7 @@
       "regionCells": [
         12
       ],
+      "regionCurvature": null,
       "regionHalfSlack": 3,
       "regionId": 6,
       "regionMinCut": 1,
@@ -110,6 +454,7 @@
       "regionCells": [
         13
       ],
+      "regionCurvature": null,
       "regionHalfSlack": 3,
       "regionId": 7,
       "regionMinCut": 1,
@@ -122,6 +467,7 @@
       "regionCells": [
         14
       ],
+      "regionCurvature": null,
       "regionHalfSlack": 3,
       "regionId": 8,
       "regionMinCut": 1,
@@ -134,6 +480,7 @@
       "regionCells": [
         15
       ],
+      "regionCurvature": null,
       "regionHalfSlack": 1,
       "regionId": 9,
       "regionMinCut": 2,
@@ -146,6 +493,7 @@
       "regionCells": [
         16
       ],
+      "regionCurvature": null,
       "regionHalfSlack": 3,
       "regionId": 10,
       "regionMinCut": 1,
@@ -158,6 +506,7 @@
       "regionCells": [
         17
       ],
+      "regionCurvature": null,
       "regionHalfSlack": 3,
       "regionId": 11,
       "regionMinCut": 1,
@@ -170,6 +519,7 @@
       "regionCells": [
         18
       ],
+      "regionCurvature": null,
       "regionHalfSlack": 1,
       "regionId": 12,
       "regionMinCut": 2,
@@ -182,6 +532,7 @@
       "regionCells": [
         19
       ],
+      "regionCurvature": null,
       "regionHalfSlack": 3,
       "regionId": 13,
       "regionMinCut": 1,
@@ -194,6 +545,7 @@
       "regionCells": [
         20
       ],
+      "regionCurvature": null,
       "regionHalfSlack": 3,
       "regionId": 14,
       "regionMinCut": 1,

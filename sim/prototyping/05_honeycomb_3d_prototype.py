@@ -802,10 +802,10 @@ def analyze_patch(
 # ════════════════════════════════════════════════════════════════════
 
 def main():
-    print("╔══════════════════════════════════════════════════════════╗")
+    print("╔════════════════════════════════════════════════════════╗")
     print("║  Phase D.0:  {4,3,5} Honeycomb — 3D Feasibility Probe  ║")
-    print("║  5 cubes at every edge • Hyperbolic 3-space             ║")
-    print("╚══════════════════════════════════════════════════════════╝")
+    print("║  5 cubes at every edge • Hyperbolic 3-space            ║")
+    print("╚════════════════════════════════════════════════════════╝")
 
     # ── Initialize Coxeter geometry ─────────────────────────────────
     print("\n  Initializing Coxeter geometry for [4,3,5] ...")

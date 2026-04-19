@@ -406,10 +406,10 @@ def main() -> None:
     MAX_RC = args.max_rc
     max_cells = args.max_cells
 
-    print("╔═══════════════════════════════════════════════════════════╗")
+    print("╔══════════════════════════════════════════════════════════╗")
     print("║  §15.10 Priority 1:  Discrete Bekenstein–Hawking Proof   ║")
-    print("║  S(A) ≤ area(A)/2  — Graph-Theoretic Characterization   ║")
-    print("╚═══════════════════════════════════════════════════════════╝")
+    print("║  S(A) ≤ area(A)/2  — Graph-Theoretic Characterization    ║")
+    print("╚══════════════════════════════════════════════════════════╝")
 
     # ── Print the proof sketch first ────────────────────────────────
     print(f"""

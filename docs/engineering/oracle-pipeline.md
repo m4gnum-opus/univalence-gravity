@@ -1,6 +1,6 @@
 # The Oracle Pipeline
 
-**Python-to-Agda code generation: scripts 01–17**
+**Python-to-Agda code generation: scripts 01–18 (plus sub-variants 06b, 07b, 07c, 12b)**
 
 **Audience:** Proof engineers, formal verification researchers, and developers seeking to understand or extend the code-generation infrastructure.
 
@@ -10,18 +10,20 @@
 
 ## 1. Overview
 
-The oracle pipeline is a collection of 17 Python scripts in `sim/prototyping/` that serve as the **search engine** for the formal verification: they enumerate combinatorial cases, compute min-cut values, classify orbit representatives, verify area-law bounds, and emit complete Cubical Agda modules containing explicit `(k , refl)` proof witnesses. Agda is the **checker** that verifies each emitted line individually.
+The oracle pipeline is a collection of Python scripts in `sim/prototyping/` that serve as the **search engine** for the formal verification: they enumerate combinatorial cases, compute min-cut values, classify orbit representatives, verify area-law bounds, and emit complete Cubical Agda modules containing explicit `(k , refl)` proof witnesses. Agda is the **checker** that verifies each emitted line individually.
 
 This division of labor — external computation to find proofs, a simple kernel to check them — is the same pattern used by the largest verified proofs in computer science (the Four Color Theorem in Coq, the Kepler Conjecture in HOL Light). The oracle is *trusted to search correctly*; its output is *verified by the type-checker*. A bug in the oracle produces an Agda module that fails to type-check — it cannot silently introduce a false proof.
 
-The pipeline evolved through four phases:
+The pipeline evolved through five phases, with sub-variant scripts (suffixed `b`, `c`) providing reviewed improvements, bug fixes, and intermediate-scale instances:
 
 | Phase | Scripts | Innovation | Output |
 |-------|---------|------------|--------|
 | **Prototyping** (01–02) | Numerical exploration | Validate RT formula, curvature | No Agda output |
 | **First generation** (03–04) | Flat enumeration | 90-region filled patch, raw equiv | `FilledSpec`, `FilledCut`, etc. |
-| **Scaling** (05–13) | Orbit reduction, multi-strategy growth, multi-tiling | 717–1885 region patches, layer tower | `Dense*Spec`, `Layer54d*Spec`, etc. |
+| **Scaling** (05–13, 06b, 07b, 07c) | Orbit reduction, multi-strategy growth (reviewed + hemisphere fix), multi-tiling, intermediate Dense | 717–1885 region patches, layer tower, Honeycomb-145 | `Dense*Spec`, `Layer54d*Spec`, `Honeycomb145Spec`, etc. |
+| **Resolution tower & area law** (11–13, 12b) | Resolution tower, area law, adaptive `max_region_cells`, Dense-1000 | 10,317-region patches, 4th tower level | `Dense1000Spec`, `Dense1000AreaLaw`, `Dense1000HalfBound`, etc. |
 | **Bekenstein–Hawking** (14–17) | Entropic convergence analysis, half-bound proof | Sharp 1/2 bound, generic `from-two-cuts` | `Dense*HalfBound` |
+| **Data export** (18) | JSON serialization | Backend-ready data | `data/*.json` |
 
 Each phase built on the previous, reusing graph-construction and flow-computation infrastructure while adding new capabilities.
 
@@ -60,28 +62,38 @@ These two scripts validated the entire Phase 1.2 numerical blueprint before any 
 
 Script 03 is the first use of the **Approach A+C strategy** (§3.6 of the historical development docs): Python finds the 360 `(k, refl)` witnesses (Approach C), and the Agda proof wraps them in `abstract` (Approach A) to prevent downstream RAM cascades. This pattern became the template for all subsequent large-case generators.
 
-### 3.3 Phase 3 — 3D Extension and Multi-Strategy Growth
+### 3.3 Phase 3 — 3D Extension, Multi-Strategy Growth, and Intermediate Instances
 
 | Script | Purpose | Agda Modules Generated |
 |--------|---------|------------------------|
 | **05** `honeycomb_3d_prototype.py` | Implement {4,3,5} Coxeter geometry (Gram matrix, reflections, cell stabilizer, face crossings); build BFS star patch (32 cells); verify edge valence, min-cuts, curvature; gate check for 3D feasibility | No Agda output (feasibility probe) |
 | **06** `generate_honeycomb_3d.py` | Generate Agda modules for the {4,3,5} BFS star patch (26 regions, all S=1) | `Common/Honeycomb3DSpec.agda`, `Boundary/Honeycomb3DCut.agda`, `Bulk/Honeycomb3DChain.agda`, `Bulk/Honeycomb3DCurvature.agda`, `Bridge/Honeycomb3DObs.agda` |
-| **07** `honeycomb_3d_multiStrategy.py` | Implement four growth strategies — BFS (concentric shells), Dense (greedy max-connectivity), Geodesic (tube), Hemisphere (half-space) — and compare across target sizes | No Agda output (strategy comparison); **key finding**: Dense growth produces non-trivial min-cuts (up to 8), while BFS gives S ≈ 1 |
+| **06b** `generate_honeycomb145.py` | Generate orbit-reduced Agda modules for the 145-cell {4,3,5} Dense patch (1008 regions → 9 orbits, maxS=9); uses improved infrastructure from 07 | `Common/Honeycomb145Spec.agda`, `Boundary/Honeycomb145Cut.agda`, `Bulk/Honeycomb145Chain.agda`, `Bulk/Honeycomb145Curvature.agda`, `Bridge/Honeycomb145Obs.agda` |
+| **07** `honeycomb_3d_multiStrategy.py` | Implement four growth strategies — BFS (concentric shells), Dense (greedy max-connectivity), Geodesic (tube), Hemisphere (half-space) — and compare across target sizes; includes corrected neighbor detection (full pairwise matching) | No Agda output (strategy comparison); **key finding**: Dense growth produces non-trivial min-cuts (up to 8), while BFS gives S ≈ 1 |
+| **07b** `honeycomb_3d_multiStrategy_reviewed.py` | Reviewed version of 07 fixing two issues: (1) **Geodesic** edge-completion phase — adds dihedral-orbit cells around the central cube's 12 edges so that full-valence edges are achieved; (2) **Hemisphere** half-space filter attempt using Gram-form `c^T G d ≥ −ε` (later found buggy — see 07c); includes improved stratified sampling and singleton-based subadditivity spot checks | No Agda output (prototype improvement); **key result**: Geodesic patches now pass all gates (8–12 full-valence edges); Hemisphere produces 0 cells (Gram-form bug) |
+| **07c** `honeycomb_3d_multiStrategy_hemisphere.py` | Fixes the Hemisphere bug from 07b: the Gram-form filter `c^T G d ≥ −ε` rejected the origin cell because `p^T G d = −2.0 < −ε` in Lorentzian geometry (neighboring timelike vectors have *more* negative G-inner product than self); replaces with Euclidean half-space `(c − p) · d ≥ −ε` which correctly admits the origin | No Agda output (bug fix); **key result**: all 4 strategies (BFS, Dense, Geodesic, Hemisphere) now produce gate-passing patches; 4/4 scorecard |
 | **08** `generate_dense50.py` | Generate Agda modules for the Dense-50 patch (139 regions, S = 1–7) using flat enumeration | `Common/Dense50Spec.agda`, `Boundary/Dense50Cut.agda`, `Bulk/Dense50Chain.agda`, `Bulk/Dense50Curvature.agda`, `Bridge/Dense50Obs.agda` |
 | **09** `generate_dense100.py` | Generate Agda modules for the Dense-100 patch (717 regions → 8 orbits) using **orbit reduction** | `Common/Dense100Spec.agda` (717 region ctors + 8 orbit ctors + 717-clause classify), `Boundary/Dense100Cut.agda` (8 S-cut-rep clauses + 1-line S-cut), `Bulk/Dense100Chain.agda`, `Bulk/Dense100Curvature.agda`, `Bridge/Dense100Obs.agda` |
 | **10** `desitter_prototype.py` | Build the {5,3} dodecahedron star patch (6 faces, positive curvature); verify bond-graph isomorphism with {5,4} star and identical min-cut profiles; compute dS curvature (κ = +1/10); verify Gauss–Bonnet | No Agda output (numerical confirmation for WickRotation) |
 
 Script 09 is the architectural pivot: it introduces the **orbit reduction strategy** (§6.5 of the historical development docs), reducing proof obligations from 717 flat `refl` cases to 8 orbit-representative `refl` cases + a 1-line lifting. This pattern scales to arbitrary patch sizes — adding cells grows only the `classify` function, not the proof.
 
-### 3.4 Phase 4 — Resolution Tower and Area Law
+Scripts 07b and 07c form a **reviewed improvement arc**: 07b fixes the Geodesic strategy by adding an edge-completion phase, and 07c fixes the Hemisphere strategy by replacing the Lorentzian Gram-form half-space filter with a Euclidean dot-product filter. After 07c, all four growth strategies produce viable patches (4/4 gate-passing).
+
+Script 06b is a thin adaptation of the Dense-100 generator (09) with `MAX_CELLS = 145`, producing the **Honeycomb-145** intermediate instance that demonstrates spectrum growth (maxS=9) at a smaller cell count than Dense-200. It uses the improved infrastructure from 07 (corrected neighbor detection).
+
+### 3.4 Phase 4 — Resolution Tower, Area Law, and Dense-1000
 
 | Script | Purpose | Agda Modules Generated |
 |--------|---------|------------------------|
 | **11** `generate_area_law.py` | Compute boundary surface area for each Dense-100 region (area = 6k − 2·|internal faces within A|); verify S ≤ area for all 717 regions; emit `abstract` area-law proof | `Boundary/Dense100AreaLaw.agda` (717 regionArea clauses + 717 abstract `(k, refl)` proofs) |
 | **12** `generate_dense200.py` | Generate all 6 Agda modules for Dense-200 (1246 regions → 9 orbits) including orbit reduction + area law; verify monotonicity (max S grows 8 → 9) | `Common/Dense200Spec.agda`, `Boundary/Dense200Cut.agda`, `Bulk/Dense200Chain.agda`, `Bulk/Dense200Curvature.agda`, `Bridge/Dense200Obs.agda`, `Boundary/Dense200AreaLaw.agda` |
+| **12b** `generate_dense1000.py` | Generate all 7 Agda modules for Dense-1000 (10,317 regions → 9 orbits) using **adaptive `max_region_cells`** + orbit reduction + area law + half-bound; starts at `max_rc=6` to restore monotonicity with Dense-200 (maxS=9) | `Common/Dense1000Spec.agda`, `Boundary/Dense1000Cut.agda`, `Bulk/Dense1000Chain.agda`, `Bulk/Dense1000Curvature.agda`, `Bridge/Dense1000Obs.agda`, `Boundary/Dense1000AreaLaw.agda`, `Boundary/Dense1000HalfBound.agda` |
 | **13** `generate_layerN.py` | Implement {5,4} Coxeter geometry ([5,4] group, tile stabilizer D₅, 5 edge crossings); build BFS-depth-N patches; emit orbit-reduced Agda modules for any depth | `Common/Layer54d{N}Spec.agda`, `Boundary/Layer54d{N}Cut.agda`, `Bulk/Layer54d{N}Chain.agda`, `Bridge/Layer54d{N}Obs.agda` — for depths 2–7 (21 to 3046 tiles) |
 
 Script 13 is parameterized by `--depth N`, allowing the tower to be extended to arbitrary BFS depths. For the repository, depths 2–7 are generated, producing a 6-level {5,4} layer tower with exponential boundary growth (21 → 3046 tiles) but constant orbit count (2 orbits, maxCut = 2).
+
+Script 12b introduces the key innovation of **adaptive `max_region_cells`**: at 1000 cells, boundary cells are farther from the dense core, so bounded-size regions at `max_rc=5` achieve only maxS=8 — breaking monotonicity with Dense-200 (maxS=9). The generator starts at `max_rc=6` and increments if necessary, restoring monotonicity. This is the **largest Agda data type in the repository** — `Dense1000Spec.agda` has 10,317 region constructors and a 10,317-clause classification function, with ~60,000 total lines of auto-generated Agda across 7 modules. All modules type-check.
 
 ### 3.5 Phase 5 — The Discrete Bekenstein–Hawking Bound
 
@@ -95,6 +107,14 @@ Script 13 is parameterized by `--depth N`, allowing the tower to be extended to 
 | **17** `generate_half_bound.py` | Emit per-instance `HalfBoundWitness` Agda modules for Dense-100 and Dense-200: `abstract` proof of 2·S ≤ area with tight achiever | `Boundary/Dense100HalfBound.agda` (717 cases), `Boundary/Dense200HalfBound.agda` (1246 cases) |
 
 Scripts 14a–14c form a methodological arc: 14a identifies a confound, 14b fixes it, 14c confirms the fix. Script 15 provides the graph-theoretic proof sketch that is formalized in `Bridge/HalfBound.agda`. Script 16 is the scaling confirmation across the full matrix of configurations. Script 17 is the final code generator, producing the per-instance witnesses consumed by `Bridge/SchematicTower.agda` §25.
+
+### 3.6 Phase 6 — Data Export
+
+| Script | Purpose | Output |
+|--------|---------|--------|
+| **18** `export_json.py` | Read all oracle outputs and re-compute patch data; produce `data/` directory of JSON files consumed by the Haskell backend | `data/patches/*.json` (16 files), `data/tower.json`, `data/theorems.json`, `data/curvature.json`, `data/meta.json` |
+
+Script 18 is deterministic and idempotent. It re-runs the Coxeter geometry and region enumeration for all 16 patches (including Honeycomb-145 and Dense-1000 at `max_rc=6`, which takes ~25 minutes), producing byte-identical output for a given oracle infrastructure version.
 
 ---
 
@@ -125,7 +145,7 @@ The oracle handles all combinatorial enumeration (Coxeter reflections, BFS/Dense
 
 ### 4.2 The Orbit Reduction Pattern
 
-For patches with more than ~200 regions, flat enumeration (one `refl` per region) wastes effort because many regions share the same min-cut value. The orbit reduction pattern, introduced in script 09 and used by all subsequent generators, factors the proof through a small orbit type:
+For patches with more than ~200 regions, flat enumeration (one `refl` per region) wastes effort because many regions share the same min-cut value. The orbit reduction pattern, introduced in script 09 and used by all subsequent generators (12, 12b, 06b, 13), factors the proof through a small orbit type:
 
 **Generated data types:**
 
@@ -152,11 +172,11 @@ d100-pointwise-rep mc1 = refl    — 8 refl cases
 d100-pointwise r = d100-pointwise-rep (classify100 r)  — 1-line lifting
 ```
 
-The 717-clause `classify100` function is traversed only during concrete evaluation (when Agda reduces a specific constructor); the proof obligations remain on the 8-constructor orbit type. This pattern scales logarithmically: Dense-200 has 1246 regions but only 9 orbits (138× reduction), and {5,4} depth-7 has 1885 regions but only 2 orbits (942× reduction).
+The 717-clause `classify100` function is traversed only during concrete evaluation (when Agda reduces a specific constructor); the proof obligations remain on the 8-constructor orbit type. This pattern scales logarithmically: Dense-200 has 1246 regions but only 9 orbits (138× reduction), Dense-1000 has 10,317 regions but only 9 orbits (1146× reduction), and {5,4} depth-7 has 1885 regions but only 2 orbits (942× reduction).
 
 ### 4.3 The `abstract` Barrier Strategy
 
-Large case analyses (360 subadditivity triples, 717 area-law cases, 1246 half-bound cases) are sealed behind Agda's `abstract` keyword. This prevents downstream modules from re-normalizing the proof when they use the sealed lemma — halting the RAM cascade documented in [Agda Issue #4573](https://github.com/agda/agda/issues/4573).
+Large case analyses (360 subadditivity triples, 717 area-law cases, 1246 half-bound cases, 10,317 Dense-1000 area-law cases) are sealed behind Agda's `abstract` keyword. This prevents downstream modules from re-normalizing the proof when they use the sealed lemma — halting the RAM cascade documented in [Agda Issue #4573](https://github.com/agda/agda/issues/4573).
 
 The `abstract` barrier is safe because all sealed proofs target **propositional types** (`_≤ℚ_` is propositional by `isProp≤ℚ`). Sealing a propositional proof prevents re-normalization without losing information — any other proof of the same fact would be propositionally equal to the sealed one.
 
@@ -174,13 +194,19 @@ Every `refl`-based proof in the emitted modules depends on a critical invariant:
 
 If any of these invariants is broken (e.g., a constant is reconstructed independently, or a classify clause maps to the wrong orbit), the `refl` proof fails at type-check time, producing an immediate error. The type-checker catches oracle bugs.
 
+### 4.5 Adaptive `max_region_cells` (Script 12b)
+
+Dense-1000 introduced a new challenge: at `max_region_cells=5` (used by Dense-50 through Dense-200), boundary cells in a 1000-cell patch are farther from the dense core, so bounded-size regions achieve lower min-cuts (maxS=8 instead of 9). This would break the monotonicity property of the resolution tower.
+
+Script 12b implements **adaptive `max_region_cells`**: it starts at `max_rc=6` and increments if necessary until `maxS ≥ 9` (matching Dense-200). At `max_rc=6`, the 6-cell boundary subsets probe deep enough to restore maxS=9, and the generator stops. This produces significantly more regions (10,317 vs 1,246 for Dense-200) and the largest auto-generated Agda modules in the repository (~60,000 total lines).
+
 ---
 
 ## 5. Coxeter Geometry Implementation
 
 ### 5.1 The {4,3,5} Honeycomb (3D)
 
-Scripts 05–09, 11–12, and 14–17 use the {4,3,5} Coxeter group [4,3,5] with:
+Scripts 05–09, 06b, 07b, 07c, 11–12, 12b, and 14–17 use the {4,3,5} Coxeter group [4,3,5] with:
 
 - **Generators:** s₀, s₁, s₂, s₃ (four reflections)
 - **Coxeter matrix:** m(s₀,s₁) = 4, m(s₁,s₂) = 3, m(s₂,s₃) = 5
@@ -205,16 +231,21 @@ The construction is identical in structure to the 3D case, with 3×3 matrices in
 
 ### 5.3 Growth Strategies
 
-Four strategies are implemented (script 07), all producing valid connected patches:
+Four strategies are implemented (scripts 07, 07b, 07c), all producing valid connected patches:
 
-| Strategy | Growth Rule | Topology | Min-Cut Behavior |
-|----------|-----------|----------|-----------------|
-| **BFS** | Concentric shells from center | Thin shells, low connectivity | S ≈ 1–2 (all singletons have S = 1) |
-| **Dense** | Greedy: add frontier cell with most existing neighbors | Clumpy, high connectivity | S = 1–9 (genuine multi-face RT surfaces) |
-| **Geodesic** | Spine along opposite-face axis + 1-shell fattening | Tubular, anisotropic | S = 2 (cross-section), 0 full-valence edges |
-| **Hemisphere** | BFS using only 3 of 6 face crossings | Saturates at ~20 cells (finite orbit) | Limited data |
+| Strategy | Growth Rule | Topology | Min-Cut Behavior | Status (after 07c) |
+|----------|-----------|----------|-----------------|---------------------|
+| **BFS** | Concentric shells from center | Thin shells, low connectivity | S ≈ 1–2 (all singletons have S = 1) | ✓ All gates pass |
+| **Dense** | Greedy: add frontier cell with most existing neighbors | Clumpy, high connectivity | S = 1–9 (genuine multi-face RT surfaces) | ✓ All gates pass |
+| **Geodesic** | Spine along opposite-face axis + fattening + edge-completion (v2 from 07b) | Tubular with completed dihedral orbits | S = 1–7 (cross-section + completed edges) | ✓ All gates pass (07b fix) |
+| **Hemisphere** | BFS with Euclidean half-space filter `(c−p)·d ≥ −ε` (v3 from 07c) | Asymmetric, flat cut on one side | S = 1–4 (lower than Dense) | ✓ All gates pass (07c fix) |
 
 The **Dense strategy** is the correct choice for holographic analysis: it produces multiply-connected bulk geometry with non-trivial separating surfaces, analogous to the RT minimal surfaces in AdS/CFT. BFS shells serve as a baseline with degenerate min-cut behavior.
+
+**Script evolution for multi-strategy:**
+- **07** (original): Dense and BFS work; Geodesic fails gates (0 full-valence edges); Hemisphere saturates at ≤20 cells (finite subgroup orbit from 3-generator restriction).
+- **07b** (reviewed): Geodesic fixed via edge-completion phase; Hemisphere attempted via Gram-form filter but produces 0 cells (Lorentzian sign bug: `p^T G d = −2.0 < −ε`).
+- **07c** (hemisphere fix): Hemisphere fixed via Euclidean half-space `(c−p)·d ≥ −ε`; all 4 strategies now pass all gates (4/4 scorecard).
 
 ---
 
@@ -224,7 +255,7 @@ Each generated Agda module passes through a multi-stage verification chain:
 
 1. **Python numerical verification.** The oracle computes min-cuts via `nx.minimum_cut`, boundary areas via the decomposition formula area = faces_per_cell · |A| − 2 · |internal links within A|, and verifies all bounds (S ≤ area, 2·S ≤ area) before emitting Agda code. Any violation causes the script to abort without generating files.
 
-2. **Agda parsing.** The type-checker parses the emitted data types (up to 1885 constructors for `Layer54d7Region`) and function definitions. This is the most resource-intensive step for large modules, taking 30–90 seconds for Dense-200.
+2. **Agda parsing.** The type-checker parses the emitted data types (up to 10,317 constructors for `Dense1000Region`) and function definitions. This is the most resource-intensive step for large modules, taking 30–90 seconds for Dense-200 and potentially several minutes for Dense-1000.
 
 3. **Agda type-checking.** Each `(k, refl)` witness is independently verified: the type-checker evaluates `k + (S r)` by structural recursion on ℕ and confirms it equals `area r` (or `L-min r` for pointwise agreement). This is the **De Bruijn criterion** in action: the kernel is "stupid" and checks each case individually.
 
@@ -258,18 +289,23 @@ python3 03_generate_filled_patch.py
 
 # Phase 3: 3D patches
 python3 06_generate_honeycomb_3d.py
+python3 06b_generate_honeycomb145.py
 python3 08_generate_dense50.py
 python3 09_generate_dense100.py
 
-# Phase 4: Area law, Dense-200, Layer tower
+# Phase 4: Area law, Dense-200, Dense-1000, Layer tower
 python3 11_generate_area_law.py
 python3 12_generate_dense200.py
+python3 12b_generate_dense1000.py          # ~30 minutes
 for d in 2 3 4 5 6 7; do
   python3 13_generate_layerN.py --depth $d
 done
 
 # Phase 5: Half-bound witnesses
 python3 17_generate_half_bound.py
+
+# Phase 6: JSON export (for the Haskell backend)
+python3 18_export_json.py                  # ~40 minutes (includes Dense-1000)
 ```
 
 After regeneration, delete cached Agda interfaces (`find src/ -name '*.agdai' -delete`) and reload from scratch.
@@ -282,19 +318,23 @@ The `shell.nix` in `sim/prototyping/` pins NixOS 24.05, Python 3.12, NetworkX 3.
 
 ## 8. Scaling Report (Summary)
 
-| Instance | Script | Regions | Orbits | Max S | Parse Time | Check Time | Total Lines |
-|----------|--------|---------|--------|-------|------------|------------|-------------|
-| Filled (11-tile) | 03 | 90 | — | 4 | <5s | <10s | ~1,765 |
-| Honeycomb BFS | 06 | 26 | — | 1 | <5s | <10s | ~304 |
-| Dense-50 | 08 | 139 | — | 7 | <5s | <10s | ~701 |
-| Dense-100 | 09 | 717 | 8 | 8 | 30–60s | 10–30s | ~1,166 |
-| Dense-100 AreaLaw | 11 | 717 | — | — | 20–60s | 30–120s | ~2,099 |
-| Dense-200 (all 6) | 12 | 1,246 | 9 | 9 | 30–90s | 30–120s | ~5,213 |
-| {5,4} depth 7 | 13 | 1,885 | 2 | 2 | 30–90s | 10–30s | ~2,216 |
-| Dense-100 HalfBound | 17 | 717 | — | — | 20–60s | 30–120s | ~1,390 |
-| Dense-200 HalfBound | 17 | 1,246 | — | — | 30–90s | 30–120s | ~2,350 |
+| Instance | Script | Regions | Orbits | Max S | max_rc | Parse Time | Check Time | Total Lines |
+|----------|--------|---------|--------|-------|--------|------------|------------|-------------|
+| Filled (11-tile) | 03 | 90 | — | 4 | — | <5s | <10s | ~1,765 |
+| Honeycomb BFS | 06 | 26 | — | 1 | 4 | <5s | <10s | ~304 |
+| Honeycomb-145 | 06b | 1,008 | 9 | 9 | 5 | 30–60s | 10–30s | ~1,285 |
+| Dense-50 | 08 | 139 | — | 7 | 5 | <5s | <10s | ~701 |
+| Dense-100 | 09 | 717 | 8 | 8 | 5 | 30–60s | 10–30s | ~1,166 |
+| Dense-100 AreaLaw | 11 | 717 | — | — | — | 20–60s | 30–120s | ~2,099 |
+| Dense-200 (all 6) | 12 | 1,246 | 9 | 9 | 5 | 30–90s | 30–120s | ~5,213 |
+| Dense-1000 (all 7) | 12b | 10,317 | 9 | 9 | 6 | 5–15 min | 10–30 min | ~60,698 |
+| {5,4} depth 7 | 13 | 1,885 | 2 | 2 | 4 | 30–90s | 10–30s | ~2,216 |
+| Dense-100 HalfBound | 17 | 717 | — | — | — | 20–60s | 30–120s | ~1,390 |
+| Dense-200 HalfBound | 17 | 1,246 | — | — | — | 30–90s | 30–120s | ~2,350 |
 
-Parse time is dominated by large `data` declarations (717–1885 constructors). Check time is dominated by `abstract`-sealed proofs (717–1246 `(k, refl)` cases). Both scale linearly with region count; the orbit reduction strategy keeps proof obligations constant or logarithmic.
+Parse time is dominated by large `data` declarations (717–10,317 constructors). Check time is dominated by `abstract`-sealed proofs (717–10,317 `(k, refl)` cases). Both scale linearly with region count; the orbit reduction strategy keeps proof obligations constant or logarithmic.
+
+The Dense-1000 instance (script 12b) is the largest, with ~60,000 total lines of auto-generated Agda across 7 modules. The `Dense1000AreaLaw.agda` module alone (29,736 lines) is the single largest Agda file in the repository. Despite this, the orbit count stays at 9 — the same as Dense-200 — and all modules type-check.
 
 For detailed resource usage per module, see [`getting-started/building.md`](../getting-started/building.md) §7.
 
@@ -306,9 +346,9 @@ For detailed resource usage per module, see [`getting-started/building.md`](../g
 
 To add a new patch (e.g., Dense-500 on {4,3,5}):
 
-1. **Copy** `09_generate_dense100.py` as a template.
-2. **Adjust** `MAX_CELLS` and file/module names.
-3. **Run** the new script to generate 5 Agda modules.
+1. **Copy** `09_generate_dense100.py` (or `12b_generate_dense1000.py` if adaptive `max_rc` is needed) as a template.
+2. **Adjust** `MAX_CELLS`, `MAX_REGION_CELLS` (or use adaptive logic), and file/module names.
+3. **Run** the new script to generate 5–7 Agda modules.
 4. **Register** the new `OrbitReducedPatch` in `Bridge/SchematicTower.agda` via `mkTowerLevel`.
 
 The generic bridge theorem handles the proof automatically. No hand-written Agda is needed beyond the one-line `mkTowerLevel` call.
@@ -340,13 +380,15 @@ The `abstract` barrier + propositional target type pattern is generic: it works 
 
 1. **Python over Agda metaprogramming.** Agda's reflection API can generate terms internally, but it creates large ASTs in memory during type-checking. External Python avoids this: the generated file is parsed once (creating the AST), and then the small `refl` proofs are checked individually. This is more memory-efficient for 700+ cases.
 
-2. **One script per patch family, not one script for all.** Each generator (08, 09, 12, 13, 17) is self-contained and independently runnable. This avoids a monolithic "generate-everything" script that would be harder to debug, version, and extend.
+2. **One script per patch family, not one script for all.** Each generator (08, 09, 06b, 12, 12b, 13, 17) is self-contained and independently runnable. This avoids a monolithic "generate-everything" script that would be harder to debug, version, and extend.
 
 3. **Output files are committed to the repository.** The generated `.agda` files are checked into `src/`, not regenerated on every build. This ensures reproducibility without requiring Python in the Agda build environment and allows Agda users to type-check without running the oracle.
 
-4. **Prototype scripts are preserved alongside generators.** Scripts 01, 02, 05, 07, 10, 14a–14c, 15, 16 produce no Agda output but are committed with their `_OUTPUT.txt` files as reproducible numerical evidence. They document the decision chain that led to each architectural choice.
+4. **Prototype scripts are preserved alongside generators.** Scripts 01, 02, 05, 07, 07b, 07c, 10, 14a–14c, 15, 16 produce no Agda output but are committed with their `_OUTPUT.txt` files as reproducible numerical evidence. They document the decision chain that led to each architectural choice.
 
-5. **All scripts import from 01 and 07.** The graph-construction logic (patch topology, flow graphs, min-cut computation) is defined once in `01_happy_patch_cuts.py` (2D) and `07_honeycomb_3d_multiStrategy.py` (3D), and imported by all downstream scripts. This avoids duplicating the NetworkX max-flow interface.
+5. **All scripts import from 01 and 07.** The graph-construction logic (patch topology, flow graphs, min-cut computation) is defined once in `01_happy_patch_cuts.py` (2D) and `07_honeycomb_3d_multiStrategy.py` (3D), and imported by all downstream scripts. This avoids duplicating the NetworkX max-flow interface. Scripts 07b and 07c import from 07 and add improvements without duplicating the core infrastructure.
+
+6. **Sub-variant scripts (b, c suffixes) for reviewed improvements.** Rather than modifying scripts in-place and losing the original output, improvements and bug fixes are implemented as new scripts (07b, 07c, 06b, 12b) that import from the parent script. The original scripts and their outputs remain as historical evidence of the development arc.
 
 ---
 
@@ -362,5 +404,9 @@ The `abstract` barrier + propositional target type pattern is generic: it works 
 | Generic bridge pattern (engineering) | [`engineering/generic-bridge-pattern.md`](generic-bridge-pattern.md) |
 | Scaling report (per-module times) | [`engineering/scaling-report.md`](scaling-report.md) |
 | Bekenstein–Hawking half-bound (formal) | [`formal/12-bekenstein-hawking.md`](../formal/12-bekenstein-hawking.md) |
+| Backend specification (consumes JSON export) | [`engineering/backend-spec-haskell.md`](backend-spec-haskell.md) |
+| Frontend specification (visualizes backend data) | [`engineering/frontend-spec-webgl.md`](frontend-spec-webgl.md) |
+| Honeycomb-145 instance | [`instances/honeycomb-145.md`](../instances/honeycomb-145.md) |
+| Dense-1000 instance | [`instances/dense-1000.md`](../instances/dense-1000.md) |
 | Per-instance data sheets | [`instances/`](../instances/) |
 | Historical development (§3.5–3.6 of frontier) | [`historical/development-docs/10-frontier.md`](../historical/development-docs/10-frontier.md) §3.5–3.6 |

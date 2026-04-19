@@ -1,7 +1,7 @@
-╔═══════════════════════════════════════════════════════════════╗
-║  §15.10 Priority 4:  Half-Bound Scaling Confirmation        ║
+╔════════════════════════════════════════════════════════════╗
+║  §15.10 Priority 4:  Half-Bound Scaling Confirmation       ║
 ║  S(A) ≤ area(A)/2  — Large patches, all tilings, c > 1     ║
-╚═══════════════════════════════════════════════════════════════╝
+╚════════════════════════════════════════════════════════════╝
 
   Parameters: max-cells=2000, max-rc=5, skip-large=False
 

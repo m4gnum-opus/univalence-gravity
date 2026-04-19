@@ -1,7 +1,7 @@
 ```bash
 (venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python sim/prototyping/13_generate_layerN.py --depth 2
 ╔═══════════════════════════════════════════════════════════╗
-║  Phase C.1: {5,4} Layer Generator — BFS depth 2            ║
+║  Phase C.1: {5,4} Layer Generator — BFS depth 2           ║
 ║  Coxeter [5,4] • pentagonal tiling • orbit reduction      ║
 ╚═══════════════════════════════════════════════════════════╝
 

@@ -720,10 +720,10 @@ def main() -> None:
                         help="Compute and verify without writing files")
     args = parser.parse_args()
 
-    print("╔═══════════════════════════════════════════════════════════╗")
+    print("╔═════════════════════════════════════════════════════════╗")
     print("║  Phase D.1b: Dense-50 {4,3,5} — Agda Code Generator     ║")
-    print("║  Greedy max-connectivity • Genuine holographic depth     ║")
-    print("╚═══════════════════════════════════════════════════════════╝")
+    print("║  Greedy max-connectivity • Genuine holographic depth    ║")
+    print("╚═════════════════════════════════════════════════════════╝")
 
     # ── Step 1: Build the Dense-50 patch ────────────────────────────
     print("\n  Building Dense-50 patch via greedy max-connectivity ...")

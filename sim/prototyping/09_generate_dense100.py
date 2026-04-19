@@ -283,10 +283,10 @@ def gen_spec(
     a("")
 
     # ── D100Region ──────────────────────────────────────────────────
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ══════════════════════════════════════════════════════════════")
     a("--  D100Region — Cell-aligned boundary regions of the Dense-100")
     a("--  patch of the {4,3,5} hyperbolic honeycomb")
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ══════════════════════════════════════════════════════════════")
     a("--")
     a("--  The Dense-100 patch is grown by greedy max-connectivity")
     a(f"--  from the central cube, producing {MAX_CELLS} cells.")
@@ -572,9 +572,9 @@ def gen_curvature(edge_classes: list[EdgeClassInfo]) -> str:
     a("")
 
     # Per-class contributions
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ═════════════════════════════════════════════")
     a("--  Per-class contribution regression tests")
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ═════════════════════════════════════════════")
     a("")
     for ec in edge_classes:
         contrib = ec.count * ec.kappa_twentieths
@@ -612,9 +612,9 @@ def gen_obs(
     a("")
 
     # ── Canonical views ─────────────────────────────────────────────
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ═════════════════════════════════════")
     a("--  Canonical views (dummy instances)")
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ═════════════════════════════════════")
     a("")
     a("d100BdyView : D100BdyView")
     a("d100BdyView .D100BdyView.dummy = 0")
@@ -636,9 +636,9 @@ def gen_obs(
     a("")
 
     # ── Orbit-level pointwise agreement ─────────────────────────────
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ══════════════════════════════════════════════════════════════")
     a(f"--  d100-pointwise-rep — All {len(orbits)} orbit cases by refl")
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ══════════════════════════════════════════════════════════════")
     a("--")
     a("--  The core proof: S-cut-rep and L-min-rep agree on every")
     a("--  orbit representative.  Both return the same ℕ literal")
@@ -697,9 +697,9 @@ def gen_obs(
     a("")
 
     # ── Function path ───────────────────────────────────────────────
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ═══════════════════════════════════════════════════")
     a("--  d100-obs-path — Function equality via funExt")
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ═══════════════════════════════════════════════════")
     a("")
     a("S∂D100 : D100Region → ℚ≥0")
     a("S∂D100 = S-cut d100BdyView")
@@ -712,9 +712,9 @@ def gen_obs(
     a("")
 
     # ── Package path ────────────────────────────────────────────────
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ═════════════════════════════════════════════")
     a("--  d100-package-path — Package-level path")
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ═════════════════════════════════════════════")
     a("")
     a("d100-package-path : D100Obs∂ ≡ D100ObsBulk")
     a("d100-package-path i .ObsPackage.obs = d100-obs-path i")
@@ -869,8 +869,8 @@ def main() -> None:
     args = parser.parse_args()
 
     print("╔═══════════════════════════════════════════════════════════╗")
-    print("║  Phase D.1c: Dense-100 {4,3,5} — Orbit-Reduced Agda Gen ║")
-    print("║  Greedy max-connectivity • Orbit reduction strategy      ║")
+    print("║  Phase D.1c: Dense-100 {4,3,5} — Orbit-Reduced Agda Gen   ║")
+    print("║  Greedy max-connectivity • Orbit reduction strategy       ║")
     print("╚═══════════════════════════════════════════════════════════╝")
 
     # ── Step 1: Build the Dense-100 patch ───────────────────────────

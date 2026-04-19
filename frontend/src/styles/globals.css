@@ -1,0 +1,266 @@
+/* ══════════════════════════════════════════════════════════════════
+ *  globals.css — Tailwind directives + global resets
+ *
+ *  This is the single CSS entry point for the application, imported
+ *  by src/main.tsx.  It loads Tailwind's three layers (base,
+ *  components, utilities) and adds project-specific global styles
+ *  that cannot be expressed as Tailwind utility classes.
+ *
+ *  Design principles (frontend-spec §4.1):
+ *    - Academic credibility: serif headings, monospace for Agda
+ *      type signatures, muted Viridis palette
+ *    - Accessibility: prefers-reduced-motion, smooth focus rings,
+ *      Viridis default (colorblind-safe)
+ *    - Performance: minimal custom CSS; prefer Tailwind utilities
+ *
+ *  Reference: docs/engineering/frontend-spec-webgl.md §4
+ * ══════════════════════════════════════════════════════════════════ */
+
+
+/* ── Tailwind Layers ──────────────────────────────────────────────
+ *
+ *  @tailwind base      — Preflight reset + CSS custom properties
+ *  @tailwind components — Component classes (e.g. from @apply)
+ *  @tailwind utilities  — All utility classes (purged in production)
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* ── Base Layer Overrides ─────────────────────────────────────────
+ *
+ *  Applied via @layer base so they interleave correctly with
+ *  Tailwind's Preflight reset and can be overridden by utilities.
+ */
+@layer base {
+  /* ── Root Element ─────────────────────────────────────────────
+   *
+   *  Smooth scrolling for anchor-link navigation (e.g. theorem
+   *  deep-links from the home page).  Disabled when the user
+   *  prefers reduced motion (accessibility, frontend-spec §10).
+   */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  /* ── Body ─────────────────────────────────────────────────────
+   *
+   *  Default body typography: the sans-serif stack from Tailwind's
+   *  theme (Inter / system-ui).  The bg-gray-50 and text-gray-900
+   *  are also set on <body> in index.html via Tailwind classes,
+   *  but we reinforce them here as a CSS fallback in case the
+   *  HTML classes are inadvertently removed.
+   */
+  body {
+    @apply font-sans text-gray-900 bg-gray-50;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ── Headings ─────────────────────────────────────────────────
+   *
+   *  Serif typeface for all headings (Georgia stack from
+   *  tailwind.config.js).  This gives the application an
+   *  academic, paper-like feel — the audience is researchers,
+   *  not gamers.
+   *
+   *  Font weights and sizes are applied per-component via
+   *  Tailwind utilities (e.g. text-2xl font-bold); this layer
+   *  only sets the font-family.
+   */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+
+  /* ── Code / Monospace ─────────────────────────────────────────
+   *
+   *  Agda type signatures, module paths, and proof methods are
+   *  displayed in monospace.  The font stack (JetBrains Mono →
+   *  Fira Code → system monospace) is defined in tailwind.config.js
+   *  and applied here to all semantic code elements.
+   *
+   *  The subtle background and padding distinguish inline code
+   *  from surrounding prose without heavy borders or boxes.
+   */
+  code, pre, kbd, samp {
+    @apply font-mono;
+  }
+
+  code {
+    @apply text-sm bg-gray-100 rounded px-1.5 py-0.5;
+  }
+
+  pre {
+    @apply text-sm bg-gray-100 rounded-lg p-4 overflow-x-auto;
+  }
+
+  pre code {
+    @apply bg-transparent p-0;
+  }
+
+  /* ── Focus Styles ─────────────────────────────────────────────
+   *
+   *  Visible focus rings for keyboard navigation (accessibility,
+   *  frontend-spec §10).  Uses the Viridis teal-blue (600) for
+   *  high contrast against both light and dark backgrounds.
+   *
+   *  :focus-visible targets only keyboard-initiated focus, not
+   *  mouse clicks — avoiding the "blue ring on every click"
+   *  problem while maintaining WCAG 2.1 compliance.
+   */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-viridis-600;
+  }
+
+  /* ── Selection ────────────────────────────────────────────────
+   *
+   *  Text selection uses the Viridis brand purple at low opacity
+   *  for visual consistency across the application.
+   */
+  ::selection {
+    background-color: rgba(68, 1, 84, 0.15);
+  }
+}
+
+
+/* ── Component Layer ──────────────────────────────────────────────
+ *
+ *  Reusable component patterns that appear across multiple views.
+ *  These are defined as @layer components so they have lower
+ *  specificity than Tailwind utilities and can be overridden
+ *  with utility classes on individual elements.
+ */
+@layer components {
+  /* ── Status Badge ─────────────────────────────────────────────
+   *
+   *  Small colored pill for theorem verification status (Verified,
+   *  Dead, Numerical).  The background color is applied inline
+   *  or via additional utility classes; this defines the shared
+   *  shape and typography.
+   *
+   *  Usage:
+   *    <span class="badge badge-verified">✓ Verified</span>
+   *    <span class="badge badge-dead">Dead</span>
+   *    <span class="badge badge-numerical">Numerical</span>
+   */
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5
+           text-xs font-medium tracking-wide;
+  }
+
+  .badge-verified {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .badge-dead {
+    @apply bg-gray-100 text-gray-600;
+  }
+
+  .badge-numerical {
+    @apply bg-orange-100 text-orange-800;
+  }
+
+  /* ── Card ─────────────────────────────────────────────────────
+   *
+   *  Shared card surface used by PatchCard, TheoremCard, and
+   *  TowerLevel components.  Provides a consistent elevated
+   *  surface with hover feedback.
+   *
+   *  The transition respects prefers-reduced-motion: Tailwind's
+   *  motion-reduce: variant is used in component markup, but the
+   *  base transition is defined here.
+   */
+  .card {
+    @apply rounded-lg border border-gray-200 bg-white
+           shadow-sm transition-shadow duration-200
+           hover:shadow-md;
+  }
+
+  /* ── Agda Signature Block ─────────────────────────────────────
+   *
+   *  Styled container for Agda type signatures in the theorem
+   *  dashboard.  Monospace font with a slightly tinted background
+   *  that evokes a proof-assistant buffer.
+   */
+  .agda-sig {
+    @apply font-mono text-sm leading-relaxed
+           bg-gray-50 border border-gray-200 rounded-lg
+           p-4 overflow-x-auto whitespace-pre;
+  }
+}
+
+
+/* ── Utility Layer ────────────────────────────────────────────────
+ *
+ *  Custom one-off utilities that extend Tailwind's built-in set.
+ *  These have the highest specificity within the Tailwind cascade
+ *  and can override both base and component styles.
+ */
+@layer utilities {
+  /* ── Reduced Motion ───────────────────────────────────────────
+   *
+   *  Global kill-switch for all CSS animations and transitions
+   *  when the user prefers reduced motion.  This complements
+   *  the per-component motion-reduce: variants in Tailwind and
+   *  the programmatic check in OrbitControls (which disables
+   *  auto-rotation).
+   *
+   *  Reference: frontend-spec §10 (Accessibility)
+   */
+  @media (prefers-reduced-motion: reduce) {
+    .motion-safe-only {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  /* ── Three.js Canvas Container ────────────────────────────────
+   *
+   *  The R3F <Canvas> must fill its parent completely for
+   *  responsive viewport sizing.  This utility ensures the
+   *  canvas container has no padding or margin that would
+   *  cause layout shifts, and sets touch-action for proper
+   *  mobile gesture handling.
+   */
+  .canvas-container {
+    @apply relative w-full h-full;
+    touch-action: none;
+  }
+
+  /* ── Scrollbar Styling ────────────────────────────────────────
+   *
+   *  Slim, unobtrusive scrollbars for the region inspector
+   *  side panel and the theorem dashboard.  Uses the WebKit
+   *  pseudo-elements (Chrome, Edge, Safari) and the standard
+   *  scrollbar-width property (Firefox).
+   */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.gray.300') transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: theme('colors.gray.300');
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: theme('colors.gray.400');
+  }
+}

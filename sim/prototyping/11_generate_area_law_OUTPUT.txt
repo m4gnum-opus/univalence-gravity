@@ -1,6 +1,6 @@
 ╔═══════════════════════════════════════════════════════════╗
-║  11: Discrete Area Law — Dense-100 {4,3,5} Honeycomb    ║
-║  S_cut(A) ≤ area(A)  for all 717 boundary regions       ║
+║  11: Discrete Area Law — Dense-100 {4,3,5} Honeycomb      ║
+║  S_cut(A) ≤ area(A)  for all 717 boundary regions         ║
 ╚═══════════════════════════════════════════════════════════╝
 
   Building Dense-100 patch via greedy max-connectivity ...

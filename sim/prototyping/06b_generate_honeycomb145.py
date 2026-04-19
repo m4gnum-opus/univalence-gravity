@@ -381,10 +381,10 @@ def main() -> None:
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    print("╔═══════════════════════════════════════════════════════════╗")
+    print("╔═════════════════════════════════════════════════════════╗")
     print("║  Honeycomb-145 {4,3,5} — Orbit-Reduced Agda Generator   ║")
-    print("║  Greedy max-connectivity • 145 cells                     ║")
-    print("╚═══════════════════════════════════════════════════════════╝")
+    print("║  Greedy max-connectivity • 145 cells                    ║")
+    print("╚═════════════════════════════════════════════════════════╝")
 
     # Step 1: Build the patch
     print(f"\n  Building Dense-{MAX_CELLS} patch ...")

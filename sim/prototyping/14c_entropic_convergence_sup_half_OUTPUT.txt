@@ -1,6 +1,6 @@
 ╔═══════════════════════════════════════════════════════════╗
-║  sup(S/area) = 1/2 ?  —  The Discrete Bekenstein–Hawking ║
-║  Sweep max_rc from 5 to 8 on Dense patches            ║
+║  sup(S/area) = 1/2 ?  —  The Discrete Bekenstein–Hawking  ║
+║  Sweep max_rc from 5 to 8 on Dense patches                ║
 ╚═══════════════════════════════════════════════════════════╝
 
   Parameters:

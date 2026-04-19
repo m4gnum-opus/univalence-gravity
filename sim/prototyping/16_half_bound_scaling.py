@@ -557,10 +557,10 @@ def main() -> None:
     MAX_RC = args.max_rc
     max_cells = args.max_cells
 
-    print("╔═══════════════════════════════════════════════════════════════╗")
-    print("║  §15.10 Priority 4:  Half-Bound Scaling Confirmation        ║")
-    print("║  S(A) ≤ area(A)/2  — Large patches, all tilings, c > 1     ║")
-    print("╚═══════════════════════════════════════════════════════════════╝")
+    print("╔══════════════════════════════════════════════════════════╗")
+    print("║  §15.10 Priority 4:  Half-Bound Scaling Confirmation     ║")
+    print("║  S(A) ≤ area(A)/2  — Large patches, all tilings, c > 1   ║")
+    print("╚══════════════════════════════════════════════════════════╝")
     print(f"\n  Parameters: max-cells={max_cells}, max-rc={MAX_RC}, "
           f"skip-large={args.skip_large}\n")
 

@@ -400,10 +400,10 @@ def analyze_patch(patch: Patch) -> None:
 # ════════════════════════════════════════════════════════════════════
 
 def main() -> None:
-    print("╔══════════════════════════════════════════════════════════╗")
-    print("║  Phase 1.2(a):  HaPPY Patch Min-Cut Verification       ║")
-    print("║  Discrete Ryu–Takayanagi for the {5,4} Tiling          ║")
-    print("╚══════════════════════════════════════════════════════════╝")
+    print("╔════════════════════════════════════════════════════╗")
+    print("║  Phase 1.2(a):  HaPPY Patch Min-Cut Verification   ║")
+    print("║  Discrete Ryu–Takayanagi for the {5,4} Tiling      ║")
+    print("╚════════════════════════════════════════════════════╝")
 
     analyze_patch(make_star_patch())
     analyze_patch(make_filled_patch())

@@ -1,0 +1,97 @@
+{
+  "compilerOptions": {
+    /* ── Build mode ──────────────────────────────────────────────
+     *  Vite handles all bundling and transpilation; TypeScript is
+     *  used only for type-checking.  `noEmit` prevents tsc from
+     *  writing .js files.  `composite` + `tsBuildInfoFile` enable
+     *  incremental type-checking via `tsc -b` (the build script).
+     */
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+    "noEmit": true,
+
+    /* ── Language & Module ───────────────────────────────────────
+     *  - target ES2022: leverages modern JS features (top-level
+     *    await, private fields, Array.at) — all supported by the
+     *    browsers that also support WebGL2 (our hard requirement).
+     *  - lib ES2023: includes Array.findLast, structuredClone,
+     *    etc.  DOM + DOM.Iterable cover browser APIs + iterables
+     *    on NodeList, HTMLCollection, etc.
+     *  - module ESNext + moduleResolution bundler: the correct
+     *    combination for Vite 5+ which processes ESM natively.
+     *  - jsx react-jsx: uses the automatic JSX runtime introduced
+     *    in React 17+ (no `import React` needed in every file).
+     *  - resolveJsonModule: required for importing type data from
+     *    JSON fixtures in tests and potentially for mock data.
+     *  - isolatedModules: required by Vite/esbuild — each file
+     *    must be independently transformable without cross-file
+     *    type information.
+     *  - allowImportingTsExtensions: permits `import "./Foo.tsx"`
+     *    in source when noEmit is true (Vite resolves these).
+     */
+    "target": "ES2022",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* ── Strict checks ──────────────────────────────────────────
+     *  Maximum strictness.  The project rules forbid `any` types;
+     *  these flags enforce that discipline at the compiler level.
+     *
+     *  - strict: enables strictNullChecks, strictFunctionTypes,
+     *    strictBindCallApply, strictPropertyInitialization,
+     *    noImplicitAny, noImplicitThis, alwaysStrict, and
+     *    useUnknownInCatchVariables.
+     *  - noUnusedLocals / noUnusedParameters: catches dead code
+     *    early — prefix with `_` to signal intentionally unused.
+     *  - noFallthroughCasesInSwitch: prevents missing `break` in
+     *    switch statements (relevant for color-mode switches, etc.)
+     *  - noUncheckedIndexedAccess: array[i] and obj[key] return
+     *    `T | undefined` rather than `T`, forcing explicit checks.
+     *    This is stricter than the default but catches real bugs
+     *    when iterating over region data arrays.
+     */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+
+    /* ── Performance ────────────────────────────────────────────
+     *  skipLibCheck skips type-checking of all .d.ts files in
+     *  node_modules.  This dramatically speeds up `tsc -b` and
+     *  avoids spurious errors from conflicting type declarations
+     *  across transitive dependencies (Three.js, React Three
+     *  Fiber, and Drei ship extensive .d.ts bundles).
+     */
+    "skipLibCheck": true
+  },
+
+  /* ── Source roots ──────────────────────────────────────────────
+   *  - src/: all application source code (types, hooks, utils,
+   *    components, api client, styles entry point)
+   *  - tests/: Vitest test files (unit, component, integration)
+   *  - vite.config.ts: included so tsc validates the Vite config
+   *    (which contains inline Vitest configuration)
+   */
+  "include": [
+    "src",
+    "tests",
+    "vite.config.ts"
+  ],
+
+  /* ── Excluded paths ───────────────────────────────────────────
+   *  - node_modules: third-party packages (checked via skipLibCheck)
+   *  - dist: Vite production build output
+   */
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

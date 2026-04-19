@@ -313,10 +313,10 @@ def gen_spec(
     a("")
 
     # ── D200Region ──────────────────────────────────────────────────
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ══════════════════════════════════════════════════════════════")
     a("--  D200Region — Cell-aligned boundary regions of the Dense-200")
     a("--  patch of the {4,3,5} hyperbolic honeycomb")
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ══════════════════════════════════════════════════════════════")
     a("--")
     a(f"--  The Dense-200 patch is grown by greedy max-connectivity")
     a(f"--  from the central cube, producing {MAX_CELLS} cells.")
@@ -349,9 +349,9 @@ def gen_spec(
     a("")
 
     # ── D200OrbitRep ────────────────────────────────────────────────
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ═══════════════════════════════════════════════════════")
     a("--  D200OrbitRep — Orbit representatives by min-cut value")
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ═══════════════════════════════════════════════════════")
     a("--")
     a("--  Orbit decomposition:")
     for orb in orbits:
@@ -496,9 +496,9 @@ def gen_curvature(edge_classes: list[EdgeClassInfo]) -> str:
     a("")
     a("open import Util.Rationals")
     a("")
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ════════════════════════════════════════════════════")
     a("--  3D Edge Curvature for the Dense-200 {4,3,5} Patch")
-    a("-- ═══════════════════════════════════════════════════════════")
+    a("-- ════════════════════════════════════════════════════")
     a("--")
     a("--  In 3D, curvature lives on EDGES (not vertices).")
     a("--  At an interior edge e with valence v (cubes meeting):")
@@ -851,7 +851,7 @@ def print_monotonicity(regions: list[RegionInfo]) -> None:
     print(f"\n  Resolution tower monotonicity table:")
     print(f"    | Transition             | Max_lo | Max_hi | Witness      |")
     print(f"    |──────────────────────--|────────|────────|──────────────|")
-    print(f"    | Dense-50 → Dense-100   |      7 |      8 | (1 , refl)  |")
+    print(f"    | Dense-50 → Dense-100   |      7 |      8 | (1 , refl)   |")
     if k >= 0:
         print(f"    | Dense-100 → Dense-200  |      8 |"
               f"     {max_s:>2d} | ({k} , refl)  |")
@@ -923,7 +923,7 @@ def main() -> None:
     args = parser.parse_args()
 
     print("╔═══════════════════════════════════════════════════════════╗")
-    print("║  Phase G.1: Dense-200 {4,3,5} — Resolution Tower Level 3 ║")
+    print("║  Phase G.1: Dense-200 {4,3,5} — Resolution Tower Level 3  ║")
     print("║  Orbit reduction + area law • Convergence certificate     ║")
     print("╚═══════════════════════════════════════════════════════════╝")
 

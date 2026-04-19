@@ -39,6 +39,32 @@
     "tlHasAreaLaw": false,
     "tlHasBridge": true,
     "tlHasHalfBound": false,
+    "tlMaxCut": 9,
+    "tlMonotone": [
+      0,
+      "refl"
+    ],
+    "tlOrbits": 9,
+    "tlPatchName": "honeycomb-145",
+    "tlRegions": 1008
+  },
+  {
+    "tlHasAreaLaw": true,
+    "tlHasBridge": true,
+    "tlHasHalfBound": true,
+    "tlMaxCut": 9,
+    "tlMonotone": [
+      0,
+      "refl"
+    ],
+    "tlOrbits": 9,
+    "tlPatchName": "dense-1000",
+    "tlRegions": 10317
+  },
+  {
+    "tlHasAreaLaw": false,
+    "tlHasBridge": true,
+    "tlHasHalfBound": false,
     "tlMaxCut": 2,
     "tlMonotone": null,
     "tlOrbits": 2,

@@ -1,8 +1,8 @@
 ```bash
 (venv) zimablue@DESKTOP-JC7I7AQ:~/univalence-gravity$ python3 sim/prototyping/01_happy_patch_cuts.py
 ╔══════════════════════════════════════════════════════════╗
-║  Phase 1.2(a):  HaPPY Patch Min-Cut Verification       ║
-║  Discrete Ryu–Takayanagi for the {5,4} Tiling          ║
+║  Phase 1.2(a):  HaPPY Patch Min-Cut Verification         ║
+║  Discrete Ryu–Takayanagi for the {5,4} Tiling            ║
 ╚══════════════════════════════════════════════════════════╝
 
 ========================================================================

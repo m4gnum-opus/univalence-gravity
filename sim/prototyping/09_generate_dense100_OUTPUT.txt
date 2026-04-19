@@ -1,6 +1,6 @@
 ╔═══════════════════════════════════════════════════════════╗
-║  Phase D.1c: Dense-100 {4,3,5} — Orbit-Reduced Agda Gen ║
-║  Greedy max-connectivity • Orbit reduction strategy      ║
+║  Phase D.1c: Dense-100 {4,3,5} — Orbit-Reduced Agda Gen   ║
+║  Greedy max-connectivity • Orbit reduction strategy       ║
 ╚═══════════════════════════════════════════════════════════╝
 
   Building Dense-100 patch via greedy max-connectivity ...
