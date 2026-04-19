@@ -27,13 +27,29 @@ The project ships three cooperating layers:
 
 | Result | Module | Statement |
 |--------|--------|-----------|
-| **Discrete Ryu–Takayanagi** | `Bridge/GenericBridge.agda` | S_cut = L_min for all boundary regions, on any patch, via a single generic theorem |
-| **Discrete Gauss–Bonnet** | `Bulk/GaussBonnet.agda` | Σκ(v) = χ(K) = 1 for the {5,4} hyperbolic tiling (by `refl`) |
-| **Discrete Bekenstein–Hawking** | `Bridge/HalfBound.agda` | S(A) ≤ area(A)/2 with 1/(4G) = 1/2 in bond-dimension-1 units |
-| **Discrete Wick Rotation** | `Bridge/WickRotation.agda` | The holographic bridge is curvature-agnostic: same Agda term for AdS ({5,4}) and dS ({5,3}) |
-| **No Closed Timelike Curves** | `Causal/NoCTC.agda` | Structural acyclicity from ℕ well-foundedness — the type system prevents time travel |
-| **Matter as Topological Defects** | `Gauge/Holonomy.agda` | Non-trivial Q₈ Wilson loops on the holographic network |
-| **Quantum Superposition Bridge** | `Quantum/QuantumBridge.agda` | ⟨S⟩ = ⟨L⟩ for any finite superposition (5-line proof, amplitude-polymorphic) |
+| **Discrete Ryu–Takayanagi** | `Bridge/GenericBridge.agda` | $S_{\text{cut}} = L_{\min}$ for all boundary regions, on any patch, via a single generic theorem |
+| **Discrete Gauss–Bonnet** | `Bulk/GaussBonnet.agda` | $\sum_{v} \kappa(v) = \chi(K) = 1$ for the $\{5,4\}$ hyperbolic tiling (by `refl`) |
+| **Discrete Bekenstein–Hawking** | `Bridge/HalfBound.agda` | $S(A) \leq \text{area}(A)/2$ with $\tfrac{1}{4G} = \tfrac{1}{2}$ in bond-dimension-1 units |
+| **Discrete Wick Rotation** | `Bridge/WickRotation.agda` | The holographic bridge is curvature-agnostic: same Agda term for AdS ($\{5,4\}$) and dS ($\{5,3\}$) |
+| **No Closed Timelike Curves** | `Causal/NoCTC.agda` | Structural acyclicity from $\mathbb{N}$ well-foundedness — the type system prevents time travel |
+| **Matter as Topological Defects** | `Gauge/Holonomy.agda` | Non-trivial $Q_8$ Wilson loops on the holographic network |
+| **Quantum Superposition Bridge** | `Quantum/QuantumBridge.agda` | $\langle S \rangle = \langle L \rangle$ for any finite superposition (5-line proof, amplitude-polymorphic) |
+
+The central identities in display form:
+
+$$
+S_{\text{cut}} = L_{\min}
+\qquad
+\sum_{v} \kappa(v) = \chi(K) = 1
+\qquad
+S(A) \;\leq\; \frac{\text{area}(A)}{2}
+\qquad
+\frac{1}{4G} = \frac{1}{2}
+$$
+
+$$
+\langle S \rangle = \langle L \rangle
+$$
 
 For the full theorem registry with type signatures and module cross-references, see [`docs/formal/01-theorems.md`](formal/01-theorems.md).
 
@@ -97,7 +113,13 @@ npm run dev
 # → http://localhost:5173
 ```
 
-The frontend is a React 18 + TypeScript 5 + Three.js single-page application. It consumes the backend REST API and renders interactive 3D visualizations of all 16 patches as Escher-style Poincaré projections — with the fundamental cell at the origin, per-cell conformal scaling `s(u) = (1 − |u|²)/2`, per-cell rotation quaternions extracted from the boosted hyperbolic frame, and a semi-transparent boundary shell enclosing the bulk graph. All cells (boundary + interior) and all physical bonds from `patchGraph` are rendered directly from the Agda-verified data; the frontend performs no mathematical computation of its own. See [`docs/engineering/frontend-spec-webgl.md`](engineering/frontend-spec-webgl.md) and [`frontend/README.md`](../frontend/README.md) for details.
+The frontend is a React 18 + TypeScript 5 + Three.js single-page application. It consumes the backend REST API and renders interactive 3D visualizations of all 16 patches as Escher-style Poincaré projections — with the fundamental cell at the origin, per-cell conformal scaling
+
+$$
+s(u) = \frac{1 - |u|^2}{2}
+$$
+
+per-cell rotation quaternions extracted from the boosted hyperbolic frame, and a semi-transparent boundary shell enclosing the bulk graph. All cells (boundary + interior) and all physical bonds from `patchGraph` are rendered directly from the Agda-verified data; the frontend performs no mathematical computation of its own. See [`docs/engineering/frontend-spec-webgl.md`](engineering/frontend-spec-webgl.md) and [`frontend/README.md`](../frontend/README.md) for details.
 
 ### Regenerate Data (Optional)
 
@@ -170,18 +192,23 @@ and 3D cubic honeycombs. See [`docs/formal/11-generic-bridge.md`](formal/11-gene
 
 ## The Discrete Bekenstein–Hawking Bound
 
-The sharp bound S(A) ≤ area(A)/2 — identifying the discrete Newton's
-constant as 1/(4G) = 1/2 in bond-dimension-1 units — is verified across
-32,134 regions on 4 tilings ({4,3,5}, {5,4}, {4,4}, {5,3}), 4 growth
-strategies, and 3 capacities. The bound is proven generically via the
-`from-two-cuts` lemma and instantiated per-patch by `abstract` witnesses.
-This eliminates the constructive-reals wall for the entropy-area
-relationship. See [`docs/formal/12-bekenstein-hawking.md`](formal/12-bekenstein-hawking.md)
-and [`docs/physics/discrete-bekenstein-hawking.md`](physics/discrete-bekenstein-hawking.md).
+The sharp bound
+
+$$
+S(A) \;\leq\; \frac{\text{area}(A)}{2}
+$$
+
+— identifying the discrete Newton's constant as
+
+$$
+\frac{1}{4G} = \frac{1}{2}
+$$
+
+in bond-dimension-1 units — is verified across $32{,}134$ regions on $4$ tilings ($\{4,3,5\}$, $\{5,4\}$, $\{4,4\}$, $\{5,3\}$), $4$ growth strategies, and $3$ capacities. The bound is proven generically via the `from-two-cuts` lemma and instantiated per-patch by `abstract` witnesses. This eliminates the constructive-reals wall for the entropy-area relationship. See [`docs/formal/12-bekenstein-hawking.md`](formal/12-bekenstein-hawking.md) and [`docs/physics/discrete-bekenstein-hawking.md`](physics/discrete-bekenstein-hawking.md).
 
 ## What This Does NOT Prove
 
-- That discrete structures converge to smooth geometry as N → ∞
+- That discrete structures converge to smooth geometry as $N \to \infty$
 - That finite gauge groups relate to continuous Lie groups
 - That the causal poset approximates a Lorentzian metric
 - That "transport along a Univalence path" has physical meaning
@@ -273,7 +300,7 @@ for every patch with the Lorentz-boost centring roadmap applied
 (fundamental cell at origin, per-cell conformal scale, per-cell rotation
 quaternion), `InstancedMesh` rendering above 500 cells, merged-buffer
 boundary wireframe, origin-centred boundary shell, bond visibility via
-`depthWrite: false`, four colour modes (min-cut / size / S·area⁻¹ /
+`depthWrite: false`, four colour modes (min-cut / size / $S \cdot \text{area}^{-1}$ /
 curvature), Tower timeline with animated playback, Theorem dashboard,
 8-step Dynamics demo. Full Vitest suite.
 
