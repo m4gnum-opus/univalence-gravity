@@ -287,10 +287,6 @@ engineering, which I orchestrated mostly through a tiny self-developed interface
 based on `streamlit`, OpenRouterGUI (available at
 `historical/tools/OpenRouterGUI.7z`).
 
-$$
-\sum_{i=1}^{n} i = \frac{n(n+1)}{2}
-$$
-
 ## Citation
 
 Please cite this repository as described in [`CITATION.cff`](CITATION.cff).
