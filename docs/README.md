@@ -4,7 +4,7 @@
 
 *By Sven Bichtemann* | Agda 2.8.0 | agda/cubical library | MIT License
 
-![WebGL Excerpt](.img/README_FE-Cutout.png)
+![SpaceTimeCompilerPic](.img/README_head.jpeg)
 
 ## What This Is
 
@@ -73,6 +73,8 @@ agda -i src src/Quantum/QuantumBridge.agda   # Quantum superposition bridge
 ```
 
 ### Web Presence
+
+![WebGL Excerpt](.img/README_FE-Cutout.png)
 
 The app will soon be available at [www.univalence-gravity.com](https://univalence-gravity.com)
 Until then, you can access the app on your own computer via Data Export -> Backend Setup -> Frontend Setup -> Browser View.
