@@ -28,12 +28,12 @@ These walls are the correct conceptual boundary between the tractable (the discr
 
 Before mapping the walls, it is worth restating what the formalization *does* prove, so the boundaries are understood in context. Every result below is machine-checked by the Cubical Agda 2.8.0 type-checker with no postulated axioms:
 
-- **Discrete Ryu–Takayanagi** (S = L) on 12 patch instances spanning 1D, 2D, and 3D, via a single generic theorem.
-- **Discrete Gauss–Bonnet** (Σκ = χ) for both AdS-like ({5,4}) and dS-like ({5,3}) tilings.
-- **Discrete Bekenstein–Hawking** (S ≤ area/2) with 1/(4G) = 1/2 in bond-dimension-1 units, verified across 32,134 regions on 4 tilings, 4 strategies, and 3 capacities.
-- **No Closed Timelike Curves** — structural acyclicity from ℕ well-foundedness.
-- **Matter as Topological Defects** — non-trivial Q₈ Wilson loops producing inhabited `ParticleDefect` types.
-- **Quantum Superposition Bridge** — ⟨S⟩ = ⟨L⟩ for any finite superposition, any amplitude algebra.
+- **Discrete Ryu–Takayanagi** ($S = L$) on 12 patch instances spanning 1D, 2D, and 3D, via a single generic theorem.
+- **Discrete Gauss–Bonnet** ($\Sigma\kappa = \chi$) for both AdS-like ($\{5,4\}$) and dS-like ($\{5,3\}$) tilings.
+- **Discrete Bekenstein–Hawking** ($S \leq \text{area}/2$) with $1/(4G) = 1/2$ in bond-dimension-1 units, verified across 32,134 regions on 4 tilings, 4 strategies, and 3 capacities.
+- **No Closed Timelike Curves** — structural acyclicity from $\mathbb{N}$ well-foundedness.
+- **Matter as Topological Defects** — non-trivial $Q_8$ Wilson loops producing inhabited `ParticleDefect` types.
+- **Quantum Superposition Bridge** — $\langle S \rangle = \langle L \rangle$ for any finite superposition, any amplitude algebra.
 - **Curvature-Agnostic Bridge** — the same Agda term for both positive and negative curvature regimes.
 
 The gap between these results and continuum physics is where the five walls stand.
@@ -44,26 +44,26 @@ The gap between these results and continuum physics is where the five walls stan
 
 ### 1.1 The Obstacle
 
-The continuum Bekenstein–Hawking formula S = A / (4G_N) involves real-valued areas and Newton's gravitational constant. Einstein's field equations are partial differential equations on smooth real-valued tensor fields. The Ryu–Takayanagi minimal surface is a codimension-2 extremal surface in a smooth Riemannian manifold.
+The continuum Bekenstein–Hawking formula $S = A / (4 G_N)$ involves real-valued areas and Newton's gravitational constant. Einstein's field equations are partial differential equations on smooth real-valued tensor fields. The Ryu–Takayanagi minimal surface is a codimension-2 extremal surface in a smooth Riemannian manifold.
 
 The cubical library's `Cubical.HITs.Reals` provides only rudimentary support — no completeness axiom, no convergence of sequences, no integration, no smooth manifold type. A usable constructive real number type with limits and differential structure would require a multi-year library development effort comparable to Lean's `mathlib` for analysis.
 
 ### 1.2 What Is Blocked
 
 - Defining smooth manifolds, Riemannian metrics, or Lorentzian spacetimes in Cubical Agda.
-- Proving that the discrete Gauss–Bonnet theorem Σκ(v) = χ(K) converges to the smooth Gauss–Bonnet theorem ∫_M K dA + ∫_{∂M} κ_g ds = 2πχ(M) as the mesh size goes to zero.
+- Proving that the discrete Gauss–Bonnet theorem $\Sigma\kappa(v) = \chi(K)$ converges to the smooth Gauss–Bonnet theorem $\int_M K \, dA + \int_{\partial M} \kappa_g \, ds = 2\pi\chi(M)$ as the mesh size goes to zero.
 - Formalizing the Jacobson thermodynamic derivation of Einstein's equations from entropy–area proportionality (which requires smooth differential geometry).
 - The `ConvergenceWitness` originally envisioned in §15.9.5 of the historical development docs — a constructive statement about the limit of a sequence of entropy functionals.
 
 ### 1.3 What Has Been Bypassed
 
-The discrete Bekenstein–Hawking bound S(A) ≤ area(A)/2 ([`formal/12-bekenstein-hawking.md`](../formal/12-bekenstein-hawking.md)) **partially bypasses** this wall for the entropy-area relationship specifically:
+The discrete Bekenstein–Hawking bound $S(A) \leq \text{area}(A)/2$ ([`formal/12-bekenstein-hawking.md`](../formal/12-bekenstein-hawking.md)) **partially bypasses** this wall for the entropy-area relationship specifically:
 
-- The discrete Newton's constant 1/(4G) = 1/2 is an exact rational — not a real-valued limit. It is verified by `refl` on closed ℕ terms at every resolution level.
-- The `ConvergenceWitness` (which would have required constructive reals and Cauchy completeness) is replaced by `HalfBoundWitness` (which requires only ℕ arithmetic and `refl`).
+- The discrete Newton's constant $1/(4G) = 1/2$ is an exact rational — not a real-valued limit. It is verified by `refl` on closed $\mathbb{N}$ terms at every resolution level.
+- The `ConvergenceWitness` (which would have required constructive reals and Cauchy completeness) is replaced by `HalfBoundWitness` (which requires only $\mathbb{N}$ arithmetic and `refl`).
 - The `DiscreteBekensteinHawking` type from `Bridge/SchematicTower.agda` carries the full enriched equivalence + half-bound + monotonicity at each resolution level — no limit argument needed.
 
-**The bypass is partial:** the discrete Newton's constant 1/2 is identified within the discrete model, but connecting it to the physical Newton's constant G_N ≈ 6.674 × 10⁻¹¹ m³ kg⁻¹ s⁻² would require smooth geometry (to define the Planck area and the meaning of "bond dimension" in physical units). Similarly, the smooth geometry of General Relativity — the metric tensor, geodesics, Einstein's equations — remains behind this wall.
+**The bypass is partial:** the discrete Newton's constant $1/2$ is identified within the discrete model, but connecting it to the physical Newton's constant $G_N \approx 6.674 \times 10^{-11} \, \text{m}^3 \, \text{kg}^{-1} \, \text{s}^{-2}$ would require smooth geometry (to define the Planck area and the meaning of "bond dimension" in physical units). Similarly, the smooth geometry of General Relativity — the metric tensor, geodesics, Einstein's equations — remains behind this wall.
 
 ### 1.4 Required Infrastructure to Cross
 
@@ -85,26 +85,28 @@ This is a foundational mathematics library project, independent of the holograph
 
 The physical path integral in quantum field theory sums (or integrates) over *all* field configurations on a spacetime manifold, weighted by the exponential of the action:
 
-> Z = ∫ Dφ exp(−S[φ])
+$$
+Z = \int \mathcal{D}\varphi \, \exp(-S[\varphi])
+$$
 
 For continuous gauge groups and infinite lattices, this requires constructive measure theory on infinite-dimensional function spaces — an active, largely unsolved area of mathematics even classically.
 
 ### 2.2 What the Repository Achieves
 
-The `quantum-bridge` theorem ([`formal/07-quantum-superposition.md`](../formal/07-quantum-superposition.md)) proves ⟨S⟩ = ⟨L⟩ for any **finite** superposition of gauge configurations. The configuration space is finite (|G|^|B| for a finite group G and finite bond set B): for Q₈ on the 5-bond star patch, there are 8⁵ = 32,768 configurations, each contributing one term to the sum.
+The `quantum-bridge` theorem ([`formal/07-quantum-superposition.md`](../formal/07-quantum-superposition.md)) proves $\langle S \rangle = \langle L \rangle$ for any **finite** superposition of gauge configurations. The configuration space is finite ($|G|^{|B|}$ for a finite group $G$ and finite bond set $B$): for $Q_8$ on the 5-bond star patch, there are $8^5 = 32{,}768$ configurations, each contributing one term to the sum.
 
-The proof is a 5-line structural induction on a finite list, amplitude-polymorphic by construction. It works for ℕ (classical counting), ℤ[i] (Gaussian integers with quantum interference), or any amplitude algebra.
+The proof is a 5-line structural induction on a finite list, amplitude-polymorphic by construction. It works for $\mathbb{N}$ (classical counting), $\mathbb{Z}[i]$ (Gaussian integers with quantum interference), or any amplitude algebra.
 
 ### 2.3 What Is Blocked
 
-- Extending the quantum bridge to continuous gauge groups (SU(2), SU(3), U(1)) where the configuration space is infinite-dimensional.
-- Formalizing the Boltzmann weight exp(−S_W[ω]) for the Wilson action, which requires constructive exponentials.
-- Defining the partition function Z as an integral (rather than a finite sum) and proving that it is well-defined (convergent, non-zero for physical states).
-- Proving that the von Neumann entropy S_vN = −Tr(ρ_A log ρ_A) agrees with the min-cut entropy S_cut for perfect-tensor states — which requires tensor contraction, partial trace, and the spectral theorem.
+- Extending the quantum bridge to continuous gauge groups ($SU(2)$, $SU(3)$, $U(1)$) where the configuration space is infinite-dimensional.
+- Formalizing the Boltzmann weight $\exp(-S_W[\omega])$ for the Wilson action, which requires constructive exponentials.
+- Defining the partition function $Z$ as an integral (rather than a finite sum) and proving that it is well-defined (convergent, non-zero for physical states).
+- Proving that the von Neumann entropy $S_{vN} = -\mathrm{Tr}(\rho_A \log \rho_A)$ agrees with the min-cut entropy $S_{\text{cut}}$ for perfect-tensor states — which requires tensor contraction, partial trace, and the spectral theorem.
 
 ### 2.4 Required Infrastructure to Cross
 
-- Constructive measure theory on function spaces (σ-algebras, integration, absolute continuity)
+- Constructive measure theory on function spaces ($\sigma$-algebras, integration, absolute continuity)
 - Constructive spectral theory for finite-dimensional operators (eigendecomposition, trace, log)
 - A constructive formalization of the Wilson lattice gauge action and its exponential weight
 
@@ -114,7 +116,7 @@ The proof is a 5-line structural induction on a finite list, amplitude-polymorph
 
 ### 3.1 The Obstacle
 
-The Standard Model gauge group SU(3) × SU(2) × U(1) is a continuous compact Lie group. Its elements are complex unitary matrices, its representations are described by highest-weight theory, and its Lie algebra generates infinitesimal gauge transformations.
+The Standard Model gauge group $SU(3) \times SU(2) \times U(1)$ is a continuous compact Lie group. Its elements are complex unitary matrices, its representations are described by highest-weight theory, and its Lie algebra generates infinitesimal gauge transformations.
 
 Cubical Agda has no robust library for complex analysis, matrix groups, Lie algebras, or representation theory of continuous groups.
 
@@ -124,30 +126,30 @@ The gauge layer ([`formal/05-gauge-theory.md`](../formal/05-gauge-theory.md)) re
 
 | Continuum Factor | Finite Replacement | Order | Irreps |
 |---|---|---|---|
-| U(1) | ℤ/nℤ | n | n irreps, all dim 1 |
-| SU(2) | Q₈ (quaternion) | 8 | 5 irreps: dims 1,1,1,1,2 |
+| $U(1)$ | $\mathbb{Z}/n\mathbb{Z}$ | $n$ | $n$ irreps, all dim $1$ |
+| $SU(2)$ | $Q_8$ (quaternion) | $8$ | 5 irreps: dims $1,1,1,1,2$ |
 
-All group axioms are verified by exhaustive case split with every case holding by `refl`. The 400-case associativity proof for Q₈ type-checks in Agda, confirming the full quaternion multiplication table.
+All group axioms are verified by exhaustive case split with every case holding by `refl`. The 400-case associativity proof for $Q_8$ type-checks in Agda, confirming the full quaternion multiplication table.
 
-The dimension functor dim : Rep G → ℕ extracts scalar capacities from representation labels, feeding them into the `PatchData` interface. The generic bridge theorem produces `BridgeWitness` from these scalar weights, completely unaware of the gauge group — the bridge is **gauge-agnostic** by construction.
+The dimension functor $\dim : \text{Rep}\, G \to \mathbb{N}$ extracts scalar capacities from representation labels, feeding them into the `PatchData` interface. The generic bridge theorem produces `BridgeWitness` from these scalar weights, completely unaware of the gauge group — the bridge is **gauge-agnostic** by construction.
 
 ### 3.3 What Is Blocked
 
-- The passage from Q₈ to the continuous SU(2): the limit |G| → ∞ on the group order.
-- Formalizing Lie algebras (su(2), su(3), u(1)) and their exponential maps.
+- The passage from $Q_8$ to the continuous $SU(2)$: the limit $|G| \to \infty$ on the group order.
+- Formalizing Lie algebras ($\mathfrak{su}(2)$, $\mathfrak{su}(3)$, $\mathfrak{u}(1)$) and their exponential maps.
 - Representation theory of continuous groups: highest-weight classification, Clebsch–Gordan decomposition.
 - Spontaneous symmetry breaking (the Higgs mechanism): a variational problem on a continuous potential.
 
 ### 3.4 Why This Wall Is Structurally Irrelevant to the Bridge
 
-The holographic bridge depends only on scalar bond capacities extracted by the dimension functor. The passage from Q₈ to SU(2) would change the *values* of these capacities (from dim = 1 or 2 to arbitrary positive integers or reals) but not the *structure* of the bridge proof. The bridge operates on abstract `PatchData` — scalar weights over a finite region type — regardless of where those weights came from.
+The holographic bridge depends only on scalar bond capacities extracted by the dimension functor. The passage from $Q_8$ to $SU(2)$ would change the *values* of these capacities (from $\dim = 1$ or $2$ to arbitrary positive integers or reals) but not the *structure* of the bridge proof. The bridge operates on abstract `PatchData` — scalar weights over a finite region type — regardless of where those weights came from.
 
 This means the continuous gauge group wall blocks the *physical interpretation* (connecting the discrete model to the Standard Model) but not the *mathematical architecture* (the generic bridge theorem). The bridge would work equally well with real-valued bond capacities if constructive reals were available (Wall 1).
 
 ### 3.5 Required Infrastructure to Cross
 
-- Constructive complex analysis (ℂ as a complete ordered field, not just ℤ[i])
-- Matrix groups over ℂ (GL_n, SU(n), U(n)) with constructive decidability
+- Constructive complex analysis ($\mathbb{C}$ as a complete ordered field, not just $\mathbb{Z}[i]$)
+- Matrix groups over $\mathbb{C}$ ($GL_n$, $SU(n)$, $U(n)$) with constructive decidability
 - Constructive Lie theory (Lie algebras, exponential map, adjoint representation)
 - Constructive representation theory (Schur's lemma, character theory, highest-weight modules)
 
@@ -159,13 +161,13 @@ This infrastructure does not exist in any proof assistant. Even Lean's `mathlib`
 
 ### 4.1 The Obstacle
 
-Physical spacetime has Lorentzian signature (3,1) — three spatial dimensions with positive metric and one temporal dimension with negative metric. The distinction between timelike, spacelike, and null directions is fundamental to causality, the light cone, and the structure of Einstein's equations.
+Physical spacetime has Lorentzian signature $(3,1)$ — three spatial dimensions with positive metric and one temporal dimension with negative metric. The distinction between timelike, spacelike, and null directions is fundamental to causality, the light cone, and the structure of Einstein's equations.
 
 The discrete model has a causal poset ([`formal/06-causal-structure.md`](../formal/06-causal-structure.md)) providing time-directionality, but no metric signature. The partial order `_<ℕ_` replaces the metric: "timelike" = causally related, "spacelike" = incomparable in the poset. There is no notion of "null" (lightlike) separation, no metric tensor, no signature.
 
 ### 4.2 What the Repository Achieves
 
-- **CTC-freedom** (`Causal/NoCTC.agda`): no closed timelike curve can exist in the stratified causal poset, as a structural consequence of ℕ well-foundedness. The type system prevents time travel by construction.
+- **CTC-freedom** (`Causal/NoCTC.agda`): no closed timelike curve can exist in the stratified causal poset, as a structural consequence of $\mathbb{N}$ well-foundedness. The type system prevents time travel by construction.
 - **Future light cones** (`Causal/LightCone.agda`): events reachable from a given event via `CausalChain`.
 - **Spacelike separation** (`Causal/LightCone.agda`): events at the same time are automatically spacelike-separated (`same-time-spacelike`).
 - **Causal diamonds** (`Causal/CausalDiamond.agda`): finite causal intervals with maximin entropy and proper time.
@@ -176,15 +178,15 @@ The causal poset captures the *arrow of time* and the *causal ordering* — but 
 
 - Defining a metric tensor on the discrete cell complex with Lorentzian signature.
 - Distinguishing null (lightlike) from spacelike separation at the type level.
-- Formalizing the Einstein equations R_μν − (1/2)Rg_μν + Λg_μν = 8πG T_μν as a relation between the metric and the stress-energy tensor.
+- Formalizing the Einstein equations $R_{\mu\nu} - \tfrac{1}{2} R \, g_{\mu\nu} + \Lambda g_{\mu\nu} = 8 \pi G \, T_{\mu\nu}$ as a relation between the metric and the stress-energy tensor.
 - Proving that the discrete causal poset approximates a smooth Lorentzian manifold in any controlled limit.
 - Formalizing the concept of a "trapped surface" or "event horizon" — where the maximin construction breaks down.
 
 ### 4.4 The Wick Rotation Does Not Help
 
-The discrete Wick rotation ([`formal/08-wick-rotation.md`](../formal/08-wick-rotation.md)) flips the curvature sign between AdS ({5,4}, κ < 0) and dS ({5,3}, κ > 0) — but this is a change of the *spatial* curvature, not of the *spacetime* signature. Both regimes have Euclidean (Riemannian) spatial slices; the Lorentzian signature is a temporal structure orthogonal to the spatial curvature.
+The discrete Wick rotation ([`formal/08-wick-rotation.md`](../formal/08-wick-rotation.md)) flips the curvature sign between AdS ($\{5,4\}$, $\kappa < 0$) and dS ($\{5,3\}$, $\kappa > 0$) — but this is a change of the *spatial* curvature, not of the *spacetime* signature. Both regimes have Euclidean (Riemannian) spatial slices; the Lorentzian signature is a temporal structure orthogonal to the spatial curvature.
 
-The continuum Wick rotation L_dS = i · L_AdS multiplies a length by the imaginary unit, rotating from Riemannian to Lorentzian signature. The discrete "Wick rotation" avoids this entirely by operating at the level of pentagonal tilings, where the signature question does not arise.
+The continuum Wick rotation $L_{dS} = i \cdot L_{\text{AdS}}$ multiplies a length by the imaginary unit, rotating from Riemannian to Lorentzian signature. The discrete "Wick rotation" avoids this entirely by operating at the level of pentagonal tilings, where the signature question does not arise.
 
 ### 4.5 Required Infrastructure to Cross
 
@@ -208,7 +210,7 @@ The gauge-theory construction ([`formal/05-gauge-theory.md`](../formal/05-gauge-
 - **Topological defects** — faces where the holonomy is not the identity (`ParticleDefect`).
 - **Conjugacy classes** — gauge-invariant classification of particle species.
 
-These are **bosonic** gauge fields and **topological charges** (static matter content). The "particles" are classified by conjugacy class (Q₈ has 5 classes → vacuum + 4 species), but they have no propagation, no mass, no spin statistics, and no Grassmann-valued path integral.
+These are **bosonic** gauge fields and **topological charges** (static matter content). The "particles" are classified by conjugacy class ($Q_8$ has 5 classes → vacuum + 4 species), but they have no propagation, no mass, no spin statistics, and no Grassmann-valued path integral.
 
 ### 5.3 What Is Blocked
 
@@ -221,7 +223,7 @@ These are **bosonic** gauge fields and **topological charges** (static matter co
 ### 5.4 Required Infrastructure to Cross
 
 - Constructive Grassmann algebra (an exterior algebra over a module, with anticommutativity and the Berezin integral).
-- Constructive super-algebra (ℤ/2-graded algebras with even and odd parts).
+- Constructive super-algebra ($\mathbb{Z}/2$-graded algebras with even and odd parts).
 - Lattice Dirac operators and their kernel/cokernel.
 
 This is largely unexplored territory in constructive mathematics. Classical treatments of Grassmann variables rely heavily on formal manipulation rules (Berezin calculus) that have no obvious constructive counterpart.
@@ -236,9 +238,9 @@ This geometric blindness has decisive consequences for the walls:
 
 | Wall | Does the bridge care? | Impact on the bridge |
 |------|----------------------|---------------------|
-| 1 (Reals) | No — the bridge operates on ℕ-valued observables | Blocks interpretation, not the bridge itself |
+| 1 (Reals) | No — the bridge operates on $\mathbb{N}$-valued observables | Blocks interpretation, not the bridge itself |
 | 2 (Path integrals) | Partially — the quantum bridge works for finite sums; infinite sums would need new infrastructure | Blocks the continuous quantum layer |
-| 3 (Gauge groups) | No — the bridge sees only dim(ρ) : ℕ, not the group | Blocks interpretation, not the bridge |
+| 3 (Gauge groups) | No — the bridge sees only $\dim(\rho) : \mathbb{N}$, not the group | Blocks interpretation, not the bridge |
 | 4 (Lorentzian) | No — the bridge operates on spatial slices within the causal diamond | Blocks spatiotemporal interpretation |
 | 5 (Fermions) | No — the bridge is matter-agnostic | Blocks standard-model matter content |
 
@@ -254,25 +256,25 @@ The constructive-reals wall for the entropy-area relationship deserves special e
 
 **Before the half-bound (§15.9 of the historical development docs):**
 
-The Entropic Convergence Conjecture asked whether the sequence of ratios η_N = max S_N / max area_N converges as N → ∞. Formalizing this required:
+The Entropic Convergence Conjecture asked whether the sequence of ratios $\eta_N = \max S_N / \max \text{area}_N$ converges as $N \to \infty$. Formalizing this required:
 
 1. A constructive real number type with Cauchy completeness.
-2. A convergence proof for the η_N sequence.
-3. An identification of the limiting constant with 1/(4G_N).
+2. A convergence proof for the $\eta_N$ sequence.
+3. An identification of the limiting constant with $1/(4 G_N)$.
 
 All three were behind Wall 1.
 
 **After the half-bound ([`formal/12-bekenstein-hawking.md`](../formal/12-bekenstein-hawking.md)):**
 
-The question "does η_N converge?" is replaced by the exact answer: S(A) ≤ area(A)/2 for every region at every resolution level, with equality achieved. The discrete Newton's constant 1/(4G) = 1/2 is an exact rational verified by `refl` on closed ℕ terms. No convergence argument, no Cauchy completeness, no constructive reals.
+The question "does $\eta_N$ converge?" is replaced by the exact answer: $S(A) \leq \text{area}(A)/2$ for every region at every resolution level, with equality achieved. The discrete Newton's constant $1/(4G) = 1/2$ is an exact rational verified by `refl` on closed $\mathbb{N}$ terms. No convergence argument, no Cauchy completeness, no constructive reals.
 
 The `ConvergenceWitness` in the `EntropicConvergence` type is replaced by `HalfBoundWitness` in the `DiscreteBekensteinHawking` type. The substitution is:
 
 | Old (blocked) | New (achieved) |
 |---|---|
-| `ConvergenceWitness` requiring constructive ℝ | `HalfBoundWitness` requiring only ℕ + `refl` |
-| Limit argument: lim η_N = ? | Exact bound: 2·S ≤ area at every N |
-| Identification: η_∞ = 1/(4G) | Exact constant: 1/(4G) = 1/2 by `refl` |
+| `ConvergenceWitness` requiring constructive $\mathbb{R}$ | `HalfBoundWitness` requiring only $\mathbb{N}$ + `refl` |
+| Limit argument: $\lim \eta_N = {?}$ | Exact bound: $2 \cdot S \leq \text{area}$ at every $N$ |
+| Identification: $\eta_\infty = 1/(4G)$ | Exact constant: $1/(4G) = 1/2$ by `refl` |
 
 This is why the Five Walls are now **four** for the entropy-area relationship. The remaining four walls are genuine obstacles that will require fundamentally new proof-assistant infrastructure — or fundamentally new mathematical ideas — to cross.
 
@@ -296,9 +298,9 @@ The entropy-first route (Hypothesis A, via Jacobson's thermodynamic argument) is
 
 | Wall | Description | Status | Impact on Bridge |
 |------|-------------|--------|-----------------|
-| **1. Constructive Reals** | No smooth manifolds, no convergence, no integration | **Partially bypassed** — 1/(4G) = 1/2 by `refl` | Interpretation only |
+| **1. Constructive Reals** | No smooth manifolds, no convergence, no integration | **Partially bypassed** — $1/(4G) = 1/2$ by `refl` | Interpretation only |
 | **2. Path Integrals** | No infinite-dimensional integration, no Boltzmann weights | Not addressed — finite sums only | Blocks continuous quantum layer |
-| **3. Gauge Groups** | No SU(3) × SU(2) × U(1), no Lie theory | Not addressed — Q₈ ⊂ SU(2) is the farthest reach | Interpretation only |
+| **3. Gauge Groups** | No $SU(3) \times SU(2) \times U(1)$, no Lie theory | Not addressed — $Q_8 \subset SU(2)$ is the farthest reach | Interpretation only |
 | **4. Lorentzian Signature** | No metric tensor, no null directions, no Einstein equations | Not addressed — causal poset only | Blocks spacetime interpretation |
 | **5. Fermionic Matter** | No Grassmann variables, no Dirac operator, no spin-statistics | Not addressed — bosonic defects only | Blocks Standard Model content |
 
@@ -313,12 +315,12 @@ The five walls are the honest assessment of the gap between the discrete type-th
 | Theorem registry (all formal results) | [`formal/01-theorems.md`](../formal/01-theorems.md) |
 | The translation problem (full honest assessment) | [`physics/translation-problem.md`](translation-problem.md) |
 | Holographic dictionary (Agda ↔ physics) | [`physics/holographic-dictionary.md`](holographic-dictionary.md) |
-| Discrete Bekenstein–Hawking (the sharp 1/2 bound) | [`physics/discrete-bekenstein-hawking.md`](discrete-bekenstein-hawking.md) |
+| Discrete Bekenstein–Hawking (the sharp $1/2$ bound) | [`physics/discrete-bekenstein-hawking.md`](discrete-bekenstein-hawking.md) |
 | Three hypotheses (emergent / phase transition / discrete) | [`physics/three-hypotheses.md`](three-hypotheses.md) |
 | Generic bridge (geometrically blind) | [`formal/11-generic-bridge.md`](../formal/11-generic-bridge.md) |
 | Bekenstein–Hawking half-bound (formal) | [`formal/12-bekenstein-hawking.md`](../formal/12-bekenstein-hawking.md) |
 | Wick rotation (curvature-agnostic bridge) | [`formal/08-wick-rotation.md`](../formal/08-wick-rotation.md) |
-| Gauge theory (Q₈, connections, holonomy) | [`formal/05-gauge-theory.md`](../formal/05-gauge-theory.md) |
+| Gauge theory ($Q_8$, connections, holonomy) | [`formal/05-gauge-theory.md`](../formal/05-gauge-theory.md) |
 | Causal structure (NoCTC, light cones) | [`formal/06-causal-structure.md`](../formal/06-causal-structure.md) |
 | Quantum superposition bridge | [`formal/07-quantum-superposition.md`](../formal/07-quantum-superposition.md) |
 | Historical development (§15.6 original five walls) | [`historical/development-docs/10-frontier.md`](../historical/development-docs/10-frontier.md) §15.6 |

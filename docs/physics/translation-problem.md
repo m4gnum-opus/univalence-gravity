@@ -16,25 +16,25 @@ Before theorizing about the relationship to our universe, we must be ruthlessly 
 
 Every result below is verified by the Cubical Agda 2.8.0 type-checker. No axioms are postulated; all transport computes.
 
-- **Discrete Ryu–Takayanagi.** The formula S_cut(A) = L_min(A) — boundary min-cut entropy equals bulk minimal separating surface area — holds exactly on every contiguous boundary region, for every patch formalized (from the 6-tile star to the 3046-tile depth-7 layer), for any bond-weight assignment, and across any finite quantum superposition of gauge configurations.
+- **Discrete Ryu–Takayanagi.** The formula $S_{\text{cut}}(A) = L_{\min}(A)$ — boundary min-cut entropy equals bulk minimal separating surface area — holds exactly on every contiguous boundary region, for every patch formalized (from the 6-tile star to the 3046-tile depth-7 layer), for any bond-weight assignment, and across any finite quantum superposition of gauge configurations.
 
-- **Discrete Gauss–Bonnet.** The total combinatorial curvature Σ κ(v) = χ(K) = 1 holds for every patch, with negative interior curvature (κ = −1/5) for the {5,4} tiling and positive interior curvature (κ = +1/10) for the {5,3} tiling, connected by the curvature-agnostic bridge.
+- **Discrete Gauss–Bonnet.** The total combinatorial curvature $\sum_v \kappa(v) = \chi(K) = 1$ holds for every patch, with negative interior curvature ($\kappa = -1/5$) for the $\{5,4\}$ tiling and positive interior curvature ($\kappa = +1/10$) for the $\{5,3\}$ tiling, connected by the curvature-agnostic bridge.
 
-- **Discrete Bekenstein–Hawking.** S(A) ≤ area(A)/2 for all cell-aligned boundary regions, with a tight achiever where 2·S = area. The discrete Newton's constant is 1/(4G) = 1/2 in bond-dimension-1 units — verified by `refl` on closed ℕ terms.
+- **Discrete Bekenstein–Hawking.** $S(A) \leq \text{area}(A)/2$ for all cell-aligned boundary regions, with a tight achiever where $2 \cdot S = \text{area}$. The discrete Newton's constant is $1/(4G) = 1/2$ in bond-dimension-1 units — verified by `refl` on closed $\mathbb{N}$ terms.
 
-- **No Closed Timelike Curves.** Structural acyclicity from ℕ well-foundedness — the type system prevents time travel by construction.
+- **No Closed Timelike Curves.** Structural acyclicity from $\mathbb{N}$ well-foundedness — the type system prevents time travel by construction.
 
-- **Matter as Topological Defects.** Non-trivial Q₈ Wilson loops on the holographic network produce inhabited `ParticleDefect` types.
+- **Matter as Topological Defects.** Non-trivial $Q_8$ Wilson loops on the holographic network produce inhabited `ParticleDefect` types.
 
-- **Quantum Superposition Bridge.** ⟨S⟩ = ⟨L⟩ for any finite superposition of gauge configurations, any amplitude algebra, by a 5-line proof.
+- **Quantum Superposition Bridge.** $\langle S \rangle = \langle L \rangle$ for any finite superposition of gauge configurations, any amplitude algebra, by a 5-line proof.
 
-- **Curvature-Agnostic Bridge.** The same Agda term serves both AdS-like ({5,4}, κ < 0) and dS-like ({5,3}, κ > 0) geometries. No complex numbers needed.
+- **Curvature-Agnostic Bridge.** The same Agda term serves both AdS-like ($\{5,4\}$, $\kappa < 0$) and dS-like ($\{5,3\}$, $\kappa > 0$) geometries. No complex numbers needed.
 
 ### 1.2 What is NOT Proven
 
-- That the discrete structures converge to anything smooth as the cell count N → ∞.
-- That the finite gauge group Q₈ relates to the continuous SU(2) in any controlled limit.
-- That the combinatorial curvature κ has any relationship to the Ricci curvature of a Riemannian manifold.
+- That the discrete structures converge to anything smooth as the cell count $N \to \infty$.
+- That the finite gauge group $Q_8$ relates to the continuous $SU(2)$ in any controlled limit.
+- That the combinatorial curvature $\kappa$ has any relationship to the Ricci curvature of a Riemannian manifold.
 - That the causal poset structure approximates a Lorentzian metric.
 - That the quantum superposition over a finite configuration space has any relationship to the path integral of quantum field theory on a curved background.
 - That "transport along a Univalence path" has any physical meaning whatsoever beyond the formal mathematical content of the type equivalence it witnesses.
@@ -70,10 +70,10 @@ This blindness explains:
 
 | What it explains | Why it works |
 |---|---|
-| The Wick rotation ([`formal/08-wick-rotation.md`](../formal/08-wick-rotation.md)) | The bridge is literally the same Agda term for both {5,4} (AdS) and {5,3} (dS), because it never inspects the vertex valence. |
+| The Wick rotation ([`formal/08-wick-rotation.md`](../formal/08-wick-rotation.md)) | The bridge is literally the same Agda term for both $\{5,4\}$ (AdS) and $\{5,3\}$ (dS), because it never inspects the vertex valence. |
 | The 3D extension ([`formal/04-discrete-geometry.md`](../formal/04-discrete-geometry.md)) | The bridge is dimension-agnostic; the min-cut algorithm operates on the abstract flow graph regardless of whether bonds represent shared edges (2D) or shared faces (3D). |
-| The gauge enrichment ([`formal/05-gauge-theory.md`](../formal/05-gauge-theory.md)) | The bridge sees only scalar capacities (dim(ρ_e)), not the internal gauge-theoretic structure of the bonds. |
-| The quantum lift ([`formal/07-quantum-superposition.md`](../formal/07-quantum-superposition.md)) | The 5-line quantum bridge proof uses only linearity of finite sums (cong₂ on _+A_), independent of the topology, the gauge group, or even the amplitude type. |
+| The gauge enrichment ([`formal/05-gauge-theory.md`](../formal/05-gauge-theory.md)) | The bridge sees only scalar capacities ($\dim(\rho_e)$), not the internal gauge-theoretic structure of the bonds. |
+| The quantum lift ([`formal/07-quantum-superposition.md`](../formal/07-quantum-superposition.md)) | The 5-line quantum bridge proof uses only linearity of finite sums (`cong₂` on `_+A_`), independent of the topology, the gauge group, or even the amplitude type. |
 
 This suggests a tantalizing meta-physical hypothesis:
 
@@ -91,8 +91,8 @@ The three competing hypotheses for how smoothness might emerge from the discrete
 
 The architectural insight of §3 mirrors a known result in semiclassical gravity: Jacobson's 1995 derivation of Einstein's field equations from the thermodynamics of local Rindler horizons. Jacobson showed that if one assumes:
 
-1. A proportionality between the entanglement entropy of a local causal horizon and its area: δS = η · δA
-2. The Clausius relation: δQ = T · δS
+1. A proportionality between the entanglement entropy of a local causal horizon and its area: $\delta S = \eta \cdot \delta A$
+2. The Clausius relation: $\delta Q = T \cdot \delta S$
 3. The equivalence principle
 
 then the Einstein field equations follow as thermodynamic equations of state. The smooth metric is not *assumed*; it *emerges* as the unique tensor field consistent with the entropic constraints.
@@ -101,19 +101,19 @@ then the Einstein field equations follow as thermodynamic equations of state. Th
 
 The repository's verified artifacts instantiate the discrete analogues of all three Jacobson premises:
 
-**Premise 1 (Entropy–Area Proportionality).** The discrete Bekenstein–Hawking bound S(A) ≤ area(A)/2 is verified across 32,134 regions on 4 tilings ({4,3,5}, {5,4}, {4,4}, {5,3}), 4 growth strategies, and 3 bond capacities — with zero violations. The discrete Newton's constant 1/(4G) = 1/2 is exact, not a limit. See [`physics/discrete-bekenstein-hawking.md`](discrete-bekenstein-hawking.md) and [`formal/12-bekenstein-hawking.md`](../formal/12-bekenstein-hawking.md).
+**Premise 1 (Entropy–Area Proportionality).** The discrete Bekenstein–Hawking bound $S(A) \leq \text{area}(A)/2$ is verified across 32,134 regions on 4 tilings ($\{4,3,5\}$, $\{5,4\}$, $\{4,4\}$, $\{5,3\}$), 4 growth strategies, and 3 bond capacities — with zero violations. The discrete Newton's constant $1/(4G) = 1/2$ is exact, not a limit. See [`physics/discrete-bekenstein-hawking.md`](discrete-bekenstein-hawking.md) and [`formal/12-bekenstein-hawking.md`](../formal/12-bekenstein-hawking.md).
 
 **Premise 2 (Clausius Relation).** The `CausalDiamond` type ([`formal/06-causal-structure.md`](../formal/06-causal-structure.md)) provides the discrete analogue of a local causal horizon. The `LayerStep.monotone` field witnesses that the holographic depth (maximin entropy) is non-decreasing across causal extensions — the discrete shadow of the second law of thermodynamics for causal horizons.
 
-**Premise 3 (Equivalence Principle).** The curvature-agnostic bridge (`WickRotationWitness`, [`formal/08-wick-rotation.md`](../formal/08-wick-rotation.md)) provides a discrete analogue: the holographic correspondence does not depend on the sign of the cosmological constant (Λ < 0 for AdS, Λ > 0 for dS), only on the flow-graph topology.
+**Premise 3 (Equivalence Principle).** The curvature-agnostic bridge (`WickRotationWitness`, [`formal/08-wick-rotation.md`](../formal/08-wick-rotation.md)) provides a discrete analogue: the holographic correspondence does not depend on the sign of the cosmological constant ($\Lambda < 0$ for AdS, $\Lambda > 0$ for dS), only on the flow-graph topology.
 
 ### 4.3 Why This Route Is the Most Viable
 
 The entropy-first route has decisive advantages over attempting to recover smooth geometry directly:
 
-1. **It avoids the constructive-reals wall for the core result.** The discrete Newton's constant 1/(4G) = 1/2 is an exact rational verified by `refl` — no limit, no Cauchy completeness, no constructive reals.
+1. **It avoids the constructive-reals wall for the core result.** The discrete Newton's constant $1/(4G) = 1/2$ is an exact rational verified by `refl` — no limit, no Cauchy completeness, no constructive reals.
 
-2. **It avoids the continuous gauge group wall entirely.** The dimension functor dim : Rep G → ℕ collapses the gauge-theoretic structure to scalar capacities before the bridge operates. The passage from Q₈ to SU(2) is simply irrelevant to the entropy-area relationship.
+2. **It avoids the continuous gauge group wall entirely.** The dimension functor $\dim : \text{Rep}\, G \to \mathbb{N}$ collapses the gauge-theoretic structure to scalar capacities before the bridge operates. The passage from $Q_8$ to $SU(2)$ is simply irrelevant to the entropy-area relationship.
 
 3. **It leverages the `PatchData` interface as the precise abstraction barrier.** The bridge is geometrically blind. The continuum limit would be a limit of `PatchData` instances, not of polygon complexes or causal posets.
 
@@ -127,8 +127,8 @@ A detailed table mapping each discrete Agda construct to its hypothesized real-w
 
 | Agda Construct | Physical Counterpart | Confidence |
 |---|---|---|
-| `obs-path : S∂ ≡ LB` | The Ryu–Takayanagi formula: S_A = Area(γ_A) / 4G_N | ★★★ |
-| `GaugeConnection G Bond` | A gauge connection on a principal G-bundle (lattice gauge theory) | ★★★ |
+| `obs-path : S∂ ≡ LB` | The Ryu–Takayanagi formula: $S_A = \text{Area}(\gamma_A) / 4G_N$ | ★★★ |
+| `GaugeConnection G Bond` | A gauge connection on a principal $G$-bundle (lattice gauge theory) | ★★★ |
 | `quantum-bridge` | Linearity of the path integral | ★★★ |
 | `enriched-equiv` | The AdS/CFT correspondence (boundary ≃ bulk) | ★★☆ |
 | `WickRotationWitness` | The conjectured dS/CFT ↔ AdS/CFT relationship | ★☆☆ |
@@ -145,11 +145,11 @@ Five independent obstacles prevent the full translation from being formalized wi
 |---|---|
 | Constructive Reals / Smooth Manifolds | **Partially bypassed** — the half-bound eliminates the need for limits in the entropy-area relationship, but smooth geometry itself is untouched |
 | Infinite-Dimensional Path Integrals | Not addressed — the quantum bridge works over finite sums only |
-| Continuous Gauge Groups (SU(3) × SU(2) × U(1)) | Not addressed — Q₈ ⊂ SU(2) is the farthest reach |
+| Continuous Gauge Groups ($SU(3) \times SU(2) \times U(1)$) | Not addressed — $Q_8 \subset SU(2)$ is the farthest reach |
 | Lorentzian Signature | Not addressed — the causal poset provides time-directionality but no metric signature |
 | Fermionic Matter | Not addressed — gauge-theory construction produces bosonic defects only |
 
-The constructive-reals wall has been **partially bypassed** for the entropy-area relationship: the discrete Newton's constant 1/(4G) = 1/2 is verified by `refl` on closed ℕ terms, not by a real-valued limit. The remaining four walls are genuine obstacles that would require fundamentally new proof-assistant infrastructure to cross.
+The constructive-reals wall has been **partially bypassed** for the entropy-area relationship: the discrete Newton's constant $1/(4G) = 1/2$ is verified by `refl` on closed $\mathbb{N}$ terms, not by a real-valued limit. The remaining four walls are genuine obstacles that would require fundamentally new proof-assistant infrastructure to cross.
 
 ---
 
@@ -157,7 +157,7 @@ The constructive-reals wall has been **partially bypassed** for the entropy-area
 
 The most precise statement of what has been achieved:
 
-> **There exists a finite, discrete, combinatorial structure in which boundary entanglement entropy exactly equals bulk minimal surface area (Ryu–Takayanagi), spacetime curvature satisfies the Gauss–Bonnet theorem, the arrow of time is enforced by the well-foundedness of ℕ (no CTCs), matter manifests as topological defects in a finite gauge field (Q₈ holonomies on the network), and quantum superposition preserves the holographic correspondence at every microstate — all verified by the Cubical Agda type-checker via computational transport along Univalence paths.**
+> **There exists a finite, discrete, combinatorial structure in which boundary entanglement entropy exactly equals bulk minimal surface area (Ryu–Takayanagi), spacetime curvature satisfies the Gauss–Bonnet theorem, the arrow of time is enforced by the well-foundedness of $\mathbb{N}$ (no CTCs), matter manifests as topological defects in a finite gauge field ($Q_8$ holonomies on the network), and quantum superposition preserves the holographic correspondence at every microstate — all verified by the Cubical Agda type-checker via computational transport along Univalence paths.**
 
 This is, to our knowledge, the first time all five pillars of a holographic universe — geometry, causality, gauge matter, curvature, and quantum superposition — have coexisted in a single, machine-checked formal artifact.
 
@@ -201,11 +201,11 @@ This IS formalizable, IS formalized, and IS machine-checked. It is the first ver
 
 The translation problem, in its sharpest form, is:
 
-> **Does there exist a sequence of `PatchData` instances {pd_N}_{N ∈ ℕ} such that the family of `abstract-bridge-witness` terms converges, in some appropriate formal sense, to an inhabitant of `ContinuumHolography`?**
+> **Does there exist a sequence of `PatchData` instances $\{pd_N\}_{N \in \mathbb{N}}$ such that the family of `abstract-bridge-witness` terms converges, in some appropriate formal sense, to an inhabitant of `ContinuumHolography`?**
 
 The answer to this question would constitute a solution to the translation problem — and, if `ContinuumHolography` implies Einstein's equations (as Jacobson's thermodynamic argument suggests), a derivation of General Relativity from quantum entanglement.
 
-The sharp half-bound S ≤ area/2 with 1/(4G) = 1/2 is the strongest evidence so far: it is an exact, curvature-agnostic, dimension-agnostic constant verified at every finite resolution level. Whether the limiting sequence exists, and whether it converges to Einstein's equations, remains the frontier.
+The sharp half-bound $S \leq \text{area}/2$ with $1/(4G) = 1/2$ is the strongest evidence so far: it is an exact, curvature-agnostic, dimension-agnostic constant verified at every finite resolution level. Whether the limiting sequence exists, and whether it converges to Einstein's equations, remains the frontier.
 
 ---
 
